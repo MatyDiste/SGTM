@@ -13,7 +13,7 @@ public interface Estacion extends Comparable<Estacion>{
 	
 	//Todos los atributos y métodos estáticos deberian implementarse ya en la interfaz
 	public static HashSet<Estacion> listaEstaciones=new HashSet<Estacion>(); //Util para que la clase se encargue de tener toda la lista de estaciones (al ser hashset, debe estar implementado hashcode e equals)
-	public static boolean borrarEstacion(Estacion e) { 
+	public static Boolean borrarEstacion(Estacion e) { 
 		/* Estos son metodos estaticos que funcionan sobre todas las estaciones, son muy utiles
 		 * por ejemplo borrar, buscar.
 		 */
@@ -27,8 +27,8 @@ public interface Estacion extends Comparable<Estacion>{
 	//En este caso como son dos estados, decidi que sea true o false, pero por ejemplo Linea
 	//tiene colores de tipo short, que cada color se representa por un numero del 1-7.
 	//Esto se usa para despues poder llamar a instancia.setMantenimiento(Estacion.OPERATIVA), en lugar de instancia.setColor(3) y acordarte de que 3 significa Azul por ejemplo
-	public static boolean EN_MANTENIMIENTO=true;
-	public static boolean OPERATIVA=false;
+	public static Boolean EN_MANTENIMIENTO=true;
+	public static Boolean OPERATIVA=false;
 	/*
 	 * TODO
 	 * Comunicarse con EstacionDAO para cargar todas las estaciones (método estático)
@@ -66,11 +66,12 @@ public interface Estacion extends Comparable<Estacion>{
 	 * Estos son los getters y setters que debe tener.
 	 * Notar que no hay setID(), esto es porque no debe ser posible cambiar el ID, ya que esto va a ser PK en la BD
 	 */
-	public short getID();
+	
+	public Short getID();
 	public String getNombre();
 	public LocalTime getHorarioApertura();
 	public LocalTime getHorarioCierre();
-	public boolean enMantenimiento();
+	public Boolean enMantenimiento();
 	
 	public void setNombre(String nuevo);
 	public void setHorarioApertura(LocalTime lt);

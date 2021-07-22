@@ -7,7 +7,7 @@ import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatNightOwlContra
 
 public class Main {
 	
-	public static boolean modoAdmin;
+	public static Boolean modoAdmin;
 	
 	@SuppressWarnings("deprecation")
 	public static void main(String args[]) {
