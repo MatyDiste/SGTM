@@ -4,8 +4,7 @@ import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 
-public interface Estacion {
-	
+public interface Estacion extends Comparable<Estacion>{
 	/*
 	 * Asi son las interfaces que debemos agregar antes de hacer la implementacion de cada objeto
 	 * Este es un ejemplo, luego mas funcionalidades se van a ir agregando de acuerdo se necesiten
@@ -84,9 +83,12 @@ public interface Estacion {
 	 * hashCode() <- Debe basarse en los mismos atributos que utilice equals(), esto para el HashSet
 	 * eliminar() <- Método de instancia de eliminacion. Debe eliminar a la estacion de la listaEstaciones (llamar a Estacion.eliminar(this), y a todos los objetos que mantienen alguna referencia a el mismo)
 	 * luego, al dejar de referenciar a esa estacion en donde usemos este metodo, el garbage collector va a eliminarlo porque no deben existir mas referencias.
+	 * compareTo() <- Debe devolver -1 si this es menor
 	 */
 	public boolean equals(Estacion o); //Deberia utilizar lo mismo que hash (ID, nombre?)
 	@Override
 	public int hashCode(); //Debería diferenciar entre estaciones de acuerdo a sus atributos (ID, nombre?)
 	public boolean eliminar(); //Debe llamar al metodo estatico con this
+	@Override
+	public int compareTo(Estacion o);
 }

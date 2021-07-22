@@ -26,9 +26,19 @@ public class Home extends JFrame {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		//añadir cosas
 		btnuser=new BtnPrincipal("Usuario");
+		btnuser.addActionListener(e -> {
+			Main.setModoAdmin(false);
+			this.dispose();
+			//TODO eliminar ventana y crear proxima (llamar Main)
+		});
 		btnuser.setPreferredSize(new Dimension(175,175));
 		btnuser.setIcon(new ImageIcon("./assets/user_icon.png"));
 		btnadmin=new BtnPrincipal("Administrador");
+		btnadmin.addActionListener(e -> {
+			Main.setModoAdmin(true);
+			this.dispose();
+			//TODO eliminar ventana y crear proxima (llamar Main)
+		});
 		btnadmin.setPreferredSize(new Dimension(175,175));
 		btnadmin.setIcon(new ImageIcon("./assets/admin_icon.png"));
 		texto=new JLabel("Bienvenid@! Por favor ingrese al sistema.", SwingConstants.CENTER);
