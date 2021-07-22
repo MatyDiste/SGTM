@@ -2,7 +2,7 @@ package objetos;
 
 import java.util.HashSet;
 
-public interface Linea {
+public interface Linea extends Comparable<Linea>{
 	//TODO NO TERMINADO!
 	public static HashSet<Linea> listaLineas=new HashSet<Linea>();
 	public static boolean borrarLinea(Linea e) {
@@ -21,7 +21,7 @@ public interface Linea {
 	public String getNombre();
 	public short getColor();
 	public boolean estaActiva();
-	
+	public int compareTo(Linea l);
 	
 	
 	
