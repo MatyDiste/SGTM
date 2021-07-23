@@ -28,3 +28,4 @@ Seguido de: git push (esto lo va a subir a su branch en este repositorio).
 
 Si ven que sus cambios pueden servirles a los demas, hagan pull request desde la pagina de este repositorio -> Pull requests -> New pull request -> Seleccionan main y su branch para mergear (son dos listas que estan arriba a la izquierda, las dos dicen main al principio, cambian la de la derecha por la suya, y despues ponen un mensaje o algo descriptivo de que es lo que meten al main) y si necesitan urgente que acepte el pull me mandan un msj.
 
+Cada vez que quieran actualizar su branch con main, deben tener el work-tree limpio (no deben tener modificaciones que no tengan commits), despues hacen git merge remSGTM/main y ya estarian actualizados. Si hay conflictos (nunca me ocurrio todavia) van a tener que resolverlos manualmente. Luego pueden hacer git push y subir su version a este repositorio en su branch
