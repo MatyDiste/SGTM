@@ -2,10 +2,10 @@ package objetos;
 
 import java.util.HashSet;
 
-public interface Linea {
+public interface Linea extends Comparable<Linea>{
 	//TODO NO TERMINADO!
 	public static HashSet<Linea> listaLineas=new HashSet<Linea>();
-	public static boolean borrarLinea(Linea e) {
+	public static Boolean borrarLinea(Linea e) {
 		return listaLineas.remove(e);
 		//TODO Comunicar DAO la eliminacion de e
 	}
@@ -20,8 +20,9 @@ public interface Linea {
 	
 	public String getNombre();
 	public short getColor();
-	public boolean estaActiva();
-	
+	public Boolean estaActiva();
+	public Integer compareTo(Linea l);
+	public void setRecorrido(List <Estacion> ordenEstaciones);
 	
 	
 	
