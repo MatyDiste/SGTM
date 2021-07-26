@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import com.formdev.flatlaf.extras.FlatInspector;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatNightOwlContrastIJTheme;
 
+
 public class Main {
 	
 	public static Boolean modoAdmin;
@@ -19,6 +20,10 @@ public class Main {
 	public static void setModoAdmin(Boolean b) {
 		modoAdmin=b;
 		//System.out.println("Seteo " + b.toString());
+	}
+	
+	public static void openMainWindow() {
+		MainWindow mw= new MainWindow("Sistema Gestion de Transporte Multimodal", modoAdmin);
 	}
 	
 }

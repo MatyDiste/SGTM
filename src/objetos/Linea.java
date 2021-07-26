@@ -1,6 +1,7 @@
 package objetos;
 
 import java.util.HashSet;
+import java.util.List;
 
 public interface Linea extends Comparable<Linea>{
 	//TODO NO TERMINADO!
@@ -21,7 +22,7 @@ public interface Linea extends Comparable<Linea>{
 	public String getNombre();
 	public short getColor();
 	public Boolean estaActiva();
-	public Integer compareTo(Linea l);
+	public int compareTo(Linea l);
 	public void setRecorrido(List <Estacion> ordenEstaciones);
 	
 	
