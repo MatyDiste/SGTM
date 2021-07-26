@@ -17,18 +17,35 @@ import javax.swing.JPanel;
 public class PanelGrafo extends JPanel {
 	
 	private HashSet<Estacion2D> listEstaciones= new HashSet<Estacion2D>();
-	private HashSet<Flecha> listFlecha= new HashSet<Flecha>();
+	private HashSet<Flecha> listFlechas= new HashSet<Flecha>();
 	private Graphics2D g2d;
 	public Optional<Estacion2D> selectedEstacion= Optional.empty();
 	
+	public void debugGenEstaciones() {
+		Double rad=25d;
+		for(Integer i=1; i<=13; i++)
+			listEstaciones.add(new Estacion2D("A"+i.toString(), rad, Math.random()*(450-rad), Math.random()*(450-rad)));
+	}
+	
+	public void debugGenFlechas() {
+		listEstaciones.stream()
+					  .forEach(e -> {
+						  Estacion2D e2=listEstaciones.stream().findAny().get();
+						  Flecha f=new Flecha(e, e2, Color.BLACK);
+						  listFlechas.add(f);
+						  e.addSalida(f);
+						  e2.addLlegada(f);
+					  });
+	}
+	
+	
 	public PanelGrafo() {
 		super();
-		Double rad=30d;
 		this.setPreferredSize(new Dimension(700, 550));
 		//this.setSize(new Dimension(1000, 1000));
 		//TODO cargar estaciones y flechas
-		for(Integer i=1; i<=13; i++)
-			listEstaciones.add(new Estacion2D("A"+i.toString(), rad, Math.random()*(450-rad), Math.random()*(450-rad)));
+		debugGenEstaciones();
+		debugGenFlechas();
 		this.setVisible(true);
 		this.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent event) {
@@ -95,6 +112,11 @@ public class PanelGrafo extends JPanel {
 		
 	}
 	
+	protected void dibujarFlechas() {
+		listFlechas.stream()
+				   .forEach(f -> f.dibujar(g2d));
+	}
+	
 	protected void dibujarEstaciones() {
 		listEstaciones.stream()
 					  .forEach(est -> est.dibujar(g2d));
@@ -104,14 +126,11 @@ public class PanelGrafo extends JPanel {
 	protected void paintComponent(Graphics g) {
 		g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2d.setColor(new Color(255,255,255));
+		g2d.setColor(Color.LIGHT_GRAY);
 		g2d.fill(new Rectangle(700, 550));
 		dibujarEstaciones();
+		dibujarFlechas();
 	}
-	/*public void repaint() {
-		super.repaint();
-		dibujarEstaciones();
-	}*/
 	
 	
 }
