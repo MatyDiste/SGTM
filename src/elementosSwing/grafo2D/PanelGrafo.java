@@ -30,7 +30,7 @@ public class PanelGrafo extends JPanel {
 	public void debugGenFlechas() {
 		listEstaciones.stream()
 					  .forEach(e -> {
-						  Estacion2D e2=listEstaciones.stream().findAny().get();
+						  Estacion2D e2=listEstaciones.stream().filter(aux -> !aux.equals(e)).findAny().get();
 						  Flecha f=new Flecha(e, e2, Color.BLACK);
 						  listFlechas.add(f);
 						  e.addSalida(f);
@@ -128,8 +128,8 @@ public class PanelGrafo extends JPanel {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setColor(Color.LIGHT_GRAY);
 		g2d.fill(new Rectangle(700, 550));
-		dibujarEstaciones();
 		dibujarFlechas();
+		dibujarEstaciones();
 	}
 	
 	
