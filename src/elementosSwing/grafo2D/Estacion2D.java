@@ -48,6 +48,7 @@ public class Estacion2D {
 	
 	public void dibujar(Graphics2D g) {
 		g2d=g;
+		dibujarFlechas();
 		
 		AffineTransform rst = g2d.getTransform();
 		g2d.translate(this.posx, this.posy);
@@ -64,6 +65,7 @@ public class Estacion2D {
 		g2d.drawString(nombre, RADIO.floatValue()/1.7f, RADIO.floatValue()/0.8f);
 			
 		g2d.setTransform(rst);
+		
 	}
 	
 	public void addLlegada(Flecha f) {
@@ -93,8 +95,9 @@ public class Estacion2D {
 		centroy=y;
 		posx=x-RADIO;
 		posy=y-RADIO;
-		dibujarFlechas();
+		//dibujarFlechas();
 		//this.dibujar(g2d);
+		
 	}
 	
 }

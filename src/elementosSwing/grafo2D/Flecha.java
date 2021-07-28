@@ -4,21 +4,21 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.BasicStroke;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
-import java.awt.geom.Path2D.Double;
+
 
 
 public class Flecha {
 	
-	/*
-	 * ESTA ANDANDO MAL EL TEMA DE CALCULAR LOS ANCLAJES DE LA CURVA CREO
-	 */
 	
-	public static BasicStroke SELECTEDSTROKE=new BasicStroke(4);
-	public static BasicStroke UNSELECTEDSTROKE=new BasicStroke(2);
+	private static final float SELECTEDWIDTH=4f;
+	private static final float UNSELECTEDWIDTH=2f;
+	private static final float[] dash= {0.3f, 0.3f};
+	private static final float dashPhase=0f;
+	
+	//public Conexion conec;
 	
 	public Boolean selected=false;
 	public java.lang.Double x1,x2,y1,y2;
@@ -35,9 +35,14 @@ public class Flecha {
 	public AffineTransform rst;
 	public AffineTransform recta;
 	
+	/*private Stroke getStroke() {
+		Integer size=selected? SELECTEDWIDTH : UNSELECTEDWIDTH;
+		return conec.habilitado? new BasicStroke(size) : new BasicStroke(size, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1f, dash, dashPhase); 
+	}*/
+	
 	public void updateTransform() {
 		//Mantiene la transformacion de manera que E1 y E2 esten sobre la recta y=0
-		g2d.setStroke(selected? SELECTEDSTROKE : UNSELECTEDSTROKE);
+		g2d.setStroke(new BasicStroke(selected? SELECTEDWIDTH : UNSELECTEDWIDTH));
 		g2d.setColor(color);
 		g2d.translate(x1, y1);
 		g2d.rotate(angulo());
@@ -54,7 +59,7 @@ public class Flecha {
 		punta.lineTo(-14d, 7d);
 		punta.closePath();
 		
-		java.lang.Double a=angulo();
+		//java.lang.Double a=angulo();
 		puntoBorde.setLocation(Math.cos(Math.PI-anguloOffseted)*Estacion2D.RADIO+getModulo(), Math.sin(Math.PI-anguloOffseted)*Estacion2D.RADIO);
 		//puntoBorde.setLocation(Math.cos(anguloOffseted+a)*Estacion2D.RADIO+x2, Math.sin(anguloOffseted+a)*Estacion2D.RADIO+y2);
 		//DEBUG
@@ -87,8 +92,8 @@ public class Flecha {
 	
 	public void updateCurva() {
 		curva=new Path2D.Double();
-		java.lang.Double mod=getModulo()/2.75;
-		curva.moveTo(0, 0);
+		java.lang.Double mod=getModulo()/3;
+		curva.moveTo(Math.cos(anguloOffseted)*Estacion2D.RADIO, Math.sin(anguloOffseted)*Estacion2D.RADIO);
 		curva.curveTo(Math.cos(anguloOffseted)*(mod), Math.sin(anguloOffseted)*(mod), Math.cos(Math.PI-anguloOffseted)*(mod) + getModulo(), Math.sin(Math.PI-anguloOffseted)*(mod), puntoBorde.x, puntoBorde.y);
 		//System.out.println("Curva");
 	}
@@ -97,6 +102,7 @@ public class Flecha {
 		g2d.setTransform(recta);
 		//System.out.println("Dibujando curva");
 		//System.out.println("X= "+x1.toString()+" Y="+y1.toString());
+		//g2d.setStroke(new BasicStroke(2f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 		g2d.draw(curva);
 		g2d.setTransform(rst);
 	}
@@ -116,20 +122,20 @@ public class Flecha {
 		return Math.sqrt(Math.pow(x2-x1,2)+ Math.pow(y2-y1,2));
 	}
 	
-	private void debugPuntos() {
+	/*private void debugPuntos() {
 		System.out.println("Dibujando puntos debug1: x="+e1.centrox.toString()+" y="+e2.centroy.toString());
 		System.out.println("Dibujando puntos debug2: x="+e2.centrox.toString()+" y="+e2.centroy.toString());
 		g2d.setColor(Color.RED);
 		g2d.fill(new Ellipse2D.Double(e1.centrox, e1.centroy, 15, 15));
 		g2d.fill(new Ellipse2D.Double(e2.centrox, e2.centroy, 15, 15));
 		g2d.setColor(color);
-	}
+	}*/
 	
-	private void debugLineas() {
+	/*private void debugLineas() {
 		g2d.setColor(new Color(127,127,127, 100));
 		g2d.draw(new Line2D.Double(x1, y1, x2, y2));
 		g2d.setColor(color);
-	}
+	}*/
 	
 	public void updateCoord() {
 		//System.out.println("Nodo 1: "+e1.nombre);
@@ -154,13 +160,14 @@ public class Flecha {
 	}
 	
 	public Flecha(Estacion2D e1, Estacion2D e2, Color c) {
-		
+	//public Flecha(Estacion2D e1, Estacion2D e2, Color c, Conexion con) {
+		//this.conec=con;
 		this.e1=e1;
 		this.e2=e2;
 		this.color=c;
 		
 		this.mayorAngulo=Math.random()<0.5;
-		this.anguloOffseted= mayorAngulo? Math.random()*25 +10 : Math.random()*(-25) -10;
+		this.anguloOffseted= mayorAngulo? Math.random()*25 +20 : Math.random()*(-25) -20;
 		this.anguloOffseted=Math.toRadians(anguloOffseted);
 	}
 	

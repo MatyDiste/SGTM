@@ -73,7 +73,7 @@ public class PanelGrafo extends JPanel {
 				}
 				catch(NoSuchElementException e) {
 					selectedEstacion=Optional.empty();
-					repaint();
+					//repaint();
 				}
 			}
 			public void mouseReleased(MouseEvent event) {
@@ -83,7 +83,7 @@ public class PanelGrafo extends JPanel {
 					repaint();
 				}
 				catch(NoSuchElementException e) {
-					repaint();
+					//repaint();
 					
 				}
 			}
@@ -104,7 +104,7 @@ public class PanelGrafo extends JPanel {
 				}
 				catch(NoSuchElementException e) {
 					selectedEstacion=Optional.empty();
-					repaint();
+					//repaint();
 				}
 			}
 		});
@@ -127,7 +127,7 @@ public class PanelGrafo extends JPanel {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setColor(Color.LIGHT_GRAY);
 		g2d.fill(new Rectangle(700, 550));
-		dibujarFlechas();
+		//dibujarFlechas();
 		dibujarEstaciones();
 	}
 	

@@ -22,7 +22,7 @@ public class Home extends JFrame {
 	public Home(String t) {
 		super(t);
 		this.setLayout(new GridBagLayout());
-		this.setBounds(0, 0, 500, 350);
+		this.setBounds(0, 0, 550, 350);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		//añadir cosas
@@ -78,7 +78,7 @@ public class Home extends JFrame {
 		gbc.fill=GridBagConstraints.NONE;
 		this.add(btnadmin, gbc);
 		
-		this.pack();
+		//this.pack();
 		this.setVisible(true);
 	}
 	
