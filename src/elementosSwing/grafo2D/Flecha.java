@@ -3,6 +3,7 @@ package elementosSwing.grafo2D;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
@@ -12,17 +13,103 @@ import java.awt.geom.Path2D.Double;
 
 public class Flecha {
 	
+	/*
+	 * ESTA ANDANDO MAL EL TEMA DE CALCULAR LOS ANCLAJES DE LA CURVA CREO
+	 */
+	
 	public static BasicStroke SELECTEDSTROKE=new BasicStroke(4);
 	public static BasicStroke UNSELECTEDSTROKE=new BasicStroke(2);
 	
 	public Boolean selected=false;
 	public java.lang.Double x1,x2,y1,y2;
-	public Color color;
+	public final Color color;
 	public Graphics2D g2d;
-	public Estacion2D e1,e2;
+	public final Estacion2D e1,e2;
+	public final java.lang.Double xoffsetRandom=Math.random();
+	public final java.lang.Double yoffsetRandom=Math.random();
+	public Point.Double puntoBorde=new Point.Double();
+	public java.lang.Double anguloOffseted;
+	public Boolean mayorAngulo;
+	public Path2D.Double curva=new Path2D.Double();
+	public Path2D.Double punta=new Path2D.Double();
+	public AffineTransform rst;
+	public AffineTransform recta;
+	
+	public void updateTransform() {
+		//Mantiene la transformacion de manera que E1 y E2 esten sobre la recta y=0
+		g2d.setStroke(selected? SELECTEDSTROKE : UNSELECTEDSTROKE);
+		g2d.setColor(color);
+		g2d.translate(x1, y1);
+		g2d.rotate(angulo());
+		
+		recta=g2d.getTransform();
+		g2d.setTransform(rst);
+	}
+	
+	public void updatePunta() {
+		//punta=new Path2D.Double();
+		
+		punta.moveTo(0, 0);
+		punta.lineTo(-14d, -7d);
+		punta.lineTo(-14d, 7d);
+		punta.closePath();
+		
+		java.lang.Double a=angulo();
+		puntoBorde.setLocation(Math.cos(Math.PI-anguloOffseted)*Estacion2D.RADIO+getModulo(), Math.sin(Math.PI-anguloOffseted)*Estacion2D.RADIO);
+		//puntoBorde.setLocation(Math.cos(anguloOffseted+a)*Estacion2D.RADIO+x2, Math.sin(anguloOffseted+a)*Estacion2D.RADIO+y2);
+		//DEBUG
+		/*
+		g2d.setColor(Color.GREEN);
+		g2d.fill(new Ellipse2D.Double(puntoBorde.x, puntoBorde.y,10,10));
+		g2d.setColor(color);
+		*/
+		//DEBUG
+	}
+	
+	public void dibujarPunta() {
+		//System.out.println("Dibujando punta");
+		
+		g2d.setTransform(recta);
+		//DEBUG
+		/*
+		g2d.setColor(Color.ORANGE);
+		g2d.fill(new Ellipse2D.Double(0,0,10,10));
+		g2d.fill(new Ellipse2D.Double(puntoBorde.x, puntoBorde.y,10,10));
+		g2d.setColor(color);
+		*/
+		//DEBUG
+		g2d.translate(puntoBorde.x, puntoBorde.y);
+		g2d.rotate(-anguloOffseted);
+		g2d.fill(punta);
+		
+		g2d.setTransform(rst);
+	}
+	
+	public void updateCurva() {
+		curva=new Path2D.Double();
+		java.lang.Double mod=getModulo()/2.75;
+		curva.moveTo(0, 0);
+		curva.curveTo(Math.cos(anguloOffseted)*(mod), Math.sin(anguloOffseted)*(mod), Math.cos(Math.PI-anguloOffseted)*(mod) + getModulo(), Math.sin(Math.PI-anguloOffseted)*(mod), puntoBorde.x, puntoBorde.y);
+		//System.out.println("Curva");
+	}
+	
+	public void dibujarCurva() {
+		g2d.setTransform(recta);
+		//System.out.println("Dibujando curva");
+		//System.out.println("X= "+x1.toString()+" Y="+y1.toString());
+		g2d.draw(curva);
+		g2d.setTransform(rst);
+	}
 	
 	public java.lang.Double angulo() {
-		return Math.atan((y2-y1)/(x2-x1));
+		
+		//System.out.println("Entre: x1="+x1.toString()+" y1="+y1.toString());
+		//System.out.println("       x2="+x2.toString()+" y2="+y2.toString());
+		
+		java.lang.Double offset = (x1<x2)? 0 : Math.PI;
+		java.lang.Double angulo=Math.atan((y2-y1)/(x2-x1)) + offset;
+		//System.out.println("Angulo calculado : alfa="+angulo.toString());
+		return angulo;
 	}
 	
 	public java.lang.Double getModulo() {
@@ -30,9 +117,17 @@ public class Flecha {
 	}
 	
 	private void debugPuntos() {
+		System.out.println("Dibujando puntos debug1: x="+e1.centrox.toString()+" y="+e2.centroy.toString());
+		System.out.println("Dibujando puntos debug2: x="+e2.centrox.toString()+" y="+e2.centroy.toString());
 		g2d.setColor(Color.RED);
-		g2d.fill(new Ellipse2D.Double(e1.centrox, e1.centroy, 10, 10));
-		g2d.fill(new Ellipse2D.Double(e2.centrox, e2.centroy, 10, 10));
+		g2d.fill(new Ellipse2D.Double(e1.centrox, e1.centroy, 15, 15));
+		g2d.fill(new Ellipse2D.Double(e2.centrox, e2.centroy, 15, 15));
+		g2d.setColor(color);
+	}
+	
+	private void debugLineas() {
+		g2d.setColor(new Color(127,127,127, 100));
+		g2d.draw(new Line2D.Double(x1, y1, x2, y2));
 		g2d.setColor(color);
 	}
 	
@@ -43,15 +138,19 @@ public class Flecha {
 		this.y1=e1.centroy;
 		this.x2=e2.centrox;
 		this.y2=e2.centroy;
-		java.lang.Double mod=getModulo();
+		//java.lang.Double mod=getModulo();
 		//System.out.println("Viejas coord1: x="+x1.toString()+" y="+y1.toString());
 		//System.out.println("Viejas coord2: x="+x2.toString()+" y="+y2.toString());
-		this.x2=(x2-x1) * (1-(e2.radio/mod))+x1;
-		this.y2=(y2-y1) * (1-(e2.radio/mod))+y1;
+		//java.lang.Double mod=getModulo();
+		//this.x2=(x2-x1) * (1-(Estacion2D.RADIO/mod))+x1;
+		//this.y2=(y2-y1) * (1-(Estacion2D.RADIO/mod))+y1;
 		//System.out.println("Nuevas coord2: x="+x2.toString()+" y="+y2.toString());
 		//System.out.println("Modulo = "+mod.toString());
 		//if(mod.isNaN()) System.out.println("ES NAN!!");
 		//System.out.println("---------------");
+		updateTransform();
+		updatePunta();
+		updateCurva();
 	}
 	
 	public Flecha(Estacion2D e1, Estacion2D e2, Color c) {
@@ -59,28 +158,22 @@ public class Flecha {
 		this.e1=e1;
 		this.e2=e2;
 		this.color=c;
-		updateCoord();
+		
+		this.mayorAngulo=Math.random()<0.5;
+		this.anguloOffseted= mayorAngulo? Math.random()*25 +10 : Math.random()*(-25) -10;
+		this.anguloOffseted=Math.toRadians(anguloOffseted);
 	}
 	
 	public void dibujar(Graphics2D g) {
-		updateCoord();
 		g2d=g;
-		AffineTransform rst=g2d.getTransform();
+		rst=g2d.getTransform();
+		updateCoord();
 		
-		g2d.setColor(color);
-		g2d.setStroke(selected? SELECTEDSTROKE : UNSELECTEDSTROKE);
-		g2d.draw(new Line2D.Double(x1,y1,x2,y2));
+		dibujarCurva();
+		dibujarPunta();
+		
 		//debugPuntos();
-		
-		g2d.translate(x2, y2);
-		g2d.rotate((x1 < x2)? angulo() : angulo()-Math.PI);
-		Path2D.Double path= new Path2D.Double();
-		path.moveTo(0, 0);
-		path.lineTo(-14d, -7d);
-		path.lineTo(-14d, 7d);
-		path.closePath();
-		g2d.fill(path);
-		
+		//debugLineas();
 		g2d.setTransform(rst);
 		
 	}

@@ -22,16 +22,15 @@ public class PanelGrafo extends JPanel {
 	public Optional<Estacion2D> selectedEstacion= Optional.empty();
 	
 	public void debugGenEstaciones() {
-		Double rad=25d;
-		for(Integer i=1; i<=13; i++)
-			listEstaciones.add(new Estacion2D("A"+i.toString(), rad, Math.random()*(450-rad), Math.random()*(450-rad)));
+		for(Integer i=1; i<=5; i++)
+			listEstaciones.add(new Estacion2D("A"+i.toString(), Math.random()*(450), Math.random()*(450)));
 	}
 	
 	public void debugGenFlechas() {
 		listEstaciones.stream()
 					  .forEach(e -> {
 						  Estacion2D e2=listEstaciones.stream().filter(aux -> !aux.equals(e)).findAny().get();
-						  Flecha f=new Flecha(e, e2, Color.BLACK);
+						  Flecha f=new Flecha(e, e2, new Color((int) (Math.random()*Integer.MAX_VALUE-1)));
 						  listFlechas.add(f);
 						  e.addSalida(f);
 						  e2.addLlegada(f);

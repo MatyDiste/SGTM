@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
@@ -13,23 +14,24 @@ public class Estacion2D {
 	
 	public static Integer UNSELECTEDSTROKE=3;
 	public static Integer SELECTEDSTROKE=5;
+	public static Double RADIO=25d;
 	
 	public ArrayList<Flecha> listFlechasSalida=new ArrayList<Flecha>();
 	public ArrayList<Flecha> listFlechasLlegada=new ArrayList<Flecha>();
 	public Boolean selected=false;
 	public Double posx, posy;
-	public Double radio;
 	public Double centrox;
 	public Double centroy;
 	public String nombre;
 	public Ellipse2D.Double circulo;
 	public Graphics2D g2d;
 	
-	public Estacion2D(String name, Double radius, Double posx, Double posy) {
-		circulo= new Ellipse2D.Double(0, 0, radius*2, radius*2);
-		radio=radius;
-		centrox= posx+radius;
-		centroy= posy+radius;
+	
+	public Estacion2D(String name, Double posx, Double posy) {
+		circulo= new Ellipse2D.Double(0, 0, RADIO*2, RADIO*2);
+		//radio=radius;
+		centrox= posx+RADIO;
+		centroy= posy+RADIO;
 		this.posx=posx;
 		this.posy=posy;
 		nombre=name;
@@ -41,7 +43,7 @@ public class Estacion2D {
 		System.out.println("Centro en: x="+centrox.toString()+" y="+centroy.toString());
 		System.out.println("Tiro en: x="+x.toString()+" y="+y.toString());
 		}*/
-		return Math.sqrt(Math.pow(centrox-x, 2) + Math.pow(centroy-y, 2))<=radio*2;
+		return Math.sqrt(Math.pow(centrox-x, 2) + Math.pow(centroy-y, 2))<=RADIO;
 	}
 	
 	public void dibujar(Graphics2D g) {
@@ -59,7 +61,7 @@ public class Estacion2D {
 			
 		g2d.setColor(Color.BLACK);
 		g2d.setFont(new Font("Arial", selected? Font.BOLD : Font.PLAIN, 15));
-		g2d.drawString(nombre, radio.floatValue()/1.7f, radio.floatValue()/0.8f);
+		g2d.drawString(nombre, RADIO.floatValue()/1.7f, RADIO.floatValue()/0.8f);
 			
 		g2d.setTransform(rst);
 	}
@@ -89,8 +91,8 @@ public class Estacion2D {
 	public void mover(Double x, Double y) {
 		centrox=x;
 		centroy=y;
-		posx=x-radio;
-		posy=y-radio;
+		posx=x-RADIO;
+		posy=y-RADIO;
 		dibujarFlechas();
 		//this.dibujar(g2d);
 	}
