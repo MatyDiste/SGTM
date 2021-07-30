@@ -22,12 +22,14 @@ public class Home extends JFrame {
 	public Home(String t) {
 		super(t);
 		this.setLayout(new GridBagLayout());
-		this.setBounds(500, 500, 500, 350);
+		this.setBounds(0, 0, 550, 350);
+		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		//añadir cosas
 		btnuser=new BtnPrincipal("Usuario");
 		btnuser.addActionListener(e -> {
 			Main.setModoAdmin(false);
+			Main.openMainWindow();
 			this.dispose();
 			//TODO eliminar ventana y crear proxima (llamar Main)
 		});
@@ -36,6 +38,7 @@ public class Home extends JFrame {
 		btnadmin=new BtnPrincipal("Administrador");
 		btnadmin.addActionListener(e -> {
 			Main.setModoAdmin(true);
+			Main.openMainWindow();
 			this.dispose();
 			//TODO eliminar ventana y crear proxima (llamar Main)
 		});
@@ -75,6 +78,7 @@ public class Home extends JFrame {
 		gbc.fill=GridBagConstraints.NONE;
 		this.add(btnadmin, gbc);
 		
+		//this.pack();
 		this.setVisible(true);
 	}
 	
