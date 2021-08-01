@@ -1,5 +1,6 @@
 package objetos;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,20 +25,40 @@ public class Linea implements Comparable<Linea>{
 	*/
 	
 	private List<Estacion> listEstaciones=new ArrayList<Estacion>();
-	private HashSet<Estacion> listConexiones=new HashSet<Estacion>();
-	public Double distancia;
-	public 
+	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
+	public String nombre;
+	public Color color;
+	private Boolean activo=true;
 	
-	public Linea() {
+	public Linea(String nombre, Color color, Boolean activo) {
+		this.nombre = nombre;
+		this.color = color;
+		this.activo = activo;
+	}
+
+	public Boolean activo() {
+		return activo;
+	}
+	public void activar() {
+		this.activo=true;
+		//TODO Fijarse que las conexiones actualicen bien sus colores
+	}
+	public void inactivar() {
+		this.activo=false;
+		//TODO lo mismo que activar()
+	}
+	public int compareTo(Linea l) {
+		//???? Ni idea xd
+		return 0;
+	}
+	public void setRecorrido(List<Estacion> ordenEstaciones) {
+		this.listEstaciones=ordenEstaciones;
 		
 	}
-	
-	public String getNombre();
-	public short getColor();
-	public Boolean estaActiva();
-	public int compareTo(Linea l);
-	public void setRecorrido(List <Estacion> ordenEstaciones);
-	
+	public void setConexiones(HashSet<Conexion> conex) {
+		this.listConexiones=conex;
+		
+	}
 	
 	
 }

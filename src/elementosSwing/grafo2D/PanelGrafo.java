@@ -1,6 +1,7 @@
 package elementosSwing.grafo2D;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -41,6 +42,7 @@ public class PanelGrafo extends JPanel {
 	public PanelGrafo() {
 		super();
 		this.setPreferredSize(new Dimension(700, 550));
+		this.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		//this.setSize(new Dimension(1000, 1000));
 		//TODO cargar estaciones y flechas
 		debugGenEstaciones();
