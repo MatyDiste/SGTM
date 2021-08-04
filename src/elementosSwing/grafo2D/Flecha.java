@@ -8,21 +8,24 @@ import java.awt.BasicStroke;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 
+import objetos.Conexion;
+import objetos.Linea;
+
 
 
 public class Flecha {
 	
 	
-	private static final float SELECTEDWIDTH=4f;
-	private static final float UNSELECTEDWIDTH=2f;
+	private static final int SELECTEDWIDTH=4;
+	private static final int UNSELECTEDWIDTH=2;
 	private static final float[] dash= {0.3f, 0.3f};
 	private static final float dashPhase=0f;
 	
-	//public Conexion conec;
+	public Conexion conect;
 	
 	public Boolean selected=false;
 	public java.lang.Double x1,x2,y1,y2;
-	public final Color color;
+	public Color color;
 	public Graphics2D g2d;
 	public final Estacion2D e1,e2;
 	public final java.lang.Double xoffsetRandom=Math.random();
@@ -35,14 +38,14 @@ public class Flecha {
 	public AffineTransform rst;
 	public AffineTransform recta;
 	
-	/*private Stroke getStroke() {
+	private BasicStroke getStroke() {
 		Integer size=selected? SELECTEDWIDTH : UNSELECTEDWIDTH;
-		return conec.habilitado? new BasicStroke(size) : new BasicStroke(size, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1f, dash, dashPhase); 
-	}*/
+		return conect.habilitado()? new BasicStroke(size) : new BasicStroke(size, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1f, dash, dashPhase); 
+	}
 	
 	public void updateTransform() {
 		//Mantiene la transformacion de manera que E1 y E2 esten sobre la recta y=0
-		g2d.setStroke(new BasicStroke(selected? SELECTEDWIDTH : UNSELECTEDWIDTH));
+		g2d.setStroke(this.getStroke());
 		g2d.setColor(color);
 		g2d.translate(x1, y1);
 		g2d.rotate(angulo());
@@ -144,6 +147,7 @@ public class Flecha {
 		this.y1=e1.centroy;
 		this.x2=e2.centrox;
 		this.y2=e2.centroy;
+		this.color=conect.getColor();
 		//java.lang.Double mod=getModulo();
 		//System.out.println("Viejas coord1: x="+x1.toString()+" y="+y1.toString());
 		//System.out.println("Viejas coord2: x="+x2.toString()+" y="+y2.toString());
@@ -160,11 +164,14 @@ public class Flecha {
 	}
 	
 	public Flecha(Estacion2D e1, Estacion2D e2, Color c) {
-	//public Flecha(Estacion2D e1, Estacion2D e2, Color c, Conexion con) {
-		//this.conec=con;
+	//public Flecha(Estacion2D e1, Estacion2D e2, Conexion con) {
 		this.e1=e1;
 		this.e2=e2;
 		this.color=c;
+		//this.conect=con;
+		//this.color=conect.getColor();
+		this.conect=new Conexion(e1., e2, new Linea("xd", c, Math.random()<0.7));
+		
 		
 		this.mayorAngulo=Math.random()<0.5;
 		this.anguloOffseted= mayorAngulo? Math.random()*25 +20 : Math.random()*(-25) -20;
