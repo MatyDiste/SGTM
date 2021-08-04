@@ -52,8 +52,11 @@ public class Estacion implements Comparable<Estacion>{
 	}
 	
 	
-	public List<Estacion> subgrafoInmediato(Estacion desde) {
-		
+	
+	public List<Estacion> subgrafoInmediato() {
+		return this.listConexiones.stream()
+						          .map(c -> c.e2)
+						          .toList();
 	}
 	
 	
@@ -128,5 +131,7 @@ public class Estacion implements Comparable<Estacion>{
 		listConexiones.clear();
 	}
 	@Override
-	public int compareTo(Estacion o);
+	public int compareTo(Estacion o) {
+		return this.getNombre().compareToIgnoreCase(o.getNombre());
+	}
 }
