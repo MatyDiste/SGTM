@@ -9,14 +9,16 @@ import java.util.List;
 public class Estacion implements Comparable<Estacion>{
 	
 	//Todos los atributos y métodos estáticos deberian implementarse ya en la interfaz
-	public static HashSet<Estacion> listaEstaciones=new HashSet<Estacion>(); //Util para que la clase se encargue de tener toda la lista de estaciones (al ser hashset, debe estar implementado hashcode e equals)
-	public static Boolean borrarEstacion(Estacion e) { 
+	public static HashSet<Estacion> listEstaciones=new HashSet<Estacion>(); //Util para que la clase se encargue de tener toda la lista de estaciones (al ser hashset, debe estar implementado hashcode e equals)
+	private static Boolean borrarEstacion(Estacion e) { 
 		/* Estos son metodos estaticos que funcionan sobre todas las estaciones, son muy utiles
 		 * por ejemplo borrar, buscar.
 		 */
-		return listaEstaciones.remove(e);
+		return listEstaciones.remove(e);
 		//TODO Comunicar DAO la eliminacion de e
 	}
+	
+	
 	
 	public static final Boolean EN_MANTENIMIENTO=true;
 	public static final Boolean OPERATIVA=false;
@@ -27,34 +29,33 @@ public class Estacion implements Comparable<Estacion>{
 	
 	//Mas funciones sobre la lista, esta vez para buscar de acuerdo a algun atributo
 	public static List<Estacion> buscarID(short id){
-		return listaEstaciones
+		return listEstaciones
 				.stream()
 				.filter( (e) -> e.getID()==id)
 				.toList();
 	}
 	public static List<Estacion> buscarNombre(String name){
-		return listaEstaciones
+		return listEstaciones
 				.stream()
 				.filter( (e) -> e.getNombre().equals(name))
-				.toList();
+				.toList(); //capaz cambiar
 	}
 	public static List<Estacion> buscarHorarioApertura(LocalTime lt){
-		return listaEstaciones
+		return listEstaciones
 				.stream()
 				.filter( (e) -> e.getHorarioApertura().equals(lt))
 				.toList();
 	}
 	public static List<Estacion> buscarHorarioCierre(LocalTime lt){
-		return listaEstaciones
+		return listEstaciones
 				.stream()
 				.filter( (e) -> e.getHorarioCierre().equals(lt))
 				.toList();
 	}
 	
-	
-	
-	public List<Estacion> subgrafoInmediato() {
+	public List<Estacion> estacionesInmediatas() {
 		return this.listConexiones.stream()
+								  .filter((c) -> c.e1.equals(this))
 						          .map(c -> c.e2)
 						          .toList();
 	}
@@ -121,6 +122,7 @@ public class Estacion implements Comparable<Estacion>{
 	@Override
 	public int hashCode() { //Debería diferenciar entre estaciones de acuerdo a sus atributos (ID, nombre?)
 		return nombre.hashCode();
+		
 	}
 	public void eliminar() { //Debe llamar al metodo estatico con this
 		Estacion.borrarEstacion(this);
