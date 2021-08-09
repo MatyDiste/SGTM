@@ -170,7 +170,7 @@ public class Flecha {
 		this.color=c;
 		//this.conect=con;
 		//this.color=conect.getColor();
-		this.conect=new Conexion(e1., e2, new Linea("xd", c, Math.random()<0.7));
+		this.conect=new Conexion(e1, e2, new Linea("xd", c, Math.random()<0.7)); //DEBUG
 		
 		
 		this.mayorAngulo=Math.random()<0.5;

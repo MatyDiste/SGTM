@@ -7,15 +7,18 @@ public class Conexion {
 	
 	public Estacion e1, e2;
 	public Linea linea;
-	private Boolean habilitado=true;
 	public Double distancia;
 	public LocalTime duracion;
 	
+	public static void borrarConexion(Conexion c) {
+		
+		//Comunicar DAO eliminacion
+	}
+	
 	public void eliminar() {
+		borrarConexion(this);
 		e1=null;
 		e2=null;
-		linea.quitar(this); //TODO
-		habilitado=false;
 	}
 	
 	public Conexion(Estacion a, Estacion b, Linea l) {
@@ -28,14 +31,8 @@ public class Conexion {
 		return linea.color;
 	}
 	
-	public void deshabilitar() {
-		this.habilitado=false;
-	}
-	public void habilitar() {
-		this.habilitado=true;
-	}
 	public Boolean habilitado() {
-		return this.habilitado;
+		return this.linea.activo() && this.e1.enMantenimiento() && this.e2.enMantenimiento(); 
 	}
 	
 	
