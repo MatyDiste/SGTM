@@ -51,7 +51,9 @@ public class Estacion implements Comparable<Estacion>{
 				.toList();
 	}
 	
-	
+	public Estacion() {
+		
+	}
 	
 	public List<Estacion> subgrafoInmediato() {
 		return this.listConexiones.stream()
@@ -68,12 +70,12 @@ public class Estacion implements Comparable<Estacion>{
 	
 	public Short id;
 	public String nombre;
-	public Integer pagerank; //?
-	public Double pesoTotal; //?
+	public Integer pagerank = 1; //?
+	public Double pesoTotal = 0.0; //?
 	public LocalTime horarioApertura;
 	public LocalTime horarioCierre;
 	public java.util.Date fechaUltimoMantenimiento; //Por default, el ultimo mantenimiento es su dia de ingreso
-	public Boolean mantenimiento;
+	public Boolean mantenimiento = false;
 	public HashSet<Conexion> listConexiones=new HashSet<Conexion>();
 	
 	
