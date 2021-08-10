@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+enum EstadoLinea {
+	ACTIVA, INACTIVA
+}
+
 public class Linea implements Comparable<Linea>{
 	//TODO NO TERMINADO!
 	public static HashSet<Linea> listaLineas=new HashSet<Linea>();
@@ -28,23 +32,23 @@ public class Linea implements Comparable<Linea>{
 	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
 	public String nombre;
 	public Color color;
-	private Boolean activo=true;
+	private EstadoLinea estado;
 	
-	public Linea(String nombre, Color color, Boolean activo) {
+	public Linea(String nombre, Color color, EstadoLinea estado) {
 		this.nombre = nombre;
 		this.color = color;
-		this.activo = activo;
+		this.estado = estado;
 	}
 
-	public Boolean activo() {
-		return activo;
+	public String estado() {
+		return estado.name();
 	}
 	public void activar() {
-		this.activo=true;
+		this.estado=EstadoLinea.ACTIVA;
 		//TODO Fijarse que las conexiones actualicen bien sus colores
 	}
 	public void inactivar() {
-		this.activo=false;
+		this.estado=EstadoLinea.INACTIVA;
 		//TODO lo mismo que activar()
 	}
 	public int compareTo(Linea l) {

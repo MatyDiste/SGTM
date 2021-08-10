@@ -1,10 +1,13 @@
 package objetos;
 
-import java.sql.Date;
-import java.time.Instant;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
+
+enum EstadoEstacion {
+	OPERATIVA, EN_MANTENIMIENTO
+}
 
 public class Estacion implements Comparable<Estacion>{
 	
@@ -30,35 +33,39 @@ public class Estacion implements Comparable<Estacion>{
 		return listaEstaciones
 				.stream()
 				.filter( (e) -> e.getID()==id)
-				.toList();
+				.collect(Collectors.toList());
 	}
 	public static List<Estacion> buscarNombre(String name){
 		return listaEstaciones
 				.stream()
 				.filter( (e) -> e.getNombre().equals(name))
-				.toList();
+				.collect(Collectors.toList());
 	}
 	public static List<Estacion> buscarHorarioApertura(LocalTime lt){
 		return listaEstaciones
 				.stream()
 				.filter( (e) -> e.getHorarioApertura().equals(lt))
-				.toList();
+				.collect(Collectors.toList());
 	}
 	public static List<Estacion> buscarHorarioCierre(LocalTime lt){
 		return listaEstaciones
 				.stream()
 				.filter( (e) -> e.getHorarioCierre().equals(lt))
-				.toList();
+				.collect(Collectors.toList());
 	}
 	
-	public Estacion() {
-		
+	public Estacion(Short id, String nombre, LocalTime horarioApertura, LocalTime horarioCierre, EstadoEstacion estado) {
+		this.id=id;
+		this.nombre=nombre;
+		this.horarioApertura=horarioApertura;
+		this.horarioCierre=horarioCierre;
+		this.estado=estado;
 	}
 	
 	public List<Estacion> subgrafoInmediato() {
 		return this.listConexiones.stream()
 						          .map(c -> c.e2)
-						          .toList();
+						          .collect(Collectors.toList());
 	}
 	
 	
@@ -70,14 +77,13 @@ public class Estacion implements Comparable<Estacion>{
 	
 	public Short id;
 	public String nombre;
-	public Integer pagerank = 1; //?
-	public Double pesoTotal = 0.0; //?
 	public LocalTime horarioApertura;
 	public LocalTime horarioCierre;
+	public EstadoEstacion estado;
 	public java.util.Date fechaUltimoMantenimiento; //Por default, el ultimo mantenimiento es su dia de ingreso
-	public Boolean mantenimiento = false;
 	public HashSet<Conexion> listConexiones=new HashSet<Conexion>();
-	
+	public Integer pagerank = 1; //?
+	public Double pesoTotal = 0.0; //?
 	
 	
 	public Short getID() {
@@ -92,9 +98,6 @@ public class Estacion implements Comparable<Estacion>{
 	public LocalTime getHorarioCierre() {
 		return horarioCierre;
 	}
-	public Boolean enMantenimiento() {
-		return mantenimiento;
-	}
 	
 	public void setNombre(String nuevo) {
 		nombre=nuevo;
@@ -104,9 +107,6 @@ public class Estacion implements Comparable<Estacion>{
 	}
 	public void setHorarioCierre(LocalTime lt) {
 		horarioCierre=lt;
-	}
-	public void setMantenimiento(Boolean enMante) {
-		mantenimiento=enMante;
 	}
 	
 	/*

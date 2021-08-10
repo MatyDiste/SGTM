@@ -3,19 +3,25 @@ package objetos;
 import java.awt.Color;
 import java.time.LocalTime;
 
+enum EstadoConexion {
+	ACTIVA, INACTIVA
+}
+
 public class Conexion {
 	
 	public Estacion e1, e2;
-	public Linea linea;
-	private Boolean habilitado=true;
 	public Double distancia;
 	public LocalTime duracion;
+	private Integer cantMaxPasajeros;
+	private EstadoConexion estado;
+	private Double costo;
+	public Linea linea;
 	
 	public void eliminar() {
 		e1=null;
 		e2=null;
 		linea.quitar(this); //TODO
-		habilitado=false;
+		this.deshabilitar();
 	}
 	
 	public Conexion(Estacion a, Estacion b, Linea l) {
@@ -29,13 +35,13 @@ public class Conexion {
 	}
 	
 	public void deshabilitar() {
-		this.habilitado=false;
+		this.estado=EstadoConexion.INACTIVA;
 	}
 	public void habilitar() {
-		this.habilitado=true;
+		this.estado=EstadoConexion.ACTIVA;
 	}
-	public Boolean habilitado() {
-		return this.habilitado;
+	public String estado() {
+		return this.estado.name();
 	}
 	
 	
