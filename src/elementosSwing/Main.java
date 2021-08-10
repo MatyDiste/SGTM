@@ -14,7 +14,7 @@ public class Main {
 	public static void main(String args[]) {
 		FlatNightOwlContrastIJTheme.install();
 		FlatInspector.install( "ctrl shift alt T" ); //Con CTRL+SHIFT+ALT+T se activa el modo inspector, ESC para salir
-		JFrame vnt=new Home("Sistema de Gestion de Transporte Multimodal");
+		JFrame vnt=new Home("Sistema de gestion de Transporte Multimodal");
 	}
 	
 	public static void setModoAdmin(Boolean b) {
@@ -23,7 +23,7 @@ public class Main {
 	}
 	
 	public static void openMainWindow() {
-		MainWindow mw= new MainWindow("Sistema Gestion de Transporte Multimodal", modoAdmin);
+		MainWindow mw= new MainWindow("Sistema gestion de Transporte Multimodal");
 	}
 	
 }
