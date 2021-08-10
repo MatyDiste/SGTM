@@ -1,6 +1,7 @@
 package objetos;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,9 +21,6 @@ public class Estacion implements Comparable<Estacion>{
 		return listaEstaciones.remove(e);
 		//TODO Comunicar DAO la eliminacion de e
 	}
-	
-	public static final Boolean EN_MANTENIMIENTO=true;
-	public static final Boolean OPERATIVA=false;
 	/*
 	 * TODO
 	 * Comunicarse con EstacionDAO para cargar todas las estaciones (método estático)
@@ -32,7 +30,7 @@ public class Estacion implements Comparable<Estacion>{
 	public static List<Estacion> buscarID(short id){
 		return listaEstaciones
 				.stream()
-				.filter( (e) -> e.getID()==id)
+				.filter( (e) -> e.getId()==id)
 				.collect(Collectors.toList());
 	}
 	public static List<Estacion> buscarNombre(String name){
@@ -60,12 +58,14 @@ public class Estacion implements Comparable<Estacion>{
 		this.horarioApertura=horarioApertura;
 		this.horarioCierre=horarioCierre;
 		this.estado=estado;
+		listaEstaciones.add(this);
 	}
 	
 	public List<Estacion> subgrafoInmediato() {
 		return this.listConexiones.stream()
-						          .map(c -> c.e2)
-						          .collect(Collectors.toList());
+				  .filter((c) -> c.getE1().equals(this))
+		          .map(c -> c.getE2())
+		          .collect(Collectors.toList());
 	}
 	
 	
@@ -75,38 +75,87 @@ public class Estacion implements Comparable<Estacion>{
 	 * Notar que no hay setID(), esto es porque no debe ser posible cambiar el ID, ya que esto va a ser PK en la BD
 	 */
 	
-	public Short id;
-	public String nombre;
-	public LocalTime horarioApertura;
-	public LocalTime horarioCierre;
-	public EstadoEstacion estado;
-	public java.util.Date fechaUltimoMantenimiento; //Por default, el ultimo mantenimiento es su dia de ingreso
-	public HashSet<Conexion> listConexiones=new HashSet<Conexion>();
-	public Integer pagerank = 1; //?
-	public Double pesoTotal = 0.0; //?
+	private Short id;
+	private String nombre;
+	private LocalTime horarioApertura;
+	private LocalTime horarioCierre;
+	private EstadoEstacion estado;
+	private java.util.Date fechaUltimoMantenimiento; //Por default, el ultimo mantenimiento es su dia de ingreso
+	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
+	private Double pagerank = 1.0; //?
+	private Double pesoTotal = 0.0; //?
+	private ArrayList<Mantenimiento> listaMantenimientos;
 	
+	//METODOS GETTERS AND SETTERS
 	
-	public Short getID() {
+	public Short getId() {
 		return id;
+	}
+	public void setId(Short id) {
+		this.id = id;
 	}
 	public String getNombre() {
 		return nombre;
 	}
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
 	public LocalTime getHorarioApertura() {
 		return horarioApertura;
+	}
+	public void setHorarioApertura(LocalTime horarioApertura) {
+		this.horarioApertura = horarioApertura;
 	}
 	public LocalTime getHorarioCierre() {
 		return horarioCierre;
 	}
-	
-	public void setNombre(String nuevo) {
-		nombre=nuevo;
+	public void setHorarioCierre(LocalTime horarioCierre) {
+		this.horarioCierre = horarioCierre;
 	}
-	public void setHorarioApertura(LocalTime lt) {
-		horarioApertura=lt;
+	public String getEstado() {
+		return estado.name();
 	}
-	public void setHorarioCierre(LocalTime lt) {
-		horarioCierre=lt;
+	public void setMantenimiento(String descripcion) {
+		this.estado = EstadoEstacion.EN_MANTENIMIENTO;
+		listaMantenimientos.add(new Mantenimiento(descripcion));
+	}
+	public void setMantenimiento() {
+		this.estado = EstadoEstacion.EN_MANTENIMIENTO;
+		listaMantenimientos.add(new Mantenimiento());
+	}
+	public void setOperativa(String descripcion) {
+		Mantenimiento ultimoMantenimiento = listaMantenimientos.get(listaMantenimientos.size()-1);
+		ultimoMantenimiento.finMantenimiento(descripcion);
+		this.estado = EstadoEstacion.OPERATIVA;
+	}
+	public void setOperativa() {
+		Mantenimiento ultimoMantenimiento = listaMantenimientos.get(listaMantenimientos.size()-1);
+		ultimoMantenimiento.finMantenimiento();
+		this.estado = EstadoEstacion.OPERATIVA;
+	}
+	public java.util.Date getFechaUltimoMantenimiento() {
+		return fechaUltimoMantenimiento;
+	}
+	public void setFechaUltimoMantenimiento(java.util.Date fechaUltimoMantenimiento) {
+		this.fechaUltimoMantenimiento = fechaUltimoMantenimiento;
+	}
+	public HashSet<Conexion> getListConexiones() {
+		return listConexiones;
+	}
+	public void setListConexiones(HashSet<Conexion> listConexiones) {
+		this.listConexiones = listConexiones;
+	}
+	public Double getPagerank() {
+		return pagerank;
+	}
+	public void setPagerank(Double pagerank) {
+		this.pagerank = pagerank;
+	}
+	public Double getPesoTotal() {
+		return pesoTotal;
+	}
+	public void setPesoTotal(Double pesoTotal) {
+		this.pesoTotal = pesoTotal;
 	}
 	
 	/*
