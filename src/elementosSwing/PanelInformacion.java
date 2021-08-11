@@ -36,8 +36,7 @@ public class PanelInformacion extends JPanel {
 		this.setVisible(true);
 		
 		//jpanel titulo
-		titulo=new JPanel();
-		titulo.setLayout(new BoxLayout(titulo, BoxLayout.LINE_AXIS));
+		titulo=new JPanelBoxFactory(false);
 		titulo.setAlignmentX(LEFT_ALIGNMENT);
 		titulo.setAlignmentY(CENTER_ALIGNMENT);
 		JLabel textInformacion= new JLabel(" Información");
@@ -58,8 +57,7 @@ public class PanelInformacion extends JPanel {
 		this.add(info);
 		
 		//jpanel aniadir
-		aniadir=new JPanel();
-		aniadir.setLayout(new BoxLayout(aniadir, BoxLayout.LINE_AXIS));
+		aniadir=new JPanelBoxFactory(false);
 		FlatButton btnAniadir=new FlatButton();
 		FlatButton btnAniadirE=new FlatButton();
 		FlatButton btnAniadirL=new FlatButton();
@@ -91,8 +89,7 @@ public class PanelInformacion extends JPanel {
 	}
 	
 	private void genLabelTipo() {
-		tipo=new JPanel();
-		tipo.setLayout(new BoxLayout(tipo, BoxLayout.LINE_AXIS));
+		tipo=new JPanelBoxFactory(false);
 		tipo.setAlignmentX(LEFT_ALIGNMENT);
 		tipo.setAlignmentY(CENTER_ALIGNMENT);
 		JLabel textTipo= new JLabel("No seleccionado");
@@ -118,22 +115,21 @@ public class PanelInformacion extends JPanel {
 	}
 	
 	private void genLabelInfo() {
-		info = new JPanel();
-		info.setLayout(new BoxLayout(info, BoxLayout.PAGE_AXIS));
+		info = new JPanelBoxFactory(true);
 		switch(tipoSeleccionado) {
 		case 1:
-			info.add(new TextFieldFactory("ID                        ", edit));
-			info.add(new TextFieldFactory("Nombre                    ", edit));
-			info.add(new TextFieldFactory("Horario apertura          ", edit));
-			info.add(new TextFieldFactory("Horario cierre            ", edit));
-			info.add(new TextFieldFactory("Estado                    ", edit));
-			info.add(new TextFieldFactory("Fecha último mantenimiento", edit));
+			info.add(new MiTextFieldFactory(estacion.getID().toString(), edit));
+			info.add(new MiTextFieldFactory(estacion.getNombre(), edit));
+			info.add(new MiTextFieldFactory(estacion.getHorarioApertura().toString(), edit));
+			info.add(new MiTextFieldFactory(estacion.getHorarioCierre().toString(), edit));
+			info.add(new MiTextFieldFactory("Estado                    ", edit));
+			info.add(new MiTextFieldFactory("Fecha último mantenimiento", edit));
 			
 			break;
 		case 2:
-			info.add(new TextFieldFactory("Nombre  ", edit));
-			info.add(new TextFieldFactory("Color   ", edit));
-			info.add(new TextFieldFactory("Activo  ", edit));
+			info.add(new MiTextFieldFactory("Nombre  ", edit));
+			info.add(new MiTextFieldFactory("Color   ", edit));
+			info.add(new MiTextFieldFactory("Activo  ", edit));
 			break;
 		default:
 			info.add(Box.createRigidArea(new Dimension(300, 180)));
@@ -174,14 +170,5 @@ public class PanelInformacion extends JPanel {
 	}
 }
 
-class TextFieldFactory extends JTextField{
-	public TextFieldFactory(String label, Boolean editar) {
-		super(label);
-		this.setEditable(editar);
-		this.setAlignmentX(LEFT_ALIGNMENT);
-		this.setAlignmentY(CENTER_ALIGNMENT);
-		this.setEnabled(editar);
-		this.setPreferredSize(new Dimension(280,22));
-	}
-}
+
 

@@ -38,6 +38,7 @@ class MiTableModelEstacion extends AbstractTableModel{
 		case 3: return "Hora Cierre";
 		case 4: return "Estado";
 		case 5: return "Ultimo Mantenimiento";
+		case 6: return "Page rank";
 		default: return "ERROR";
 		}
 	}
@@ -49,7 +50,7 @@ class MiTableModelEstacion extends AbstractTableModel{
 
 	@Override
 	public int getColumnCount() {
-		return 6;
+		return 7;
 	}
 
 	@Override
@@ -61,6 +62,7 @@ class MiTableModelEstacion extends AbstractTableModel{
 		case 3: return listEst.get(rowIndex).horarioCierre;
 		case 4: if(listEst.get(rowIndex).mantenimiento) return "En mantenimiento"; else return "Activo";
 		case 5: return listEst.get(rowIndex).fechaUltimoMantenimiento;
+		case 6: return listEst.get(rowIndex).pagerank;
 		default: return "ERROR";
 		}
 	}
