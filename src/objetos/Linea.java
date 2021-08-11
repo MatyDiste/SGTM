@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+enum EstadoLinea {
+	ACTIVA, INACTIVA
+}
+
 public class Linea implements Comparable<Linea>{
 	//TODO NO TERMINADO!
 	public static HashSet<Linea> listLineas=new HashSet<Linea>();
@@ -15,40 +19,64 @@ public class Linea implements Comparable<Linea>{
 	
 	private List<Estacion> listEstaciones=new ArrayList<Estacion>();
 	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
-	public String nombre;
-	public Color color;
-	private Boolean activo=true;
+	private String nombre;
+	private Color color;
+	private EstadoLinea estado;
 	
-	public Linea(String nombre, Color color, Boolean activo) {
+	public Linea(String nombre, Color color, EstadoLinea estado) {
 		this.nombre = nombre;
 		this.color = color;
-		this.activo = activo;
-		listLineas.add(this);
+		this.estado = estado;
 	}
 	
-	public Boolean activo() {
-		return activo;
+	//METODOS GETTERS AND SETTERS
+
+	public static HashSet<Linea> getListaLineas() {
+		return listaLineas;
+	}
+	public static void setListaLineas(HashSet<Linea> listaLineas) {
+		Linea.listaLineas = listaLineas;
+	}
+	public List<Estacion> getListEstaciones() {
+		return listEstaciones;
+	}
+	public void setListEstaciones(List<Estacion> listEstaciones) {
+		this.listEstaciones = listEstaciones;
+	}
+	public HashSet<Conexion> getListConexiones() {
+		return listConexiones;
+	}
+	public void setListConexiones(HashSet<Conexion> listConexiones) {
+		this.listConexiones = listConexiones;
+	}
+	public String getNombre() {
+		return nombre;
+	}
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+	public Color getColor() {
+		return color;
+	}
+	public void setColor(Color color) {
+		this.color = color;
+	}
+	public String estado() {
+		return estado.name();
 	}
 	public void activar() {
-		this.activo=true;
+		this.estado=EstadoLinea.ACTIVA;
 		//TODO Fijarse que las conexiones actualicen bien sus colores
 	}
 	public void inactivar() {
-		this.activo=false;
+		this.estado=EstadoLinea.INACTIVA;
 		//TODO lo mismo que activar()
 	}
+	
+	//METODOS A IMPLEMENTAR
+	
 	public int compareTo(Linea l) {
 		//???? Ni idea xd
 		return 0;
 	}
-	public void setRecorrido(List<Estacion> ordenEstaciones) {
-		this.listEstaciones=ordenEstaciones;
-		
-	}
-	public void setConexiones(HashSet<Conexion> conex) {
-		this.listConexiones=conex;
-		
-	}
-	
-	
 }
