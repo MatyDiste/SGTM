@@ -1,6 +1,7 @@
 package elementosSwing;
 
 import java.awt.Container;
+import java.awt.Dimension;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;

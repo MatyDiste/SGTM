@@ -36,7 +36,7 @@ public class PanelGrafo extends JPanel {
 		listEstaciones.stream()
 					  .forEach(e -> {
 						  Estacion2D e2=listEstaciones.stream().filter(aux -> !aux.equals(e)).findAny().get();
-						  Flecha f=new Flecha(e, e2, new Color((int) (Math.random()*Integer.MAX_VALUE-1)));
+						  Flecha f=new Flecha(e, e2, -);
 						  listFlechas.add(f);
 						  e.addSalida(f);
 						  e2.addLlegada(f);

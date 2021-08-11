@@ -9,6 +9,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Path2D;
 
 import objetos.Conexion;
+import objetos.Estacion;
 import objetos.Linea;
 
 
@@ -40,7 +41,8 @@ public class Flecha {
 	
 	private BasicStroke getStroke() {
 		Integer size=selected? SELECTEDWIDTH : UNSELECTEDWIDTH;
-		return conect.estado().equals("ACTIVA")? new BasicStroke(size) : new BasicStroke(size, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1f, dash, dashPhase); 
+		//return conect.estado().equals("ACTIVA")? new BasicStroke(size) : new BasicStroke(size, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1f, dash, dashPhase); 
+		return new BasicStroke(size);
 	}
 	
 	public void updateTransform() {
@@ -163,10 +165,10 @@ public class Flecha {
 		updateCurva();
 	}
 	
-	public Flecha(Estacion2D e1, Estacion2D e2, Conexion c) {
+	public Flecha(Estacion a, Estacion b, Conexion c) {
 	//public Flecha(Estacion2D e1, Estacion2D e2, Conexion con) {
-		this.e1=e1;
-		this.e2=e2;
+		this.e1=a.getE2d();
+		this.e2=b.getE2d();
 		this.color=c.getColor();
 		//this.conect=con;
 		//this.color=conect.getColor();
@@ -176,9 +178,14 @@ public class Flecha {
 		this.mayorAngulo=Math.random()<0.5;
 		this.anguloOffseted= mayorAngulo? Math.random()*25 +20 : Math.random()*(-25) -20;
 		this.anguloOffseted=Math.toRadians(anguloOffseted);
+		
+		e1.addSalida(this);
+		e2.addLlegada(this);
+		System.out.println("Añadida flecha");
 	}
 	
 	public void dibujar(Graphics2D g) {
+		System.out.println("Mostrando flecha");
 		g2d=g;
 		rst=g2d.getTransform();
 		updateCoord();

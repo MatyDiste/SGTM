@@ -2,6 +2,7 @@ package elementosSwing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 
@@ -44,8 +45,8 @@ public class FrameAniadirLinea extends JFrame {
 		
 		//tNombre y nombreTF
 		JPanel jp=new JPanelBoxFactory(false);
-		tNombre.setAlignmentX(LEFT_ALIGNMENT);
-		nombreTF.setAlignmentX(LEFT_ALIGNMENT);
+		tNombre.setAlignmentX(Component.LEFT_ALIGNMENT);
+		nombreTF.setAlignmentX(Component.LEFT_ALIGNMENT);
 		jp.add(tNombre);
 		jp.add(nombreTF);
 		this.add(jp);
@@ -97,8 +98,8 @@ public class FrameAniadirLinea extends JFrame {
 		aceptar.setMaximumSize(new Dimension(100,25));
 		aceptar.setText("Aceptar");
 		cancelar.setText("Cancelar");
-		cancelar.setAlignmentX(RIGHT_ALIGNMENT);
-		aceptar.setAlignmentX(RIGHT_ALIGNMENT);
+		cancelar.setAlignmentX(Component.RIGHT_ALIGNMENT);
+		aceptar.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		jplast.add(cancelar);
 		jplast.add(aceptar);
 		cancelar.addActionListener(e -> {

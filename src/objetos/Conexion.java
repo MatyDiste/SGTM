@@ -3,6 +3,8 @@ package objetos;
 import java.awt.Color;
 import java.time.LocalTime;
 
+import elementosSwing.grafo2D.Flecha;
+
 enum EstadoConexion {
 	ACTIVA, INACTIVA
 };
@@ -21,6 +23,9 @@ public class Conexion {
 		e1=a;
 		e2=b;
 		linea=l;
+		estado=l.estado().equals("ACTIVA")? EstadoConexion.ACTIVA : EstadoConexion.INACTIVA;
+		Flecha f=new Flecha(a, b, this);
+		System.out.println("Creada conexion");
 	}
 	
 	public void eliminar() {

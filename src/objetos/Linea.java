@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import elementosSwing.grafo2D.Flecha;
+
 enum EstadoLinea {
 	ACTIVA, INACTIVA
 }
@@ -28,6 +30,7 @@ public class Linea implements Comparable<Linea>{
 		this.nombre = nombre;
 		this.color = color;
 		this.estado = (estado)? EstadoLinea.ACTIVA : EstadoLinea.INACTIVA;
+		listLineas.add(this);
 	}
 	
 	//METODOS GETTERS AND SETTERS
