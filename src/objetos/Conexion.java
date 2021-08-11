@@ -37,7 +37,7 @@ public class Conexion {
 	
 	
 }
-=======
+
 package objetos;
 
 import java.awt.Color;
