@@ -40,7 +40,7 @@ public class Flecha {
 	
 	private BasicStroke getStroke() {
 		Integer size=selected? SELECTEDWIDTH : UNSELECTEDWIDTH;
-		return conect.habilitado()? new BasicStroke(size) : new BasicStroke(size, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1f, dash, dashPhase); 
+		return conect.estado().equals("ACTIVA")? new BasicStroke(size) : new BasicStroke(size, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1f, dash, dashPhase); 
 	}
 	
 	public void updateTransform() {
@@ -163,14 +163,14 @@ public class Flecha {
 		updateCurva();
 	}
 	
-	public Flecha(Estacion2D e1, Estacion2D e2, Color c) {
+	public Flecha(Estacion2D e1, Estacion2D e2, Conexion c) {
 	//public Flecha(Estacion2D e1, Estacion2D e2, Conexion con) {
 		this.e1=e1;
 		this.e2=e2;
-		this.color=c;
+		this.color=c.getColor();
 		//this.conect=con;
 		//this.color=conect.getColor();
-		this.conect=new Conexion(e1, e2, new Linea("xd", c, Math.random()<0.7)); //DEBUG
+		this.conect=c;
 		
 		
 		this.mayorAngulo=Math.random()<0.5;

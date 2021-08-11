@@ -1,16 +1,14 @@
 package elementosSwing;
 
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridBagLayout;
+import java.awt.Graphics;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import com.formdev.flatlaf.extras.components.FlatButton;
 import com.formdev.flatlaf.extras.components.FlatButton.ButtonType;
@@ -19,7 +17,8 @@ import objetos.Estacion;
 import objetos.Linea;
 
 public class PanelInformacion extends JPanel {
-
+	private static PanelInformacion panel;
+	
 	private JPanel titulo, tipo, info, aniadir, editar, eliminar;
 	private Short tipoSeleccionado=VACIO;
 	private Boolean edit=false;
@@ -30,21 +29,22 @@ public class PanelInformacion extends JPanel {
 	public static final Short ESTACION=1;
 	public static final Short LINEA=2;
 	
-	public PanelInformacion(Container c) {
+	public PanelInformacion() {
 		super();
-		this.setLayout(new BoxLayout(c, BoxLayout.PAGE_AXIS));
+		panel=this;
+		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		this.setPreferredSize(new Dimension(400,600));
+		this.setMinimumSize(new Dimension(400,600));
 		this.setVisible(true);
 		
 		//jpanel titulo
 		titulo=new JPanelBoxFactory(false);
 		titulo.setAlignmentX(LEFT_ALIGNMENT);
-		titulo.setAlignmentY(CENTER_ALIGNMENT);
 		JLabel textInformacion= new JLabel(" Información");
 		textInformacion.setFont(new Font(null, Font.BOLD, 18));
 		textInformacion.setIcon(new ImageIcon("./assets/info_icon.png"));
 		textInformacion.setIconTextGap(10);
 		textInformacion.setAlignmentX(LEFT_ALIGNMENT);
-		textInformacion.setAlignmentY(CENTER_ALIGNMENT);
 		titulo.add(textInformacion);
 		this.add(titulo);
 		
@@ -78,12 +78,14 @@ public class PanelInformacion extends JPanel {
 			btnAniadirL.setVisible(!btnAniadirL.isVisible());
 		});
 		btnAniadirE.addActionListener(e -> {
-			setEstacion(popupAniadirEstacion());
+			new FrameAniadirEstacion(this);
 		});
 		btnAniadirL.addActionListener(e -> {
-			setLinea(popupAniadirLinea());
+			new FrameAniadirLinea(this);
 		});
-		
+		this.add(btnAniadir);
+		this.add(btnAniadirE);
+		this.add(btnAniadirL);
 		
 		
 	}
@@ -118,18 +120,18 @@ public class PanelInformacion extends JPanel {
 		info = new JPanelBoxFactory(true);
 		switch(tipoSeleccionado) {
 		case 1:
-			info.add(new MiTextFieldFactory(estacion.getID().toString(), edit));
+			info.add(new MiTextFieldFactory(estacion.getId().toString(), edit));
 			info.add(new MiTextFieldFactory(estacion.getNombre(), edit));
 			info.add(new MiTextFieldFactory(estacion.getHorarioApertura().toString(), edit));
 			info.add(new MiTextFieldFactory(estacion.getHorarioCierre().toString(), edit));
-			info.add(new MiTextFieldFactory("Estado                    ", edit));
-			info.add(new MiTextFieldFactory("Fecha último mantenimiento", edit));
+			info.add(new MiTextFieldFactory(estacion.getEstado(), edit));
+			info.add(new MiTextFieldFactory(estacion.getFechaUltimoMantenimiento().toString(), edit));
 			
 			break;
 		case 2:
-			info.add(new MiTextFieldFactory("Nombre  ", edit));
-			info.add(new MiTextFieldFactory("Color   ", edit));
-			info.add(new MiTextFieldFactory("Activo  ", edit));
+			info.add(new MiTextFieldFactory(linea.getNombre(), edit));
+			info.add(new MiTextFieldFactory(linea.getColor().toString(), edit));
+			info.add(new MiTextFieldFactory(linea.estado(), edit));
 			break;
 		default:
 			info.add(Box.createRigidArea(new Dimension(300, 180)));
@@ -138,36 +140,42 @@ public class PanelInformacion extends JPanel {
 		
 	}
 	
-	public void setLinea(Linea l) {
+	public static void setLinea(Linea l) {
 		
-		tipoSeleccionado=LINEA;
-		linea=l;
-		estacion=null;
+		panel.tipoSeleccionado=LINEA;
+		panel.linea=l;
+		panel.estacion=null;
+		panel.genLabelTipo();
+		panel.genLabelInfo();
+		panel.repaint();
+	}
+	public static void setEstacion(Estacion e) {
+		
+		panel.tipoSeleccionado=ESTACION;
+		panel.estacion=e;
+		panel.linea=null;
+		panel.genLabelTipo();
+		panel.genLabelInfo();
+		panel.repaint();
+	}
+	public static void setVacio() {
+		
+		panel.linea=null;
+		panel.estacion=null;
+		panel.tipoSeleccionado=VACIO;
+		panel.genLabelTipo();
+		panel.genLabelInfo();
+		panel.repaint();
+	}
+	
+	protected void paintComponent(Graphics g) {
 		genLabelTipo();
 		genLabelInfo();
-	}
-	public void setEstacion(Estacion e) {
 		
-		tipoSeleccionado=ESTACION;
-		estacion=e;
-		linea=null;
-		genLabelTipo();
-		genLabelInfo();
+		super.paintComponent(g);
 	}
-	public void setVacio() {
-		
-		linea=null;
-		estacion=null;
-		tipoSeleccionado=VACIO;
-		genLabelTipo();
-		genLabelInfo();
-	}
-	private Linea popupAniadirLinea() {
-		
-	}
-	private Estacion popupAniadirEstacion() {
-		
-	}
+	
+	
 }
 
 
