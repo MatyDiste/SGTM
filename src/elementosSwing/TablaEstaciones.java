@@ -1,14 +1,12 @@
 package elementosSwing;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
 import objetos.Estacion;
-import objetos.Linea;
 
 public class TablaEstaciones extends JTable {
 	
@@ -20,12 +18,9 @@ public class TablaEstaciones extends JTable {
 }
 
 class MiTableModelEstacion extends AbstractTableModel{
-
-	private List<Estacion> listEst=new ArrayList<Estacion>();
 	
 	public MiTableModelEstacion() {
 		super();
-		listEst.addAll(Estacion.listEstaciones.stream().toList());
 	}
 	
 	
@@ -55,14 +50,16 @@ class MiTableModelEstacion extends AbstractTableModel{
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
+		List<Estacion> listEst=new ArrayList<Estacion>();
+		listEst.addAll(Estacion.listEstaciones.stream().toList());
 		switch(columnIndex) {
-		case 0: return listEst.get(rowIndex).id;
-		case 1: return listEst.get(rowIndex).nombre;
-		case 2: return listEst.get(rowIndex).horarioApertura;
-		case 3: return listEst.get(rowIndex).horarioCierre;
-		case 4: if(listEst.get(rowIndex).mantenimiento) return "En mantenimiento"; else return "Activo";
-		case 5: return listEst.get(rowIndex).fechaUltimoMantenimiento;
-		case 6: return listEst.get(rowIndex).pagerank;
+		case 0: return listEst.get(rowIndex).getId();
+		case 1: return listEst.get(rowIndex).getNombre();
+		case 2: return listEst.get(rowIndex).getHorarioApertura();
+		case 3: return listEst.get(rowIndex).getHorarioCierre();
+		case 4: if(!listEst.get(rowIndex).getEstado().equals("OPERATIVA")) return "En mantenimiento"; else return "Activo";
+		case 5: return listEst.get(rowIndex).getFechaUltimoMantenimiento();
+		case 6: return listEst.get(rowIndex).getPagerank();
 		default: return "ERROR";
 		}
 	}

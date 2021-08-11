@@ -9,6 +9,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 
+import objetos.Estacion;
+
 
 public class Estacion2D {
 	
@@ -16,6 +18,7 @@ public class Estacion2D {
 	public static Integer SELECTEDSTROKE=5;
 	public static Double RADIO=25d;
 	
+	public Estacion e;
 	public ArrayList<Flecha> listFlechasSalida=new ArrayList<Flecha>();
 	public ArrayList<Flecha> listFlechasLlegada=new ArrayList<Flecha>();
 	public Boolean selected=false;
@@ -27,14 +30,15 @@ public class Estacion2D {
 	public Graphics2D g2d;
 	
 	
-	public Estacion2D(String name, Double posx, Double posy) {
+	public Estacion2D(Estacion estacion) {
 		circulo= new Ellipse2D.Double(0, 0, RADIO*2, RADIO*2);
+		e=estacion;
 		//radio=radius;
-		centrox= posx+RADIO;
-		centroy= posy+RADIO;
-		this.posx=posx;
-		this.posy=posy;
-		nombre=name;
+		centrox= e.posx+RADIO;
+		centroy= e.posy+RADIO;
+		this.posx=e.posx;
+		this.posy=e.posy;
+		nombre=e.getNombre();
 		
 	}
 	
@@ -95,6 +99,8 @@ public class Estacion2D {
 		centroy=y;
 		posx=x-RADIO;
 		posy=y-RADIO;
+		e.posx=x-RADIO;
+		e.posy=y-RADIO;
 		//dibujarFlechas();
 		//this.dibujar(g2d);
 		

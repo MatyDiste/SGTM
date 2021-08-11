@@ -1,13 +1,11 @@
 package elementosSwing;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 
-import objetos.Estacion;
 import objetos.Linea;
 
 public class TablaLineas extends JTable {
@@ -52,9 +50,9 @@ class MiTableModelLinea extends AbstractTableModel{
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		switch(columnIndex) {
-		case 0: return listLinea.get(rowIndex).nombre;
-		case 1: return listLinea.get(rowIndex).color;
-		case 2: return listLinea.get(rowIndex).activo();
+		case 0: return listLinea.get(rowIndex).getNombre();
+		case 1: return listLinea.get(rowIndex).getColor().toString();
+		case 2: return listLinea.get(rowIndex).estado();
 		default: return "ERROR";
 		}
 	}

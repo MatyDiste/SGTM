@@ -1,5 +1,6 @@
 package elementosSwing;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -14,6 +15,7 @@ import javax.swing.SwingConstants;
 
 import com.formdev.flatlaf.extras.components.FlatButton;
 
+import elementosSwing.grafo2D.PanelGrafo;
 import objetos.Linea;
 
 public class FrameAniadirLinea extends JFrame {
@@ -34,7 +36,7 @@ public class FrameAniadirLinea extends JFrame {
 	public FrameAniadirLinea(PanelInformacion p) {
 		super("Añadir nueva línea");
 		pinfo=p;
-		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
 		
 		//textTop
 		textTop.setFont(new Font(null, Font.PLAIN, 16));
@@ -42,6 +44,8 @@ public class FrameAniadirLinea extends JFrame {
 		
 		//tNombre y nombreTF
 		JPanel jp=new JPanelBoxFactory(false);
+		tNombre.setAlignmentX(LEFT_ALIGNMENT);
+		nombreTF.setAlignmentX(LEFT_ALIGNMENT);
 		jp.add(tNombre);
 		jp.add(nombreTF);
 		this.add(jp);
@@ -55,9 +59,16 @@ public class FrameAniadirLinea extends JFrame {
 			JColorChooser jcc=new JColorChooser();
 			FlatButton can=new FlatButton();
 			FlatButton ac=new FlatButton();
-			frameColor.setLayout(new BoxLayout(frameColor, BoxLayout.PAGE_AXIS));
+			frameColor.setLayout(new BorderLayout());
+			frameColor.setBounds(50,50,600,500);
 			ac.setText("Aceptar");
 			can.setText("Cancelar");
+			ac.setPreferredSize(new Dimension(100,25));
+			ac.setMinimumSize(new Dimension(100,25));
+			ac.setMaximumSize(new Dimension(100,25));
+			can.setPreferredSize(new Dimension(100,25));
+			can.setMinimumSize(new Dimension(100,25));
+			can.setMaximumSize(new Dimension(100,25));
 			ac.addActionListener(d -> {
 				color=jcc.getColor();
 				frameColor.dispose();
@@ -67,29 +78,42 @@ public class FrameAniadirLinea extends JFrame {
 			});
 			frameColor.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 			
-			frameColor.add(jcc);
-			frameColor.add(can);
-			frameColor.add(ac);
-			frameColor.pack();
+			frameColor.add(jcc, BorderLayout.NORTH);
+			frameColor.add(can, BorderLayout.EAST);
+			frameColor.add(ac,  BorderLayout.CENTER);
 			frameColor.setVisible(true);
 			
 		});
 		jp2.add(elegirColor);
+		this.add(jp2);
 		
 		//boton cancelar y aceptar
 		JPanel jplast=new JPanelBoxFactory(false);
+		cancelar.setPreferredSize(new Dimension(100,25));
+		cancelar.setMinimumSize(new Dimension(100,25));
+		cancelar.setMaximumSize(new Dimension(100,25));
+		aceptar.setPreferredSize(new Dimension(100,25));
+		aceptar.setMinimumSize(new Dimension(100,25));
+		aceptar.setMaximumSize(new Dimension(100,25));
+		aceptar.setText("Aceptar");
+		cancelar.setText("Cancelar");
+		cancelar.setAlignmentX(RIGHT_ALIGNMENT);
+		aceptar.setAlignmentX(RIGHT_ALIGNMENT);
 		jplast.add(cancelar);
 		jplast.add(aceptar);
 		cancelar.addActionListener(e -> {
 			this.dispose();
 		});
 		aceptar.addActionListener(e -> {
-			pinfo.setLinea(new Linea(nombreTF.getText(), color, true));
+			PanelInformacion.setLinea(new Linea(nombreTF.getText(), color, true));
+			this.dispose();
+			PanelGrafo.repintarGrafo();
 		});
+		this.add(jplast);
 		
-		this.setPreferredSize(new Dimension(500,500));
+		this.setBounds(50,20,500,500);
 		this.setVisible(true);
-		this.setResizable(false);
+		this.setResizable(true);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 	}
 	

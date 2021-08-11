@@ -1,10 +1,13 @@
 package objetos;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import elementosSwing.grafo2D.Estacion2D;
 
 enum EstadoEstacion {
 	OPERATIVA, EN_MANTENIMIENTO
@@ -52,13 +55,15 @@ public class Estacion implements Comparable<Estacion>{
 				.collect(Collectors.toList());
 	}
 	
-	public Estacion(Short id, String nombre, LocalTime horarioApertura, LocalTime horarioCierre, EstadoEstacion estado) {
+	public Estacion(Short id, String nombre, LocalTime horarioApertura, LocalTime horarioCierre, Boolean estado) {
 		this.id=id;
 		this.nombre=nombre;
 		this.horarioApertura=horarioApertura;
 		this.horarioCierre=horarioCierre;
-		this.estado=estado;
+		this.estado=(estado)? EstadoEstacion.OPERATIVA : EstadoEstacion.EN_MANTENIMIENTO;
 		listEstaciones.add(this);
+		this.e2d=new Estacion2D(this);
+		System.out.println("Añadida estacion "+this.nombre);
 	}
 	
 	public List<Estacion> subgrafoInmediato() {
@@ -75,12 +80,24 @@ public class Estacion implements Comparable<Estacion>{
 	 * Notar que no hay setID(), esto es porque no debe ser posible cambiar el ID, ya que esto va a ser PK en la BD
 	 */
 	
+	private Estacion2D e2d;
+	public Double posx=Math.random()*600+50;
+	public Double posy=Math.random()*450+50;
+	public Estacion2D getE2d() {
+		return e2d;
+	}
+
+	public void setE2d(Estacion2D e2d) {
+		this.e2d = e2d;
+	}
+
+
 	private Short id;
 	private String nombre;
 	private LocalTime horarioApertura;
 	private LocalTime horarioCierre;
 	private EstadoEstacion estado;
-	private java.util.Date fechaUltimoMantenimiento; //Por default, el ultimo mantenimiento es su dia de ingreso
+	private LocalDate fechaUltimoMantenimiento=LocalDate.now(); //Por default, el ultimo mantenimiento es su dia de ingreso
 	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
 	private Double pagerank = 1.0; //?
 	private Double pesoTotal = 0.0; //?
@@ -133,10 +150,10 @@ public class Estacion implements Comparable<Estacion>{
 		ultimoMantenimiento.finMantenimiento();
 		this.estado = EstadoEstacion.OPERATIVA;
 	}
-	public java.util.Date getFechaUltimoMantenimiento() {
+	public LocalDate getFechaUltimoMantenimiento() {
 		return fechaUltimoMantenimiento;
 	}
-	public void setFechaUltimoMantenimiento(java.util.Date fechaUltimoMantenimiento) {
+	public void setFechaUltimoMantenimiento(LocalDate fechaUltimoMantenimiento) {
 		this.fechaUltimoMantenimiento = fechaUltimoMantenimiento;
 	}
 	public HashSet<Conexion> getListConexiones() {
