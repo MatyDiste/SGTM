@@ -26,7 +26,7 @@ public class Main {
 		}
 		for(int i=0; i<5; i++) {
 			debugGenLinea();
-			System.out.println("Creada linea");
+			//System.out.println("Creada linea");
 		}
 		Linea.listLineas.stream().forEach(l -> {
 			//System.out.println("Creada conexion");
@@ -53,15 +53,16 @@ public class Main {
 	}
 	
 	public static void debugGenLinea() {
-		new Linea("Ldbg"+Integer.toString((int)(Math.random()*31)), new Color((int)(Math.random()*Integer.MAX_VALUE-1)), true);
+		Linea l=new Linea("Ldbg"+Integer.toString((int)(Math.random()*31)), new Color((int)(Math.random()*Integer.MAX_VALUE-1)), true);
+		//System.out.println("Linea "+l.getNombre()+" | Color : "+l.getColor().toString());
 	}
 	
 	public static void debugGenConexiones(Linea l) {
-		Integer cantidad=(int)(Math.random()*6);
-		Estacion est=Estacion.listEstaciones.stream().findAny().get();
+		Integer cantidad=(int)(8);
+		Estacion est=Estacion.listEstaciones.stream().toList().get((int)(Math.random()*Estacion.listEstaciones.size()-1));
 		l.getListEstaciones().add(est);
 		for(int i=0; i<cantidad; i++) {
-			Estacion est2=Estacion.listEstaciones.stream().findAny().get();
+			Estacion est2=Estacion.listEstaciones.stream().toList().get((int)(Math.random()*Estacion.listEstaciones.size()-1));
 			l.getListConexiones().add(new Conexion(est, est2, l));
 			l.getListEstaciones().add(est2);
 			est=est2;

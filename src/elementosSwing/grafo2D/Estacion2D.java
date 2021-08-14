@@ -14,9 +14,9 @@ import objetos.Estacion;
 
 public class Estacion2D {
 	
-	public static Integer UNSELECTEDSTROKE=3;
-	public static Integer SELECTEDSTROKE=5;
-	public static Double RADIO=25d;
+	public static final Integer UNSELECTEDSTROKE=3;
+	public static final Integer SELECTEDSTROKE=5;
+	public static final Double RADIO=25d;
 	
 	public Estacion e;
 	public ArrayList<Flecha> listFlechasSalida=new ArrayList<Flecha>();
@@ -74,14 +74,15 @@ public class Estacion2D {
 	
 	public void addLlegada(Flecha f) {
 		listFlechasLlegada.add(f);
-		System.out.println("77DBG Añadida flecha a estacion");
+		//System.out.println("Añadida flecha a estacion (llegada)");
 	}
 	public void addSalida(Flecha f) {
-		System.out.println("80DBG Añadida flecha a estacion");
+		//System.out.println("Añadida flecha a estacion (salida)");
 		listFlechasSalida.add(f);
 	}
 	
 	private void dibujarFlechas() {
+		//System.out.println("Dibujando flechas de estacion: "+this.nombre);
 		listFlechasLlegada.stream()
 				          .forEach(f -> f.dibujar(g2d));
 		listFlechasSalida.stream()

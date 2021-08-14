@@ -63,7 +63,7 @@ public class Estacion implements Comparable<Estacion>{
 		this.estado=(estado)? EstadoEstacion.OPERATIVA : EstadoEstacion.EN_MANTENIMIENTO;
 		listEstaciones.add(this);
 		this.e2d=new Estacion2D(this);
-		System.out.println("Añadida estacion "+this.nombre);
+		//System.out.println("Añadida estacion "+this.nombre);
 	}
 	
 	public List<Estacion> subgrafoInmediato() {

@@ -25,7 +25,7 @@ public class Conexion {
 		linea=l;
 		estado=l.estado().equals("ACTIVA")? EstadoConexion.ACTIVA : EstadoConexion.INACTIVA;
 		Flecha f=new Flecha(a, b, this);
-		System.out.println("Creada conexion");
+		//System.out.println("Creada conexion entre "+a.getNombre()+" --> "+b.getNombre());
 	}
 	
 	public void eliminar() {
