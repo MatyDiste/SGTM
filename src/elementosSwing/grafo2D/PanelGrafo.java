@@ -23,25 +23,8 @@ public class PanelGrafo extends JPanel {
 	public static PanelGrafo pg;
 	
 	private HashSet<Estacion2D> listEstaciones= new HashSet<Estacion2D>();
-	//private HashSet<Flecha> listFlechas= new HashSet<Flecha>();
 	private Graphics2D g2d;
 	public Optional<Estacion2D> selectedEstacion= Optional.empty();
-	
-	/*public void debugGenEstaciones() {
-		for(Integer i=1; i<=5; i++)
-			listEstaciones.add(new Estacion2D("A"+i.toString(), Math.random()*(450), Math.random()*(450)));
-	}*/
-	
-	/*public void debugGenFlechas() {
-		listEstaciones.stream()
-					  .forEach(e -> {
-						  Estacion2D e2=listEstaciones.stream().filter(aux -> !aux.equals(e)).findAny().get();
-						  Flecha f=new Flecha(e, e2, new Color((int) (Math.random()*Integer.MAX_VALUE-1)));
-						  listFlechas.add(f);
-						  e.addSalida(f);
-						  e2.addLlegada(f);
-					  });
-	}*/
 	
 	
 	public PanelGrafo() {
@@ -52,8 +35,6 @@ public class PanelGrafo extends JPanel {
 		this.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		//this.setSize(new Dimension(1000, 1000));
 		//TODO cargar estaciones y flechas
-		//debugGenEstaciones();
-		//debugGenFlechas();
 		this.setVisible(true);
 		this.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent event) {
@@ -148,10 +129,10 @@ public class PanelGrafo extends JPanel {
 		recargar();
 		g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2d.setColor(Color.LIGHT_GRAY);
-		g2d.fill(new Rectangle(900, 900));
-		//dibujarFlechas();
+		g2d.setColor(Color.WHITE);
+		g2d.fill(new Rectangle(700, 700));
 		dibujarEstaciones();
+		//dibujarFlechas();
 	}
 	
 	public static void repintarGrafo() {

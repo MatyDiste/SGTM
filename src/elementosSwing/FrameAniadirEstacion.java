@@ -87,12 +87,12 @@ public class FrameAniadirEstacion extends JFrame {
 		});
 		
 		cancelar.setText("Cancelar");
-		cancelar.setAlignmentX(RIGHT_ALIGNMENT);
+		cancelar.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		cancelar.setPreferredSize(new Dimension(100,25));
 		cancelar.setMinimumSize(new Dimension(100,25));
 		cancelar.setMaximumSize(new Dimension(100,25));
 		aceptar.setText("Aceptar");
-		aceptar.setAlignmentX(RIGHT_ALIGNMENT);
+		aceptar.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		aceptar.setPreferredSize(new Dimension(100,25));
 		aceptar.setMinimumSize(new Dimension(100,25));
 		aceptar.setMaximumSize(new Dimension(100,25));

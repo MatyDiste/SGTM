@@ -1,8 +1,12 @@
 package elementosSwing;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -24,6 +28,7 @@ public class PanelInformacion extends JPanel {
 	private Boolean edit=false;
 	private Linea linea;
 	private Estacion estacion;
+	private GridBagConstraints gbc=new GridBagConstraints();
 	
 	public static final Short VACIO=0;
 	public static final Short ESTACION=1;
@@ -32,29 +37,43 @@ public class PanelInformacion extends JPanel {
 	public PanelInformacion() {
 		super();
 		panel=this;
-		this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-		this.setPreferredSize(new Dimension(400,600));
-		this.setMinimumSize(new Dimension(400,600));
+		this.setPreferredSize(new Dimension(280,600));
+		this.setMinimumSize(new Dimension(280,600));
+		//this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+		this.setLayout(new GridBagLayout());
 		this.setVisible(true);
 		
 		//jpanel titulo
 		titulo=new JPanelBoxFactory(false);
-		titulo.setAlignmentX(LEFT_ALIGNMENT);
+		titulo.setAlignmentX(Component.LEFT_ALIGNMENT);
 		JLabel textInformacion= new JLabel(" Información");
 		textInformacion.setFont(new Font(null, Font.BOLD, 18));
 		textInformacion.setIcon(new ImageIcon("./assets/info_icon.png"));
 		textInformacion.setIconTextGap(10);
-		textInformacion.setAlignmentX(LEFT_ALIGNMENT);
+		textInformacion.setAlignmentX(Component.LEFT_ALIGNMENT);
+		textInformacion.setSize(new Dimension(200,20));
 		titulo.add(textInformacion);
-		this.add(titulo);
+		titulo.setSize(new Dimension(270,50));
+		titulo.setMaximumSize(new Dimension(270,50));
+		titulo.setPreferredSize(new Dimension(270,50));
+		titulo.setMinimumSize(new Dimension(270,50));
+		gbc.insets=new Insets(10,20,5,5);
+		gbc.ipadx=20;
+		gbc.ipady=10;
+		gbc.anchor=GridBagConstraints.WEST;
+		gbc.gridx=0;
+		gbc.gridy=0;
+		this.add(titulo, gbc);
 		
 		//jpanel tipo
 		genLabelTipo();
-		this.add(tipo);
+		gbc.gridy=1;
+		this.add(tipo, gbc);
 		
 		//jpanel info
 		genLabelInfo();
-		this.add(info);
+		gbc.gridy=2;
+		this.add(info, gbc);
 		
 		//jpanel aniadir
 		aniadir=new JPanelBoxFactory(false);
@@ -68,9 +87,15 @@ public class PanelInformacion extends JPanel {
 		btnAniadir.setButtonType(ButtonType.roundRect);
 		btnAniadirE.setButtonType(ButtonType.roundRect);
 		btnAniadirL.setButtonType(ButtonType.roundRect);
-		btnAniadir.setPreferredSize(new Dimension(180, 40));
-		btnAniadirE.setPreferredSize(new Dimension(40, 40));
-		btnAniadirL.setPreferredSize(new Dimension(40, 40));
+		btnAniadir.setPreferredSize(new Dimension(150, 50));
+		btnAniadir.setMinimumSize(new Dimension(150, 50));
+		btnAniadir.setMaximumSize(new Dimension(150, 50));
+		btnAniadirE.setPreferredSize(new Dimension(50, 50));
+		btnAniadirE.setMinimumSize(new Dimension(50, 50));
+		btnAniadirE.setMaximumSize(new Dimension(50, 50));
+		btnAniadirL.setPreferredSize(new Dimension(50, 50));
+		btnAniadirL.setMinimumSize(new Dimension(50, 50));
+		btnAniadirL.setMaximumSize(new Dimension(50, 50));
 		btnAniadirE.setVisible(false);
 		btnAniadirL.setVisible(false);
 		btnAniadir.addActionListener(e -> {
@@ -83,17 +108,24 @@ public class PanelInformacion extends JPanel {
 		btnAniadirL.addActionListener(e -> {
 			new FrameAniadirLinea(this);
 		});
-		this.add(btnAniadir);
-		this.add(btnAniadirE);
-		this.add(btnAniadirL);
+		aniadir.add(btnAniadir);
+		aniadir.add(btnAniadirE);
+		aniadir.add(btnAniadirL);
+		aniadir.setAlignmentX(Component.LEFT_ALIGNMENT);
+		aniadir.setSize(new Dimension(270,60));
+		aniadir.setMaximumSize(new Dimension(270,60));
+		aniadir.setMinimumSize(new Dimension(270,60));
+		aniadir.setPreferredSize(new Dimension(270,60));
+		gbc.gridy=3;
+		this.add(aniadir, gbc);
 		
 		
 	}
 	
 	private void genLabelTipo() {
 		tipo=new JPanelBoxFactory(false);
-		tipo.setAlignmentX(LEFT_ALIGNMENT);
-		tipo.setAlignmentY(CENTER_ALIGNMENT);
+		tipo.setAlignmentX(Component.LEFT_ALIGNMENT);
+		tipo.setAlignmentY(Component.CENTER_ALIGNMENT);
 		JLabel textTipo= new JLabel("No seleccionado");
 		textTipo.setIconTextGap(10);
 		switch(tipoSeleccionado) {
