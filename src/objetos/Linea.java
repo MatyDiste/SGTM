@@ -67,6 +67,7 @@ public class Linea implements Comparable<Linea>{
 	}
 	public String estado() {
 		return estado.name();
+
 	}
 	public void activar() {
 		this.estado=EstadoLinea.ACTIVA;
