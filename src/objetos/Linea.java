@@ -5,28 +5,20 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import elementosSwing.grafo2D.Flecha;
+
 enum EstadoLinea {
 	ACTIVA, INACTIVA
 }
 
 public class Linea implements Comparable<Linea>{
+	
 	//TODO NO TERMINADO!
-	public static HashSet<Linea> listaLineas=new HashSet<Linea>();
+	public static HashSet<Linea> listLineas=new HashSet<Linea>();
 	public static Boolean borrarLinea(Linea e) {
-		return listaLineas.remove(e);
+		return listLineas.remove(e);
 		//TODO Comunicar DAO la eliminacion de e
 	}
-	
-	/*
-	public static short AZUL=0;
-	public static short ROJO=1;
-	public static short AMARILLO=2;
-	public static short VERDE=3;
-	public static short VIOLETA=4;
-	public static short NARANJA=5;
-	public static short NEGRO=6;
-	public static short BLANCO=7;
-	*/
 	
 	private List<Estacion> listEstaciones=new ArrayList<Estacion>();
 	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
@@ -34,19 +26,20 @@ public class Linea implements Comparable<Linea>{
 	private Color color;
 	private EstadoLinea estado;
 	
-	public Linea(String nombre, Color color, EstadoLinea estado) {
+	public Linea(String nombre, Color color, Boolean estado) {
 		this.nombre = nombre;
 		this.color = color;
-		this.estado = estado;
+		this.estado = (estado)? EstadoLinea.ACTIVA : EstadoLinea.INACTIVA;
+		listLineas.add(this);
 	}
 	
 	//METODOS GETTERS AND SETTERS
 
 	public static HashSet<Linea> getListaLineas() {
-		return listaLineas;
+		return listLineas;
 	}
 	public static void setListaLineas(HashSet<Linea> listaLineas) {
-		Linea.listaLineas = listaLineas;
+		Linea.listLineas = listaLineas;
 	}
 	public List<Estacion> getListEstaciones() {
 		return listEstaciones;
@@ -74,6 +67,7 @@ public class Linea implements Comparable<Linea>{
 	}
 	public String estado() {
 		return estado.name();
+
 	}
 	public void activar() {
 		this.estado=EstadoLinea.ACTIVA;

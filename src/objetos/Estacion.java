@@ -1,10 +1,13 @@
 package objetos;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import elementosSwing.grafo2D.Estacion2D;
 
 enum EstadoEstacion {
 	OPERATIVA, EN_MANTENIMIENTO
@@ -12,53 +15,57 @@ enum EstadoEstacion {
 
 public class Estacion implements Comparable<Estacion>{
 	
-	//Todos los atributos y mÈtodos est·ticos deberian implementarse ya en la interfaz
-	public static HashSet<Estacion> listaEstaciones=new HashSet<Estacion>(); //Util para que la clase se encargue de tener toda la lista de estaciones (al ser hashset, debe estar implementado hashcode e equals)
-	public static Boolean borrarEstacion(Estacion e) { 
+	//Todos los atributos y m√©todos est√°ticos deberian implementarse ya en la interfaz
+	public static HashSet<Estacion> listEstaciones=new HashSet<Estacion>(); //Util para que la clase se encargue de tener toda la lista de estaciones (al ser hashset, debe estar implementado hashcode e equals)
+	private static Boolean borrarEstacion(Estacion e) { 
 		/* Estos son metodos estaticos que funcionan sobre todas las estaciones, son muy utiles
 		 * por ejemplo borrar, buscar.
 		 */
-		return listaEstaciones.remove(e);
+		return listEstaciones.remove(e);
 		//TODO Comunicar DAO la eliminacion de e
 	}
+
 	/*
 	 * TODO
-	 * Comunicarse con EstacionDAO para cargar todas las estaciones (mÈtodo est·tico)
+	 * Comunicarse con EstacionDAO para cargar todas las estaciones (m√©todo est√°tico)
 	 */
 	
 	//Mas funciones sobre la lista, esta vez para buscar de acuerdo a algun atributo
 	public static List<Estacion> buscarID(short id){
-		return listaEstaciones
+		return listEstaciones
 				.stream()
 				.filter( (e) -> e.getId()==id)
 				.collect(Collectors.toList());
 	}
 	public static List<Estacion> buscarNombre(String name){
-		return listaEstaciones
+		return listEstaciones
 				.stream()
 				.filter( (e) -> e.getNombre().equals(name))
 				.collect(Collectors.toList());
+
 	}
 	public static List<Estacion> buscarHorarioApertura(LocalTime lt){
-		return listaEstaciones
+		return listEstaciones
 				.stream()
 				.filter( (e) -> e.getHorarioApertura().equals(lt))
 				.collect(Collectors.toList());
 	}
 	public static List<Estacion> buscarHorarioCierre(LocalTime lt){
-		return listaEstaciones
+		return listEstaciones
 				.stream()
 				.filter( (e) -> e.getHorarioCierre().equals(lt))
 				.collect(Collectors.toList());
 	}
 	
-	public Estacion(Short id, String nombre, LocalTime horarioApertura, LocalTime horarioCierre, EstadoEstacion estado) {
+	public Estacion(Short id, String nombre, LocalTime horarioApertura, LocalTime horarioCierre, Boolean estado) {
 		this.id=id;
 		this.nombre=nombre;
 		this.horarioApertura=horarioApertura;
 		this.horarioCierre=horarioCierre;
-		this.estado=estado;
-		listaEstaciones.add(this);
+		this.estado=(estado)? EstadoEstacion.OPERATIVA : EstadoEstacion.EN_MANTENIMIENTO;
+		listEstaciones.add(this);
+		this.e2d=new Estacion2D(this);
+		//System.out.println("AÒadida estacion "+this.nombre);
 	}
 	
 	public List<Estacion> subgrafoInmediato() {
@@ -66,6 +73,7 @@ public class Estacion implements Comparable<Estacion>{
 				  .filter((c) -> c.getE1().equals(this))
 		          .map(c -> c.getE2())
 		          .collect(Collectors.toList());
+
 	}
 	
 	
@@ -75,12 +83,24 @@ public class Estacion implements Comparable<Estacion>{
 	 * Notar que no hay setID(), esto es porque no debe ser posible cambiar el ID, ya que esto va a ser PK en la BD
 	 */
 	
+	private Estacion2D e2d;
+	public Double posx=Math.random()*600+50;
+	public Double posy=Math.random()*450+50;
+	public Estacion2D getE2d() {
+		return e2d;
+	}
+
+	public void setE2d(Estacion2D e2d) {
+		this.e2d = e2d;
+	}
+
+
 	private Short id;
 	private String nombre;
 	private LocalTime horarioApertura;
 	private LocalTime horarioCierre;
 	private EstadoEstacion estado;
-	private java.util.Date fechaUltimoMantenimiento; //Por default, el ultimo mantenimiento es su dia de ingreso
+	private LocalDate fechaUltimoMantenimiento=LocalDate.now(); //Por default, el ultimo mantenimiento es su dia de ingreso
 	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
 	private Double pagerank = 1.0; //?
 	private Double pesoTotal = 0.0; //?
@@ -133,10 +153,10 @@ public class Estacion implements Comparable<Estacion>{
 		ultimoMantenimiento.finMantenimiento();
 		this.estado = EstadoEstacion.OPERATIVA;
 	}
-	public java.util.Date getFechaUltimoMantenimiento() {
+	public LocalDate getFechaUltimoMantenimiento() {
 		return fechaUltimoMantenimiento;
 	}
-	public void setFechaUltimoMantenimiento(java.util.Date fechaUltimoMantenimiento) {
+	public void setFechaUltimoMantenimiento(LocalDate fechaUltimoMantenimiento) {
 		this.fechaUltimoMantenimiento = fechaUltimoMantenimiento;
 	}
 	public HashSet<Conexion> getListConexiones() {
@@ -162,7 +182,7 @@ public class Estacion implements Comparable<Estacion>{
 	 * Metodos que deben implementarse:
 	 * equals() <- Para poder describir que una estacion es igual a otra si... (sus nombres son iguales)
 	 * hashCode() <- Debe basarse en los mismos atributos que utilice equals(), esto para el HashSet
-	 * eliminar() <- MÈtodo de instancia de eliminacion. Debe eliminar a la estacion de la listaEstaciones (llamar a Estacion.eliminar(this), y a todos los objetos que mantienen alguna referencia a el mismo)
+	 * eliminar() <- M√©todo de instancia de eliminacion. Debe eliminar a la estacion de la listaEstaciones (llamar a Estacion.eliminar(this), y a todos los objetos que mantienen alguna referencia a el mismo)
 	 * luego, al dejar de referenciar a esa estacion en donde usemos este metodo, el garbage collector va a eliminarlo porque no deben existir mas referencias.
 	 * compareTo() <- Debe devolver -1 si this es menor
 	 */
@@ -170,8 +190,9 @@ public class Estacion implements Comparable<Estacion>{
 		return this.nombre.equals(o.getNombre());
 	}
 	@Override
-	public int hashCode() { //DeberÌa diferenciar entre estaciones de acuerdo a sus atributos (ID, nombre?)
+	public int hashCode() { //Deber√≠a diferenciar entre estaciones de acuerdo a sus atributos (ID, nombre?)
 		return nombre.hashCode();
+		
 	}
 	public void eliminar() { //Debe llamar al metodo estatico con this
 		Estacion.borrarEstacion(this);

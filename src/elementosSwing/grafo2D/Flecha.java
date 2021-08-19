@@ -4,11 +4,15 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.BasicStroke;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 
 import objetos.Conexion;
+import objetos.Estacion;
 import objetos.Linea;
 
 
@@ -40,17 +44,23 @@ public class Flecha {
 	
 	private BasicStroke getStroke() {
 		Integer size=selected? SELECTEDWIDTH : UNSELECTEDWIDTH;
-		return conect.habilitado()? new BasicStroke(size) : new BasicStroke(size, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1f, dash, dashPhase); 
+		//return conect.estado().equals("ACTIVA")? new BasicStroke(size) : new BasicStroke(size, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1f, dash, dashPhase); 
+		return new BasicStroke(size);
 	}
 	
 	public void updateTransform() {
 		//Mantiene la transformacion de manera que E1 y E2 esten sobre la recta y=0
+		
+		this.color=conect.getColor();
 		g2d.setStroke(this.getStroke());
 		g2d.setColor(color);
 		g2d.translate(x1, y1);
+		//System.out.println("Traslacion x:"+x1+" | y:"+y1);
 		g2d.rotate(angulo());
-		
 		recta=g2d.getTransform();
+		
+		
+		
 		g2d.setTransform(rst);
 	}
 	
@@ -86,9 +96,11 @@ public class Flecha {
 		g2d.setColor(color);
 		*/
 		//DEBUG
-		g2d.translate(puntoBorde.x, puntoBorde.y);
+		g2d.translate(puntoBorde.x, puntoBorde.y); //System.out.println("Puntoborde x:"+puntoBorde.x+" y: "+puntoBorde.y);
 		g2d.rotate(-anguloOffseted);
 		g2d.fill(punta);
+		
+		
 		
 		g2d.setTransform(rst);
 	}
@@ -98,7 +110,7 @@ public class Flecha {
 		java.lang.Double mod=getModulo()/3;
 		curva.moveTo(Math.cos(anguloOffseted)*Estacion2D.RADIO, Math.sin(anguloOffseted)*Estacion2D.RADIO);
 		curva.curveTo(Math.cos(anguloOffseted)*(mod), Math.sin(anguloOffseted)*(mod), Math.cos(Math.PI-anguloOffseted)*(mod) + getModulo(), Math.sin(Math.PI-anguloOffseted)*(mod), puntoBorde.x, puntoBorde.y);
-		//System.out.println("Curva");
+		//System.out.println("Curva x:"+Math.cos(anguloOffseted)*Estacion2D.RADIO +" | y:"+Math.sin(anguloOffseted)*Estacion2D.RADIO);
 	}
 	
 	public void dibujarCurva() {
@@ -147,7 +159,6 @@ public class Flecha {
 		this.y1=e1.centroy;
 		this.x2=e2.centrox;
 		this.y2=e2.centroy;
-		this.color=conect.getColor();
 		//java.lang.Double mod=getModulo();
 		//System.out.println("Viejas coord1: x="+x1.toString()+" y="+y1.toString());
 		//System.out.println("Viejas coord2: x="+x2.toString()+" y="+y2.toString());
@@ -158,33 +169,39 @@ public class Flecha {
 		//System.out.println("Modulo = "+mod.toString());
 		//if(mod.isNaN()) System.out.println("ES NAN!!");
 		//System.out.println("---------------");
-		updateTransform();
 		updatePunta();
 		updateCurva();
 	}
 	
-	public Flecha(Estacion2D e1, Estacion2D e2, Color c) {
+	public Flecha(Estacion a, Estacion b, Conexion c) {
 	//public Flecha(Estacion2D e1, Estacion2D e2, Conexion con) {
-		this.e1=e1;
-		this.e2=e2;
-		this.color=c;
+		this.e1=a.getE2d();
+		this.e2=b.getE2d();
+		this.color=c.getColor();
 		//this.conect=con;
 		//this.color=conect.getColor();
-		this.conect=new Conexion(e1., e2, new Linea("xd", c, Math.random()<0.7));
+		this.conect=c;
 		
 		
 		this.mayorAngulo=Math.random()<0.5;
 		this.anguloOffseted= mayorAngulo? Math.random()*25 +20 : Math.random()*(-25) -20;
 		this.anguloOffseted=Math.toRadians(anguloOffseted);
+		
+		e1.addSalida(this);
+		e2.addLlegada(this);
+		//System.out.println("Añadida flecha");
 	}
 	
 	public void dibujar(Graphics2D g) {
+		//System.out.println("Mostrando flecha");
 		g2d=g;
 		rst=g2d.getTransform();
 		updateCoord();
+		updateTransform();
 		
 		dibujarCurva();
 		dibujarPunta();
+		
 		
 		//debugPuntos();
 		//debugLineas();
