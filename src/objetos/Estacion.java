@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import elementosSwing.MainWindow;
 import elementosSwing.grafo2D.Estacion2D;
 
 enum EstadoEstacion {
@@ -65,6 +66,9 @@ public class Estacion implements Comparable<Estacion>{
 		this.estado=(estado)? EstadoEstacion.OPERATIVA : EstadoEstacion.EN_MANTENIMIENTO;
 		listEstaciones.add(this);
 		this.e2d=new Estacion2D(this);
+		this.posx=Math.random() * (MainWindow.grafoSizeX - 100) + 50;
+		this.posy=Math.random() * (MainWindow.grafoSizeY - 100) + 50;
+		
 		//System.out.println("Añadida estacion "+this.nombre);
 	}
 	
@@ -83,9 +87,6 @@ public class Estacion implements Comparable<Estacion>{
 	 * Notar que no hay setID(), esto es porque no debe ser posible cambiar el ID, ya que esto va a ser PK en la BD
 	 */
 	
-	private Estacion2D e2d;
-	public Double posx=Math.random()*600+50;
-	public Double posy=Math.random()*450+50;
 	public Estacion2D getE2d() {
 		return e2d;
 	}
@@ -105,6 +106,9 @@ public class Estacion implements Comparable<Estacion>{
 	private Double pagerank = 1.0; //?
 	private Double pesoTotal = 0.0; //?
 	private ArrayList<Mantenimiento> listaMantenimientos;
+	private Estacion2D e2d;
+	public Double posx=Math.random()*600+50;
+	public Double posy=Math.random()*450+50;
 	
 	//METODOS GETTERS AND SETTERS
 	

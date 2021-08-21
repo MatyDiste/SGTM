@@ -21,17 +21,6 @@ public class Main {
 	public static void main(String args[]) {
 		FlatNightOwlContrastIJTheme.install();
 		FlatInspector.install( "ctrl shift alt T" ); //Con CTRL+SHIFT+ALT+T se activa el modo inspector, ESC para salir
-		for(int i=0; i<15; i++) {
-			debugGenEstacion();
-		}
-		for(int i=0; i<5; i++) {
-			debugGenLinea();
-			//System.out.println("Creada linea");
-		}
-		Linea.listLineas.stream().forEach(l -> {
-			//System.out.println("Creada conexion");
-			debugGenConexiones(l);
-		});
 		
 		
 		JFrame vnt=new Home("Sistema de gestion de Transporte Multimodal");
@@ -46,6 +35,17 @@ public class Main {
 	
 	public static void openMainWindow() {
 		MainWindow mw= new MainWindow("Sistema gestion de Transporte Multimodal");
+		for(int i=0; i<9; i++) {
+			debugGenEstacion();
+		}
+		for(int i=0; i<4; i++) {
+			debugGenLinea();
+			//System.out.println("Creada linea");
+		}
+		Linea.listLineas.stream().forEach(l -> {
+			//System.out.println("Creada conexion");
+			debugGenConexiones(l);
+		});
 	}
 	
 	public static void debugGenEstacion() {
@@ -58,7 +58,7 @@ public class Main {
 	}
 	
 	public static void debugGenConexiones(Linea l) {
-		Integer cantidad=(int)(8);
+		Integer cantidad=(int)(5);
 		Estacion est=Estacion.listEstaciones.stream().toList().get((int)(Math.random()*Estacion.listEstaciones.size()-1));
 		l.getListEstaciones().add(est);
 		for(int i=0; i<cantidad; i++) {

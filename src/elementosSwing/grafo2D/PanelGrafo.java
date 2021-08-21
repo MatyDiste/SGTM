@@ -44,9 +44,11 @@ public class PanelGrafo extends JPanel {
 										       .findAny();
 					selectedEstacion.get().select();
 					PanelInformacion.setEstacion(selectedEstacion.get().e);
+					PanelInformacion.repintar();
 				}catch(NoSuchElementException e) {
 					selectedEstacion=Optional.empty();
 					PanelInformacion.setVacio();
+					PanelInformacion.repintar();
 				}
 				
 				
@@ -60,6 +62,7 @@ public class PanelGrafo extends JPanel {
 						selectedEstacion.get().unselect();
 						selectedEstacion=Optional.empty();
 						PanelInformacion.setVacio();
+						PanelInformacion.repintar();
 					}
 					repaint();
 						
@@ -67,7 +70,7 @@ public class PanelGrafo extends JPanel {
 				catch(NoSuchElementException e) {
 					selectedEstacion=Optional.empty();
 					PanelInformacion.setVacio();
-					//repaint();
+					PanelInformacion.repintar();
 				}
 			}
 			public void mouseReleased(MouseEvent event) {

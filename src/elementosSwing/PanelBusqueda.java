@@ -27,11 +27,13 @@ public class PanelBusqueda extends JPanel {
 		
 		btnLineas.addActionListener(e -> {
 			 listarEstaciones=false;
-			 //TODO redibujar lista
+			 //System.out.println("Repaint");
+			 this.repaint();
 		});
 		btnEstaciones.addActionListener(e -> {
 			listarEstaciones=true;
-			//TODO redibujar lista
+			//System.out.println("Repaint");
+			this.repaint();
 		});
 		
 		//Añadir btnLineas
@@ -80,12 +82,35 @@ public class PanelBusqueda extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		if(listarEstaciones) {
+			this.remove(tabla);
 			tabla=new TablaEstaciones();
+			gbc.fill=GridBagConstraints.BOTH;
+			gbc.anchor=GridBagConstraints.CENTER;
+			gbc.gridheight=2;
+			gbc.gridwidth=1;
+			gbc.gridx=2;
+			gbc.gridy=0;
+			gbc.insets=new Insets(5,5,5,5);
+			gbc.weightx=1;
+			gbc.weighty=1;
+			this.add(tabla, gbc);
 		}
 		else {
+			this.remove(tabla);
 			tabla=new TablaLineas();
+			gbc.fill=GridBagConstraints.BOTH;
+			gbc.anchor=GridBagConstraints.CENTER;
+			gbc.gridheight=2;
+			gbc.gridwidth=1;
+			gbc.gridx=2;
+			gbc.gridy=0;
+			gbc.insets=new Insets(5,5,5,5);
+			gbc.weightx=1;
+			gbc.weighty=1;
+			this.add(tabla, gbc);
 		}
 		super.paintComponent(g);
+		//System.out.println("PaintComponent");
 	}
 	
 }

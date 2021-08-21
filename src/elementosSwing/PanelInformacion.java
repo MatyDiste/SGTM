@@ -57,9 +57,9 @@ public class PanelInformacion extends JPanel {
 		titulo.setMaximumSize(new Dimension(270,50));
 		titulo.setPreferredSize(new Dimension(270,50));
 		titulo.setMinimumSize(new Dimension(270,50));
-		gbc.insets=new Insets(10,20,5,5);
-		gbc.ipadx=20;
-		gbc.ipady=10;
+		gbc.insets=new Insets(20,30,5,5);
+		gbc.ipadx=30;
+		gbc.ipady=20;
 		gbc.anchor=GridBagConstraints.WEST;
 		gbc.gridx=0;
 		gbc.gridy=0;
@@ -146,6 +146,8 @@ public class PanelInformacion extends JPanel {
 		
 		tipo.add(textTipo);
 		
+		this.addTipo();
+		//this.revalidate();
 	}
 	
 	private void genLabelInfo() {
@@ -169,44 +171,80 @@ public class PanelInformacion extends JPanel {
 			info.add(Box.createRigidArea(new Dimension(300, 180)));
 			break;
 		}
+		this.addInfo();
+		//this.revalidate();
 		
 	}
 	
+	private void addTipo() {
+		gbc.insets=new Insets(20,30,5,5);
+		gbc.ipadx=30;
+		gbc.ipady=20;
+		gbc.anchor=GridBagConstraints.WEST;
+		gbc.gridx=0;
+		gbc.gridy=1;
+		this.add(tipo, gbc);
+	}
+	
+	private void addInfo() {
+		gbc.insets=new Insets(20,30,5,5);
+		gbc.ipadx=30;
+		gbc.ipady=20;
+		gbc.anchor=GridBagConstraints.WEST;
+		gbc.gridx=0;
+		gbc.gridy=2;
+		this.add(info, gbc);
+	}
+	
+	public void quitarPaneles() {
+		this.remove(tipo);
+		this.remove(info);
+		this.revalidate();
+	}
+	
 	public static void setLinea(Linea l) {
-		
+		panel.quitarPaneles();
 		panel.tipoSeleccionado=LINEA;
 		panel.linea=l;
 		panel.estacion=null;
 		panel.genLabelTipo();
 		panel.genLabelInfo();
-		panel.repaint();
+		//panel.revalidate();
+		//panel.repaint();
 	}
 	public static void setEstacion(Estacion e) {
-		
+		panel.quitarPaneles();
 		panel.tipoSeleccionado=ESTACION;
 		panel.estacion=e;
 		panel.linea=null;
 		panel.genLabelTipo();
 		panel.genLabelInfo();
-		panel.repaint();
+		//panel.revalidate();
+		//panel.repaint();
 	}
 	public static void setVacio() {
-		
+		panel.quitarPaneles();
 		panel.linea=null;
 		panel.estacion=null;
 		panel.tipoSeleccionado=VACIO;
 		panel.genLabelTipo();
 		panel.genLabelInfo();
-		panel.repaint();
+		//panel.revalidate();
+		//panel.repaint();
 	}
 	
 	protected void paintComponent(Graphics g) {
+		this.quitarPaneles();
 		genLabelTipo();
 		genLabelInfo();
-		
+		//panel.revalidate();
 		super.paintComponent(g);
+		//System.out.println("Repintando panelInfo");
 	}
 	
+	public static void repintar() {
+		panel.repaint();
+	}
 	
 }
 

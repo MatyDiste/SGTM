@@ -17,7 +17,8 @@ public class MainWindow extends JFrame{
 	private PanelGrafo pg=new PanelGrafo();
 	private PanelBusqueda pb=new PanelBusqueda();
 	private PanelInformacion pi=new PanelInformacion();
-	
+	public static Integer grafoSizeX;
+	public static Integer grafoSizeY;
 	
 	public MainWindow(String t) {
 		super(t);
@@ -44,6 +45,9 @@ public class MainWindow extends JFrame{
 			}
 			
 		});
+		
+		grafoSizeX=pg.getWidth();
+		grafoSizeY=pg.getHeight();
 		
 	}
 }
