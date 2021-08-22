@@ -1,9 +1,11 @@
 package elementosSwing;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -11,6 +13,7 @@ import java.awt.Insets;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -103,10 +106,12 @@ public class PanelInformacion extends JPanel {
 			btnAniadirL.setVisible(!btnAniadirL.isVisible());
 		});
 		btnAniadirE.addActionListener(e -> {
-			new FrameAniadirEstacion(this);
+			JDialog jd = new FAniadirEstacion();
+			jd.setVisible(true);
 		});
 		btnAniadirL.addActionListener(e -> {
-			new FrameAniadirLinea(this);
+			JDialog jd = new FAniadirLinea();
+			jd.setVisible(true);
 		});
 		aniadir.add(btnAniadir);
 		aniadir.add(btnAniadirE);

@@ -28,7 +28,6 @@ public class FrameAniadirLinea extends JFrame {
 	private FlatButton elegirColor=new FlatButton();
 	private FlatButton cancelar=new FlatButton();
 	private FlatButton aceptar=new FlatButton();
-	private PanelInformacion pinfo;
 
 	private Color color=Color.BLACK;
 	
@@ -36,7 +35,6 @@ public class FrameAniadirLinea extends JFrame {
 	
 	public FrameAniadirLinea(PanelInformacion p) {
 		super("Añadir nueva línea");
-		pinfo=p;
 		this.setLayout(new BoxLayout(this.getContentPane(), BoxLayout.PAGE_AXIS));
 		
 		//textTop
