@@ -15,18 +15,28 @@ public class Linea implements Comparable<Linea>{
 	
 	//TODO NO TERMINADO!
 	public static HashSet<Linea> listLineas=new HashSet<Linea>();
+	private static Short contadorId=1001;
 	public static Boolean borrarLinea(Linea e) {
 		return listLineas.remove(e);
 		//TODO Comunicar DAO la eliminacion de e
 	}
+	private static void incrementarContador() {
+		contadorId++;
+	}
+	public static Short getContadorId() {
+		return contadorId;
+	}
 	
 	private List<Estacion> listEstaciones=new ArrayList<Estacion>();
 	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
+	private Short id;
 	private String nombre;
 	private Color color;
 	private EstadoLinea estado;
 	
 	public Linea(String nombre, Color color, Boolean estado) {
+		this.id=contadorId;
+		incrementarContador();
 		this.nombre = nombre;
 		this.color = color;
 		this.estado = (estado)? EstadoLinea.ACTIVA : EstadoLinea.INACTIVA;
@@ -83,5 +93,15 @@ public class Linea implements Comparable<Linea>{
 	public int compareTo(Linea l) {
 		//???? Ni idea xd
 		return 0;
+	}
+	public void eliminar() {
+		Linea.borrarLinea(this);
+		listConexiones.forEach(c -> c.eliminar());
+		listConexiones.clear();
+		listEstaciones.clear();
+		estado=EstadoLinea.INACTIVA;
+	}
+	public String toString() {
+		return this.nombre;
 	}
 }

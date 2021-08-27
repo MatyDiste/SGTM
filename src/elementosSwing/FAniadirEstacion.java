@@ -68,12 +68,13 @@ public class FAniadirEstacion extends JDialog {
 			contentPanel.add(lblNewLabel_1, gbc_lblNewLabel_1);
 		}
 		{
-			textField = new JTextField(Short.toString((short)(Math.random()*32000)));
+			textField = new JTextField(Short.toString(Estacion.getContadorId()));
 			GridBagConstraints gbc_textField = new GridBagConstraints();
 			gbc_textField.insets = new Insets(0, 0, 5, 5);
 			gbc_textField.fill = GridBagConstraints.HORIZONTAL;
 			gbc_textField.gridx = 2;
 			gbc_textField.gridy = 1;
+			textField.setEditable(false);
 			contentPanel.add(textField, gbc_textField);
 			textField.setColumns(10);
 		}
@@ -152,7 +153,7 @@ public class FAniadirEstacion extends JDialog {
 				okButton.addActionListener(e -> {
 					try {
 						DateTimeFormatter dtf= DateTimeFormatter.ISO_LOCAL_TIME;
-						PanelInformacion.setEstacion(new Estacion(Short.parseShort(textField.getText()), textField_1.getText(), LocalTime.parse(textField_2.getText(), dtf), LocalTime.parse(textField_3.getText(), dtf), true));
+						PanelInfo.setEstacion(new Estacion(textField_1.getText(), LocalTime.parse(textField_2.getText(), dtf), LocalTime.parse(textField_3.getText(), dtf), true));
 						PanelGrafo.repintarGrafo();
 						this.dispose();
 					} catch(DateTimeParseException exc) {

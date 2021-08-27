@@ -18,6 +18,7 @@ public class Estacion implements Comparable<Estacion>{
 	
 	//Todos los atributos y métodos estáticos deberian implementarse ya en la interfaz
 	public static HashSet<Estacion> listEstaciones=new HashSet<Estacion>(); //Util para que la clase se encargue de tener toda la lista de estaciones (al ser hashset, debe estar implementado hashcode e equals)
+	public static Short contadorId=1001;
 	private static Boolean borrarEstacion(Estacion e) { 
 		/* Estos son metodos estaticos que funcionan sobre todas las estaciones, son muy utiles
 		 * por ejemplo borrar, buscar.
@@ -32,6 +33,12 @@ public class Estacion implements Comparable<Estacion>{
 	 */
 	
 	//Mas funciones sobre la lista, esta vez para buscar de acuerdo a algun atributo
+	private static void incrementarContador() {
+		contadorId++;
+	}
+	public static Short getContadorId() {
+		return contadorId;
+	}
 	public static List<Estacion> buscarID(short id){
 		return listEstaciones
 				.stream()
@@ -58,8 +65,9 @@ public class Estacion implements Comparable<Estacion>{
 				.collect(Collectors.toList());
 	}
 	
-	public Estacion(Short id, String nombre, LocalTime horarioApertura, LocalTime horarioCierre, Boolean estado) {
-		this.id=id;
+	public Estacion(String nombre, LocalTime horarioApertura, LocalTime horarioCierre, Boolean estado) {
+		this.id=contadorId;
+		incrementarContador();
 		this.nombre=nombre;
 		this.horarioApertura=horarioApertura;
 		this.horarioCierre=horarioCierre;
@@ -105,7 +113,7 @@ public class Estacion implements Comparable<Estacion>{
 	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
 	private Double pagerank = 1.0; //?
 	private Double pesoTotal = 0.0; //?
-	private ArrayList<Mantenimiento> listaMantenimientos;
+	private ArrayList<Mantenimiento> listaMantenimientos=new ArrayList<Mantenimiento>();
 	private Estacion2D e2d;
 	public Double posx=Math.random()*600+50;
 	public Double posy=Math.random()*450+50;
@@ -166,8 +174,11 @@ public class Estacion implements Comparable<Estacion>{
 	public HashSet<Conexion> getListConexiones() {
 		return listConexiones;
 	}
-	public void setListConexiones(HashSet<Conexion> listConexiones) {
+	/*public void setListConexiones(HashSet<Conexion> listConexiones) {
 		this.listConexiones = listConexiones;
+	}*/
+	public void addConexion(Conexion c) {
+		listConexiones.add(c);
 	}
 	public Double getPagerank() {
 		return pagerank;
@@ -180,6 +191,10 @@ public class Estacion implements Comparable<Estacion>{
 	}
 	public void setPesoTotal(Double pesoTotal) {
 		this.pesoTotal = pesoTotal;
+	}
+	public void quitarConexion(Conexion c) {
+		listConexiones.remove(c);
+		
 	}
 	
 	/*
@@ -199,15 +214,23 @@ public class Estacion implements Comparable<Estacion>{
 		
 	}
 	public void eliminar() { //Debe llamar al metodo estatico con this
-		Estacion.borrarEstacion(this);
-		listConexiones.stream()
-					  .forEach(f ->{
-						  f.eliminar();
+		//if(listConexiones.isEmpty()) System.out.println("ESTA VACIO QUE CARAJOS");
+		HashSet<Conexion> aux= (HashSet<Conexion>)listConexiones.clone();
+		aux.stream()
+					  .forEach(c ->{
+						  //System.out.println("Eliminando conexion...");
+						  c.getLinea().inactivar();
+						  c.eliminar();
 					  });
 		listConexiones.clear();
+		listConexiones=null;
+		Estacion.borrarEstacion(this);
 	}
 	@Override
 	public int compareTo(Estacion o) {
 		return this.getNombre().compareToIgnoreCase(o.getNombre());
+	}
+	public String toString() {
+		return this.nombre;
 	}
 }

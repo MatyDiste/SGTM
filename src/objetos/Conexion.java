@@ -12,23 +12,46 @@ enum EstadoConexion {
 public class Conexion {
 	
 	private Estacion e1, e2;
+	private Flecha flecha;
 	private Double distancia;
-	private LocalTime duracion;
+	private Double duracion;
 	private Integer cantMaxPasajeros;
 	private EstadoConexion estado;
 	private Double costo;
 	private Linea linea;
 
+	//Constructor DEBUG!!!!
 	public Conexion(Estacion a, Estacion b, Linea l) {
+		a.addConexion(this);
+		b.addConexion(this);
 		e1=a;
 		e2=b;
 		linea=l;
 		estado=l.estado().equals("ACTIVA")? EstadoConexion.ACTIVA : EstadoConexion.INACTIVA;
-		Flecha f=new Flecha(a, b, this);
+		flecha =new Flecha(a, b, this);
+		//System.out.println("Creada conexion entre "+a.getNombre()+" --> "+b.getNombre());
+	}
+	//END Constructor DEBUG!!!!
+	public Conexion(Estacion a, Estacion b, Linea l, Double dist, Double durMinutos, Integer cantPasajeros, Double precio) {
+		a.addConexion(this);
+		b.addConexion(this);
+		e1=a;
+		e2=b;
+		linea=l;
+		estado=l.estado().equals("ACTIVA")? EstadoConexion.ACTIVA : EstadoConexion.INACTIVA;
+		flecha =new Flecha(a, b, this);
+		distancia=dist;
+		duracion=durMinutos;
+		cantMaxPasajeros=cantPasajeros;
+		costo=precio;
 		//System.out.println("Creada conexion entre "+a.getNombre()+" --> "+b.getNombre());
 	}
 	
 	public void eliminar() {
+		e1.quitarConexion(this);
+		e2.quitarConexion(this);
+		flecha.eliminar();
+		flecha=null;
 		e1=null;
 		e2=null;
 		this.deshabilitar();
@@ -64,11 +87,11 @@ public class Conexion {
 		this.distancia = distancia;
 	}
 
-	public LocalTime getDuracion() {
+	public Double getDuracion() {
 		return duracion;
 	}
 
-	public void setDuracion(LocalTime duracion) {
+	public void setDuracion(Double duracion) {
 		this.duracion = duracion;
 	}
 

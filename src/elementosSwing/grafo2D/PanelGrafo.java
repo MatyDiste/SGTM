@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
 
-import elementosSwing.PanelInformacion;
+import elementosSwing.PanelInfo;
 import objetos.Estacion;
 
 public class PanelGrafo extends JPanel {
@@ -31,7 +31,7 @@ public class PanelGrafo extends JPanel {
 		super();
 		pg=this;
 		this.setPreferredSize(new Dimension(700, 550));
-		this.setMaximumSize(new Dimension(700,550));
+		this.setMaximumSize(new Dimension(900,550));
 		this.setCursor(new Cursor(Cursor.HAND_CURSOR));
 		//this.setSize(new Dimension(1000, 1000));
 		//TODO cargar estaciones y flechas
@@ -43,12 +43,12 @@ public class PanelGrafo extends JPanel {
 											   .filter(e -> e.puntoDentro((double)event.getX(), (double)event.getY()))
 										       .findAny();
 					selectedEstacion.get().select();
-					PanelInformacion.setEstacion(selectedEstacion.get().e);
-					PanelInformacion.repintar();
+					PanelInfo.setEstacion(selectedEstacion.get().e);
+					//PanelInfo.repintar();
 				}catch(NoSuchElementException e) {
 					selectedEstacion=Optional.empty();
-					PanelInformacion.setVacio();
-					PanelInformacion.repintar();
+					PanelInfo.setVacio();
+					//PanelInfo.repintar();
 				}
 				
 				
@@ -61,16 +61,16 @@ public class PanelGrafo extends JPanel {
 					else {
 						selectedEstacion.get().unselect();
 						selectedEstacion=Optional.empty();
-						PanelInformacion.setVacio();
-						PanelInformacion.repintar();
+						PanelInfo.setVacio();
+						//PanelInfo.repintar();
 					}
 					repaint();
 						
 				}
 				catch(NoSuchElementException e) {
 					selectedEstacion=Optional.empty();
-					PanelInformacion.setVacio();
-					PanelInformacion.repintar();
+					PanelInfo.setVacio();
+					//PanelInfo.repintar();
 				}
 			}
 			public void mouseReleased(MouseEvent event) {
@@ -96,14 +96,14 @@ public class PanelGrafo extends JPanel {
 					else {
 						selectedEstacion.get().unselect();
 						selectedEstacion=Optional.empty();
-						PanelInformacion.setVacio();
+						PanelInfo.setVacio();
 					}
 					repaint();
 						
 				}
 				catch(NoSuchElementException e) {
 					selectedEstacion=Optional.empty();
-					PanelInformacion.setVacio();
+					PanelInfo.setVacio();
 					//repaint();
 				}
 			}
@@ -133,13 +133,13 @@ public class PanelGrafo extends JPanel {
 		g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setColor(Color.WHITE);
-		g2d.fill(new Rectangle(700, 700));
+		g2d.fill(new Rectangle(1000, 1000));
 		dibujarEstaciones();
 		//dibujarFlechas();
 	}
 	
 	public static void repintarGrafo() {
-		pg.paintComponent(pg.g2d);
+		pg.repaint();
 	}
 	
 }

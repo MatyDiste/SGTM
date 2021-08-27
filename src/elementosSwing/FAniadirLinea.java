@@ -132,7 +132,7 @@ public class FAniadirLinea extends JDialog {
 			{
 				JButton okButton = new JButton("Aceptar");
 				okButton.addActionListener(e -> {
-					PanelInformacion.setLinea(new Linea(textField.getText(), color, true));
+					PanelInfo.setLinea(new Linea(textField.getText(), color, true));
 					this.dispose();
 					PanelGrafo.repintarGrafo();
 				});

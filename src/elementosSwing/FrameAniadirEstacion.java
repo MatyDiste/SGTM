@@ -64,7 +64,7 @@ public class FrameAniadirEstacion extends JFrame {
 		});
 		aceptar.addActionListener(e -> {
 			try {
-				PanelInformacion.setEstacion(new Estacion(Short.parseShort(IDTF.getText()), nombreTF.getText(), LocalTime.parse(aperturaTF.getText()), LocalTime.parse(cierreTF.getText()), true));
+				PanelInformacion.setEstacion(new Estacion(nombreTF.getText(), LocalTime.parse(aperturaTF.getText()), LocalTime.parse(cierreTF.getText()), true));
 				PanelGrafo.repintarGrafo();
 				this.dispose();
 			} catch(DateTimeParseException exc) {

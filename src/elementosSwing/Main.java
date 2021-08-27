@@ -23,6 +23,7 @@ public class Main {
 		FlatInspector.install( "ctrl shift alt T" ); //Con CTRL+SHIFT+ALT+T se activa el modo inspector, ESC para salir
 		
 		
+		@SuppressWarnings("unused")
 		JFrame vnt=new Home("Sistema de gestion de Transporte Multimodal");
 		
 		
@@ -34,6 +35,7 @@ public class Main {
 	}
 	
 	public static void openMainWindow() {
+		@SuppressWarnings("unused")
 		MainWindow mw= new MainWindow("Sistema gestion de Transporte Multimodal");
 		for(int i=0; i<9; i++) {
 			debugGenEstacion();
@@ -49,20 +51,20 @@ public class Main {
 	}
 	
 	public static void debugGenEstacion() {
-		new Estacion((short)(Math.random()*32000), "DBG"+Integer.toString((int)(Math.random()*31)), LocalTime.of((int)(Math.random()*24), 0), LocalTime.of((int)(Math.random()*24), 0), true);
+		new Estacion("DBG"+Integer.toString((int)(Math.random()*31)), LocalTime.of((int)(Math.random()*24), 0), LocalTime.of((int)(Math.random()*24), 0), true);
 	}
 	
 	public static void debugGenLinea() {
-		Linea l=new Linea("Ldbg"+Integer.toString((int)(Math.random()*31)), new Color((int)(Math.random()*Integer.MAX_VALUE-1)), true);
+		new Linea("Ldbg"+Integer.toString((int)(Math.random()*31)), new Color((int)(Math.random()*Integer.MAX_VALUE-1)), true);
 		//System.out.println("Linea "+l.getNombre()+" | Color : "+l.getColor().toString());
 	}
 	
 	public static void debugGenConexiones(Linea l) {
 		Integer cantidad=(int)(5);
-		Estacion est=Estacion.listEstaciones.stream().toList().get((int)(Math.random()*Estacion.listEstaciones.size()-1));
+		Estacion est=Estacion.listEstaciones.stream().toList().get((int)(Math.random()*Estacion.listEstaciones.size()));
 		l.getListEstaciones().add(est);
 		for(int i=0; i<cantidad; i++) {
-			Estacion est2=Estacion.listEstaciones.stream().toList().get((int)(Math.random()*Estacion.listEstaciones.size()-1));
+			Estacion est2=Estacion.listEstaciones.stream().toList().get((int)(Math.random()*Estacion.listEstaciones.size()));
 			l.getListConexiones().add(new Conexion(est, est2, l));
 			l.getListEstaciones().add(est2);
 			est=est2;
