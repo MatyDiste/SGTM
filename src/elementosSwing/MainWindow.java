@@ -16,12 +16,14 @@ import elementosSwing.grafo2D.PanelGrafo;
 public class MainWindow extends JFrame{
 	private PanelGrafo pg=new PanelGrafo();
 	private PanelBusqueda pb=new PanelBusqueda();
-	private PanelInformacion pi=new PanelInformacion();
-	
+	private PanelInfo pi=new PanelInfo();
+	public static Integer grafoSizeX;
+	public static Integer grafoSizeY;
 	
 	public MainWindow(String t) {
 		super(t);
-		this.setBounds(0, 0, 1000, 1000);
+		this.setBounds(0, 0, 1200, 800);
+		this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		this.setLocationRelativeTo(null);
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -44,6 +46,9 @@ public class MainWindow extends JFrame{
 			}
 			
 		});
+		
+		grafoSizeX=pg.getWidth();
+		grafoSizeY=pg.getHeight();
 		
 	}
 }

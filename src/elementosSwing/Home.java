@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 import com.formdev.flatlaf.extras.components.*;
+import com.formdev.flatlaf.extras.components.FlatButton.ButtonType;
 
 public class Home extends JFrame {
 	
@@ -26,7 +27,9 @@ public class Home extends JFrame {
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		//añadir cosas
-		btnuser=new BtnPrincipal("Usuario");
+		btnuser=new FlatButton();
+		btnuser.setText("Usuario");
+		btnuser.setButtonType(ButtonType.roundRect);
 		btnuser.addActionListener(e -> {
 			Main.setModoAdmin(false);
 			Main.openMainWindow();
@@ -35,7 +38,9 @@ public class Home extends JFrame {
 		});
 		btnuser.setPreferredSize(new Dimension(175,175));
 		btnuser.setIcon(new ImageIcon("./assets/user_icon.png"));
-		btnadmin=new BtnPrincipal("Administrador");
+		btnadmin=new FlatButton();
+		btnadmin.setText("Administrador");
+		btnadmin.setButtonType(ButtonType.roundRect);
 		btnadmin.addActionListener(e -> {
 			Main.setModoAdmin(true);
 			Main.openMainWindow();

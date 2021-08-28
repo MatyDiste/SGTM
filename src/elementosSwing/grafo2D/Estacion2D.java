@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import objetos.Estacion;
 
@@ -19,8 +20,8 @@ public class Estacion2D {
 	public static final Double RADIO=25d;
 	
 	public Estacion e;
-	public ArrayList<Flecha> listFlechasSalida=new ArrayList<Flecha>();
-	public ArrayList<Flecha> listFlechasLlegada=new ArrayList<Flecha>();
+	public HashSet<Flecha> listFlechasSalida=new HashSet<Flecha>();
+	public HashSet<Flecha> listFlechasLlegada=new HashSet<Flecha>();
 	public Boolean selected=false;
 	public Double posx, posy;
 	public Double centrox;
@@ -29,6 +30,12 @@ public class Estacion2D {
 	public Ellipse2D.Double circulo;
 	public Graphics2D g2d;
 	
+	public void quitarFlechaLlegada(Flecha f) {
+		listFlechasLlegada.remove(f);
+	}
+	public void quitarFlechaSalida(Flecha f) {
+		listFlechasSalida.remove(f);
+	}
 	
 	public Estacion2D(Estacion estacion) {
 		circulo= new Ellipse2D.Double(0, 0, RADIO*2, RADIO*2);
@@ -91,10 +98,12 @@ public class Estacion2D {
 	
 	public void select() {
 		selected=true;
+		PanelGrafo.repintarGrafo();
 		//this.dibujar(g2d);
 	}
 	public void unselect() {
 		selected=false;
+		PanelGrafo.repintarGrafo();
 		//this.dibujar(g2d);
 	}
 	public void mover(Double x, Double y) {
