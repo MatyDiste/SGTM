@@ -1,10 +1,14 @@
 package elementosSwing;
 
-import java.util.ArrayList;
+import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
 
 import javax.swing.JTable;
+import javax.swing.RowSorter;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableRowSorter;
 
 import objetos.Linea;
 
@@ -12,18 +16,57 @@ public class TablaLineas extends JTable {
 	
 	public TablaLineas() {
 		super(new MiTableModelLinea());
-		this.setAutoCreateRowSorter(true);
+		MiTableModelLinea tbl=(MiTableModelLinea) this.getModel();
+		TableRowSorter<MiTableModelLinea> trs=new TableRowSorter<MiTableModelLinea>(tbl);
+		trs.setSortable(1, false); //No se ordena por color
+		this.setRowSorter(trs);
+		
+		JTable aux=this;
+		this.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				if(aux.getSelectedRow()!=-1) {
+					//aux.setRowSorter(new TableRowSorter<MiTableModelLinea>(tbl));
+					RowSorter<MiTableModelLinea> rs=(RowSorter<MiTableModelLinea>)aux.getRowSorter();
+					Linea lin= Linea.getLineaPorNombre((String) aux.getModel().getValueAt(rs.convertRowIndexToModel(aux.getSelectedRow()), 0));
+					PanelInfo.setLinea(lin);
+				}
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 	}
 	
 }
 
 class MiTableModelLinea extends AbstractTableModel{
-
-	private List<Linea> listLinea=new ArrayList<Linea>();
+	List<Linea> listLinea=Linea.listLineas.stream().toList();
 	
 	public MiTableModelLinea() {
 		super();
-		listLinea.addAll(Linea.listLineas.stream().toList());
 	}
 	
 	
@@ -51,9 +94,12 @@ class MiTableModelLinea extends AbstractTableModel{
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		switch(columnIndex) {
 		case 0: return listLinea.get(rowIndex).getNombre();
-		case 1: return listLinea.get(rowIndex).getColor().toString();
+		case 1: 
+			Color lin=listLinea.get(rowIndex).getColor();
+			return "R:"+lin.getRed()+" G:"+lin.getGreen()+" B:"+lin.getBlue();
 		case 2: return listLinea.get(rowIndex).estado();
 		default: return "ERROR";
 		}
 	}
 }
+

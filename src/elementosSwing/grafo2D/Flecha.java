@@ -20,7 +20,7 @@ import objetos.Linea;
 public class Flecha {
 	
 	
-	private static final int SELECTEDWIDTH=4;
+	private static final int SELECTEDWIDTH=6;
 	private static final int UNSELECTEDWIDTH=2;
 	private static final float[] dash= {0.3f, 0.3f};
 	private static final float dashPhase=0f;
@@ -213,8 +213,10 @@ public class Flecha {
 
 	public void select() {
 		selected=true;
+		PanelGrafo.repintarGrafo();
 	}
 	public void unselect() {
 		selected=false;
+		PanelGrafo.repintarGrafo();
 	}
 }

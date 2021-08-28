@@ -45,7 +45,7 @@ public class InfoLinea extends JPanel implements InfoLineaInterface {
 		
 		JLabel lblNewLabel_1 = new JLabel("Color");
 		lblNewLabel_1.setVerticalAlignment(SwingConstants.TOP);
-		add(lblNewLabel_1, "cell 0 2,alignx trailing");
+		add(lblNewLabel_1, "cell 0 2,alignx trailing,aligny center");
 		
 		JLabel lblNewLabel_2 =new JLabel("Estado");
 		add(lblNewLabel_2, "cell 0 3,alignx trailing");
@@ -64,7 +64,7 @@ public class InfoLinea extends JPanel implements InfoLineaInterface {
 		add(btnNewButton, "flowx,cell 1 2,alignx left,aligny top");
 		
 		JPanel panel = new CuadradoColor(l.getColor());
-		add(panel, "cell 1 2,alignx left,aligny top");
+		add(panel, "cell 1 2,alignx left,aligny center");
 
 	}
 

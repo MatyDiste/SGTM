@@ -49,7 +49,7 @@ public class InfoLineaEDIT extends JPanel implements InfoLineaInterface {
 		textField.setColumns(20);
 		
 		JLabel lblNewLabel_1 = new JLabel("Color");
-		add(lblNewLabel_1, "cell 0 2,alignx trailing, aligny top");
+		add(lblNewLabel_1, "cell 0 2,alignx trailing,aligny center");
 		
 		JLabel lblNewLabel_2 =new JLabel("Estado");
 		add(lblNewLabel_2, "cell 0 3,alignx trailing");
@@ -84,7 +84,7 @@ public class InfoLineaEDIT extends JPanel implements InfoLineaInterface {
 			can.setMinimumSize(new Dimension(100,25));
 			can.setMaximumSize(new Dimension(100,25));
 			ac.addActionListener(d -> {
-				color=jcc.getColor();
+				setColor(jcc.getColor());
 				frameColor.dispose();
 			});
 			can.addActionListener(d -> {
@@ -97,10 +97,10 @@ public class InfoLineaEDIT extends JPanel implements InfoLineaInterface {
 			frameColor.add(ac,  BorderLayout.CENTER);
 			frameColor.setVisible(true);
 		});
-		add(btnNewButton, "flowx,cell 1 2,alignx left");
+		add(btnNewButton, "flowx,cell 1 2,alignx left,aligny center");
 		
 		panel = new CuadroColor(l.getColor());
-		add(panel, "cell 1 2,alignx left");
+		add(panel, "cell 1 2,alignx left,aligny center");
 
 	}
 	
@@ -116,6 +116,7 @@ public class InfoLineaEDIT extends JPanel implements InfoLineaInterface {
 	public void setColor(Color c) {
 		color=c;
 		remove(panel);
+		revalidate();
 		panel=new CuadroColor(c);
 		add(panel, "cell 1 2, alignx left");
 		repaint();

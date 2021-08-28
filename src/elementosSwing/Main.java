@@ -35,8 +35,6 @@ public class Main {
 	}
 	
 	public static void openMainWindow() {
-		@SuppressWarnings("unused")
-		MainWindow mw= new MainWindow("Sistema gestion de Transporte Multimodal");
 		for(int i=0; i<9; i++) {
 			debugGenEstacion();
 		}
@@ -48,6 +46,8 @@ public class Main {
 			//System.out.println("Creada conexion");
 			debugGenConexiones(l);
 		});
+		@SuppressWarnings("unused")
+		MainWindow mw= new MainWindow("Sistema gestion de Transporte Multimodal");
 	}
 	
 	public static void debugGenEstacion() {

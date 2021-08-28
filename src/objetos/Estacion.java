@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import elementosSwing.MainWindow;
 import elementosSwing.grafo2D.Estacion2D;
+import elementosSwing.grafo2D.PanelGrafo;
 
 enum EstadoEstacion {
 	OPERATIVA, EN_MANTENIMIENTO
@@ -74,8 +75,8 @@ public class Estacion implements Comparable<Estacion>{
 		this.estado=(estado)? EstadoEstacion.OPERATIVA : EstadoEstacion.EN_MANTENIMIENTO;
 		listEstaciones.add(this);
 		this.e2d=new Estacion2D(this);
-		this.posx=Math.random() * (MainWindow.grafoSizeX - 100) + 50;
-		this.posy=Math.random() * (MainWindow.grafoSizeY - 100) + 50;
+		this.posx=Math.random() * 500+ 50;
+		this.posy=Math.random() * 500 + 50;
 		
 		//System.out.println("Añadida estacion "+this.nombre);
 	}
@@ -196,6 +197,12 @@ public class Estacion implements Comparable<Estacion>{
 		listConexiones.remove(c);
 		
 	}
+	public void select() {
+		this.e2d.select();
+	}
+	public void unselect() {
+		this.e2d.unselect();
+	}
 	
 	/*
 	 * Metodos que deben implementarse:
@@ -219,7 +226,7 @@ public class Estacion implements Comparable<Estacion>{
 		aux.stream()
 					  .forEach(c ->{
 						  //System.out.println("Eliminando conexion...");
-						  c.getLinea().inactivar();
+						  c.getLinea().quitarConexion(c);
 						  c.eliminar();
 					  });
 		listConexiones.clear();

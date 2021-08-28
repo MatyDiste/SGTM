@@ -155,6 +155,7 @@ public class FAniadirEstacion extends JDialog {
 						DateTimeFormatter dtf= DateTimeFormatter.ISO_LOCAL_TIME;
 						PanelInfo.setEstacion(new Estacion(textField_1.getText(), LocalTime.parse(textField_2.getText(), dtf), LocalTime.parse(textField_3.getText(), dtf), true));
 						PanelGrafo.repintarGrafo();
+						PanelBusqueda.recargar();
 						this.dispose();
 					} catch(DateTimeParseException exc) {
 						JFrame popup=new JFrame("Error");

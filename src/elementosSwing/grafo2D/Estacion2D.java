@@ -98,10 +98,12 @@ public class Estacion2D {
 	
 	public void select() {
 		selected=true;
+		PanelGrafo.repintarGrafo();
 		//this.dibujar(g2d);
 	}
 	public void unselect() {
 		selected=false;
+		PanelGrafo.repintarGrafo();
 		//this.dibujar(g2d);
 	}
 	public void mover(Double x, Double y) {

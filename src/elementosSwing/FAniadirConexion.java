@@ -14,12 +14,15 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ListDataListener;
 
+import elementosSwing.grafo2D.PanelGrafo;
 import net.miginfocom.swing.MigLayout;
+import objetos.Conexion;
 import objetos.Estacion;
 import objetos.Linea;
 
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
+import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -40,8 +43,8 @@ public class FAniadirConexion extends JFrame {
 	private JPanel panelContent=new JPanel();
 	private JScrollPane scrollPane = new JScrollPane(panelContent);
 	private Stack<PanelConexion> listPC=new Stack<PanelConexion>();
-	JLabel lblNewLabel_2 = new JLabel("Esta l\u00EDnea ya tiene un recorrido asignado");
-	JComboBox<Linea> comboBox = new JComboBox<Linea>();
+	private JLabel lblNewLabel_2 = new JLabel("Esta l\u00EDnea ya tiene un recorrido asignado");
+	private JComboBox<Linea> comboBox = new JComboBox<Linea>();
 	/**
 	 * Create the frame.
 	 */
@@ -49,7 +52,7 @@ public class FAniadirConexion extends JFrame {
 		frame=this;
 		setTitle("Nuevo recorrido");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 851, 576);
+		setBounds(100, 100, 850, 425);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -83,7 +86,7 @@ public class FAniadirConexion extends JFrame {
 		btnNewButton.setIcon(new ImageIcon("./assets/add_icon.png"));
 		btnNewButton.putClientProperty("JButton.buttonType", "roundRect");
 		btnNewButton.addActionListener(e -> {
-			addConexion();
+			addConexion(false);
 			btnNewButton_1.setEnabled(true);
 		});
 		contentPane.add(btnNewButton, "flowx,cell 0 1");
@@ -94,29 +97,65 @@ public class FAniadirConexion extends JFrame {
 		btnNewButton_1.setIcon(new ImageIcon("./assets/delete_icon.png"));
 		btnNewButton_1.addActionListener(e -> {
 			deleteConexion();
-			if(listPC.size()==1) btnNewButton_1.setEnabled(false);
+			if(listPC.size()==2) btnNewButton_1.setEnabled(false);
 		});
 		contentPane.add(btnNewButton_1, "cell 0 1");
 		
 		panelContent.setLayout(new MigLayout("","","[grow]"));
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 		//scrollPane.setLayout(new ScrollPaneLayout());
-		addConexion();
+		addConexion(true); addConexion(false);
 		contentPane.add(scrollPane, "flowx,cell 0 2 4 1, grow");
 		
 		JButton btnNewButton_3 = new JButton("Cancelar");
+		btnNewButton_3.addActionListener(e -> {
+			this.dispose();
+		});
+		
+		JLabel lblNewLabel_3 = new JLabel("Algunos de los datos est\u00E1 mal");
+		lblNewLabel_3.setForeground(Color.RED);
+		lblNewLabel_3.setToolTipText("El recuadro que tenga informaci\u00F3n incorrecta estar\u00E1 resaltado");
+		lblNewLabel_3.setVisible(false);
+		contentPane.add(lblNewLabel_3, "cell 2 3,alignx trailing");
 		contentPane.add(btnNewButton_3, "flowx,cell 3 3,alignx trailing");
 		
 		JButton btnNewButton_2 = new JButton("Aceptar");
+		btnNewButton_2.addActionListener(e -> {
+			try {
+				listPC.forEach(p -> p.check());
+				if(lblNewLabel_2.isVisible()) {
+					//La línea ya tenía un recorrido, remover el recorrido anterior
+					((Linea)comboBox.getSelectedItem()).quitarRecorrido();
+				}
+				for(int i=0; i<listPC.size()-1; i++) {
+					PanelConexion p1=listPC.elementAt(i);
+					PanelConexion p2=listPC.elementAt(i+1);
+					Estacion e1=p1.getEstacion();
+					Estacion e2=p2.getEstacion();
+					Linea lin=(Linea)this.comboBox.getSelectedItem();
+					Double dist=p2.getDistancia();
+					Double dur=p2.getDuracion();
+					Integer pasajeros=p2.getPasajeros();
+					Double costo=p2.getCosto();
+					new Conexion(e1,e2,lin,dist,dur,pasajeros,costo);
+				}
+				this.dispose();
+				PanelGrafo.repintarGrafo();
+				PanelBusqueda.recargar();
+			}
+			catch(NumberFormatException exc) {
+				lblNewLabel_3.setVisible(true);
+				listPC.forEach(p -> p.check());
+			}
+		});
 		contentPane.add(btnNewButton_2, "cell 3 3,alignx trailing");
 		getRootPane().setDefaultButton(btnNewButton_2);
 	}
 	
-	public void addConexion() {
-		PanelConexion nuevo= new PanelConexion(false);
+	public void addConexion(Boolean esInicial) {
+		PanelConexion nuevo= new PanelConexion(esInicial);
 		panelContent.add(nuevo);
 		listPC.add(nuevo);
-		//scrollPane.revalidate();
 		panelContent.revalidate();
 		this.repaint();
 	}
@@ -124,7 +163,6 @@ public class FAniadirConexion extends JFrame {
 		PanelConexion ultimo=listPC.pop();
 		panelContent.remove(ultimo);
 		panelContent.revalidate();
-		this.revalidate();
 		this.repaint();
 	}
 	public void actualizar() {
@@ -139,51 +177,76 @@ public class FAniadirConexion extends JFrame {
 
 class PanelConexion extends JPanel{
 	private JComboBox<Estacion> comboEstacion=new JComboBox<Estacion>();
-	private JTextField distancia=new JTextField();
+	private JTextField distancia=new JTextField("0.0");
 	private JTextField duracion=new JTextField("5.0");
-	private JTextField cantPasajeros=new JTextField();
-	private JTextField costo=new JTextField();
+	private JTextField cantPasajeros=new JTextField("0");
+	private JTextField costo=new JTextField("0");
 	
 	public PanelConexion(Boolean esInicial) {
 		this.setLayout(new MigLayout("","",""));
-		this.setBorder(new LineBorder(Color.BLACK));
+		if(esInicial) this.setBorder(new LineBorder(null)); 
+		else this.setBorder(BorderFactory.createTitledBorder("Conexión"));
 		JLabel icono=new JLabel();
-		icono.setIcon(esInicial? new ImageIcon("./assets/flecha_icon.png") : new ImageIcon("./assets/flecha_icon.png"));
+		icono.setIcon(esInicial? new ImageIcon("./assets/start_icon.png") : new ImageIcon("./assets/flecha_icon.png"));
 		add(icono);
 		
 		Estacion[] aux=new Estacion[Estacion.listEstaciones.size()];
 		comboEstacion.setModel(new DefaultComboBoxModel<Estacion>(Estacion.listEstaciones.toArray(aux)));
 		add(comboEstacion, "wrap");
 		
-		JLabel t1=new JLabel("Distancia (km):");
-		distancia.setColumns(10);
-		add(t1, "alignx trailing"); add(distancia, "wrap");
-		
-		JLabel t2=new JLabel("Duración (minutos):");
-		duracion.setColumns(10);
-		add(t2, "alignx trailing"); add(duracion, "wrap");
-		
-		JLabel t3=new JLabel("Cantidad máx. pasajeros:");
-		cantPasajeros.setColumns(10);
-		add(t3, "alignx trailing"); add(cantPasajeros, "wrap");
-		
-		JLabel t4=new JLabel("Costo:");
-		costo.setColumns(10);
-		add(t4, "alignx trailing"); add(costo, "wrap");
-		
+		if(esInicial) {
+			
+		}
+		else {
+			
+			JLabel t1=new JLabel("Distancia (km):");
+			distancia.setColumns(10);
+			add(t1, "alignx trailing"); add(distancia, "wrap");
+			
+			JLabel t2=new JLabel("Duración (minutos):");
+			duracion.setColumns(10);
+			add(t2, "alignx trailing"); add(duracion, "wrap");
+			
+			JLabel t3=new JLabel("Cantidad máx. pasajeros:");
+			cantPasajeros.setColumns(10);
+			add(t3, "alignx trailing"); add(cantPasajeros, "wrap");
+			
+			JLabel t4=new JLabel("Costo:");
+			costo.setColumns(10);
+			add(t4, "alignx trailing"); add(costo, "wrap");
+		}
 	}
 	
-	public Double getDistancia() {
+	public Estacion getEstacion() {
+		return (Estacion)comboEstacion.getSelectedItem();
+	}
+	public Double getDistancia() throws NumberFormatException{
 		return Double.parseDouble(distancia.getText());
 	}
-	public Double getDuracion() {
+	public Double getDuracion() throws NumberFormatException{
 		return Double.parseDouble(duracion.getText());
 	}
-	public Integer getPasajeros() {
+	public Integer getPasajeros() throws NumberFormatException{
 		return Integer.parseInt(cantPasajeros.getText());
 	}
-	public Double getCosto() {
+	public Double getCosto() throws NumberFormatException{
 		return Double.parseDouble(costo.getText());
+	}
+	public Boolean check() {
+		try {
+			this.getEstacion();
+			this.getDistancia();
+			this.getDuracion();
+			this.getPasajeros();
+			this.getCosto();
+			return true;
+		} 
+		catch(NumberFormatException exc) {
+			this.setBorder(new LineBorder(Color.RED));
+			this.setBorder(BorderFactory.createTitledBorder(this.getBorder(), "Conexión"));
+			this.repaint();
+			return false;
+		}
 	}
 	
 	

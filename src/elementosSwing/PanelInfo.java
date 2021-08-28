@@ -78,6 +78,7 @@ public class PanelInfo extends JPanel {
 			edit=false;
 			eliminar();
 			setVacio();
+			PanelBusqueda.recargar();
 		});
 		add(btnNewButton_1, "cell 0 3,alignx left");
 		
@@ -103,7 +104,7 @@ public class PanelInfo extends JPanel {
 			btnNewButton_4.setVisible(false);
 			guardarInfo();
 			genLabelInfo();
-			//TODO
+			PanelBusqueda.recargar();
 		});
 		add(btnNewButton_3, "cell 0 2");
 		
@@ -115,6 +116,7 @@ public class PanelInfo extends JPanel {
 			btnNewButton_3.setVisible(false);
 			btnNewButton_4.setVisible(false);
 			genLabelInfo();
+			PanelBusqueda.recargar();
 		});
 		add(btnNewButton_4, "cell 0 2");
 		
@@ -199,9 +201,11 @@ public class PanelInfo extends JPanel {
 		switch(tipoSeleccionado) {
 		case 1:
 			//System.out.println("Eliminando estacion...");
+			estacion.unselect();
 			estacion.eliminar();
 			break;
 		case 2:
+			linea.unselect();
 			linea.eliminar();
 			break;
 		default:
@@ -211,6 +215,8 @@ public class PanelInfo extends JPanel {
 	}
 	
 	public static void setLinea(Linea l) {
+		if(panel.tipoSeleccionado==ESTACION) panel.estacion.unselect();
+		else if(panel.tipoSeleccionado==LINEA) panel.linea.unselect();
 		panel.btnNewButton.setEnabled(true);
 		panel.btnNewButton_1.setEnabled(true);
 		panel.edit=false;
@@ -221,9 +227,12 @@ public class PanelInfo extends JPanel {
 		panel.genLabelInfo();
 		//panel.revalidate();
 		panel.repaint();
+		l.select();
 	}
 	public static void setEstacion(Estacion e) {
 		//panel.quitarPanel();
+		if(panel.tipoSeleccionado==ESTACION) panel.estacion.unselect();
+		else if(panel.tipoSeleccionado==LINEA) panel.linea.unselect();
 		panel.btnNewButton.setEnabled(true);
 		panel.btnNewButton_1.setEnabled(true);
 		panel.edit=false;
@@ -233,10 +242,13 @@ public class PanelInfo extends JPanel {
 		panel.linea=null;
 		panel.genLabelInfo();
 		//panel.revalidate();
+		e.select();
 		panel.repaint();
 	}
 	public static void setVacio() {
 		//panel.quitarPanel();
+		if(panel.tipoSeleccionado==ESTACION) panel.estacion.unselect();
+		else if(panel.tipoSeleccionado==LINEA) panel.linea.unselect();
 		panel.btnNewButton.setEnabled(false);
 		panel.btnNewButton_1.setEnabled(false);
 		panel.edit=false;

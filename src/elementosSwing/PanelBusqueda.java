@@ -1,116 +1,72 @@
 package elementosSwing;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
-
-import com.formdev.flatlaf.extras.components.FlatButton;
-
+import javax.swing.ScrollPaneConstants;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import net.miginfocom.swing.MigLayout;
+import java.awt.BorderLayout;
 
 public class PanelBusqueda extends JPanel {
-	
-	private GridBagConstraints gbc = new GridBagConstraints();
+	private static PanelBusqueda panelstatic;
 	private JTable tabla;
-	private FlatButton btnLineas= new FlatButton();
-	private FlatButton btnEstaciones= new FlatButton();
-	private Boolean listarEstaciones=true;
-	
+	private JScrollPane panel = new JScrollPane();
+	private Boolean esEstacion=true;
+	/**
+	 * Create the panel.
+	 */
 	public PanelBusqueda() {
-		super();
-		this.setLayout(new GridBagLayout());
-		this.setVisible(true);
+		panelstatic=this;
+		setLayout(new MigLayout("", "[][grow]", "[120!][120!]"));
 		
-		btnLineas.addActionListener(e -> {
-			 listarEstaciones=false;
-			 //System.out.println("Repaint");
-			 this.repaint();
+		JButton btnNewButton = new JButton("Estaciones");
+		btnNewButton.setIcon(new ImageIcon("./assets/estacion_icon.png"));
+		btnNewButton.setIconTextGap(20);
+		btnNewButton.addActionListener(e -> {
+			if(!esEstacion) {
+				tabla=new TablaEstaciones();
+				recrearTabla(tabla);
+				esEstacion=true;
+			}
 		});
-		btnEstaciones.addActionListener(e -> {
-			listarEstaciones=true;
-			//System.out.println("Repaint");
-			this.repaint();
+		add(btnNewButton, "cell 0 0,grow");
+		
+		JButton btnNewButton_1 = new JButton("Líneas");
+		btnNewButton_1.setIcon(new ImageIcon("./assets/linea_icon.png"));
+		btnNewButton_1.setIconTextGap(20);
+		btnNewButton_1.addActionListener(e -> {
+			if(esEstacion) {
+				tabla=new TablaLineas();
+				recrearTabla(tabla);
+				esEstacion=false;
+			}
 		});
-		
-		//Añadir btnLineas
-		gbc.fill=GridBagConstraints.NONE;
-		gbc.anchor=GridBagConstraints.CENTER;
-		gbc.gridheight=1;
-		gbc.gridwidth=2;
-		gbc.gridx=0;
-		gbc.gridy=0;
-		gbc.insets=new Insets(5,5,5,8);
-		gbc.weightx=0;
-		gbc.weighty=0;
-		btnLineas.setPreferredSize(new Dimension(130,90));
-		btnLineas.setText("LÍNEAS");
-		this.add(btnLineas, gbc);
-		
-		//Añadir btnEstaciones
-		gbc.fill=GridBagConstraints.NONE;
-		gbc.anchor=GridBagConstraints.CENTER;
-		gbc.gridheight=1;
-		gbc.gridwidth=2;
-		gbc.gridx=0;
-		gbc.gridy=1;
-		gbc.insets=new Insets(5,5,5,8);
-		gbc.weightx=0;
-		gbc.weighty=0;
-		btnEstaciones.setPreferredSize(new Dimension(130,90));
-		btnEstaciones.setText("ESTACIONES");
-		this.add(btnEstaciones, gbc);;
-		
-		//Añadir tabla
+		add(btnNewButton_1, "cell 0 1,grow");
 		tabla=new TablaEstaciones();
-		gbc.fill=GridBagConstraints.BOTH;
-		gbc.anchor=GridBagConstraints.CENTER;
-		gbc.gridheight=2;
-		gbc.gridwidth=1;
-		gbc.gridx=2;
-		gbc.gridy=0;
-		gbc.insets=new Insets(5,5,5,5);
-		gbc.weightx=1;
-		gbc.weighty=1;
-		this.add(tabla, gbc);
-		
+		recrearTabla(tabla);
+		add(panel, "cell 1 0 1 2,grow");
 	}
 	
-	@Override
-	protected void paintComponent(Graphics g) {
-		if(listarEstaciones) {
-			this.remove(tabla);
-			tabla=new TablaEstaciones();
-			gbc.fill=GridBagConstraints.BOTH;
-			gbc.anchor=GridBagConstraints.CENTER;
-			gbc.gridheight=2;
-			gbc.gridwidth=1;
-			gbc.gridx=2;
-			gbc.gridy=0;
-			gbc.insets=new Insets(5,5,5,5);
-			gbc.weightx=1;
-			gbc.weighty=1;
-			this.add(tabla, gbc);
+	private void recrearTabla(JTable tabla) {
+		panel.removeAll();
+		this.remove(panel);
+		this.revalidate();
+		panel = new JScrollPane(tabla);
+		panel.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		panel.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		this.add(panel, "cell 1 0 1 2,grow");
+		this.revalidate();
+		this.repaint();
+	}
+	public static void recargar() {
+		if(panelstatic.esEstacion) {
+			panelstatic.tabla=new TablaEstaciones();
 		}
 		else {
-			this.remove(tabla);
-			tabla=new TablaLineas();
-			gbc.fill=GridBagConstraints.BOTH;
-			gbc.anchor=GridBagConstraints.CENTER;
-			gbc.gridheight=2;
-			gbc.gridwidth=1;
-			gbc.gridx=2;
-			gbc.gridy=0;
-			gbc.insets=new Insets(5,5,5,5);
-			gbc.weightx=1;
-			gbc.weighty=1;
-			this.add(tabla, gbc);
+			panelstatic.tabla=new TablaLineas();
 		}
-		super.paintComponent(g);
-		//System.out.println("PaintComponent");
+		panelstatic.recrearTabla(panelstatic.tabla);
 	}
-	
 }

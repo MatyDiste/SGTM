@@ -44,6 +44,8 @@ public class Conexion {
 		duracion=durMinutos;
 		cantMaxPasajeros=cantPasajeros;
 		costo=precio;
+		
+		linea.addConexion(this);
 		//System.out.println("Creada conexion entre "+a.getNombre()+" --> "+b.getNombre());
 	}
 	
@@ -104,7 +106,14 @@ public class Conexion {
 	}
 	
 	public String estado() {
-		return this.estado.name();
+		if(this.estado==EstadoConexion.ACTIVA && this.linea.estado().equals("ACTIVA")) {
+			return "ACTIVA";
+		}
+		else {
+			return "INACTIVA";
+		}
+		
+		
 	}
 	
 	public void deshabilitar() {
@@ -128,6 +137,12 @@ public class Conexion {
 
 	public void setLinea(Linea linea) {
 		this.linea = linea;
+	}
+	public void select() {
+		flecha.select();
+	}
+	public void unselect() {
+		flecha.unselect();
 	}
 	
 	
