@@ -22,7 +22,7 @@ public class Flecha {
 	
 	private static final int SELECTEDWIDTH=6;
 	private static final int UNSELECTEDWIDTH=2;
-	private static final float[] dash= {0.3f, 0.3f};
+	private static final float[] dash= {3f, 3f};
 	private static final float dashPhase=0f;
 	
 	public Conexion conect;

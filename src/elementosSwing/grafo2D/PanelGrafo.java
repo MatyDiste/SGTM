@@ -90,16 +90,8 @@ public class PanelGrafo extends JPanel {
 		this.addMouseMotionListener(new MouseAdapter() {
 			public void mouseDragged(MouseEvent event) {
 				try {
-					if(selectedEstacion.get().puntoDentro((double)event.getX(), (double)event.getY())) {
-						selectedEstacion.get().mover((double)event.getX(), (double)event.getY());
-					}
-					else {
-						selectedEstacion.get().unselect();
-						selectedEstacion=Optional.empty();
-						PanelInfo.setVacio();
-					}
-					repaint();
-						
+					selectedEstacion.get().mover((double)event.getX(), (double)event.getY());
+					paintImmediately(0, 0, 1000, 1000);
 				}
 				catch(NoSuchElementException e) {
 					selectedEstacion=Optional.empty();
@@ -123,7 +115,9 @@ public class PanelGrafo extends JPanel {
 	
 	protected void recargar() {
 		listEstaciones.clear();
+		//listEstaciones.clear();
 		listEstaciones.addAll(Estacion.listEstaciones.stream().map(e->e.getE2d()).collect(Collectors.toList()));
+		//listEstaciones.addAll(Estacion.listEstaciones.stream().map(e->e.getE2d()).collect(Collectors.toList()));
 		//System.out.println("Hay "+listEstaciones.size()+" estaciones2D en la lista");
 	}
 	
@@ -134,7 +128,7 @@ public class PanelGrafo extends JPanel {
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setColor(Color.WHITE);
 		g2d.fill(new Rectangle(1000, 1000));
-		dibujarEstaciones();
+	    dibujarEstaciones();
 		//dibujarFlechas();
 	}
 	

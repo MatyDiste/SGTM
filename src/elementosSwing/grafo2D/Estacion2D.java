@@ -50,11 +50,10 @@ public class Estacion2D {
 	}
 	
 	public Boolean puntoDentro(Double x, Double y) {
-		/*if(Math.sqrt(Math.pow(centrox-x, 2) + Math.pow(centroy-y, 2))<=radio*2) {
-		System.out.println("Centro en: x="+centrox.toString()+" y="+centroy.toString());
-		System.out.println("Tiro en: x="+x.toString()+" y="+y.toString());
-		}*/
 		return Math.sqrt(Math.pow(centrox-x, 2) + Math.pow(centroy-y, 2))<=RADIO;
+	}
+	public Boolean puntoDentro(Double x, Double y, Double margenError) {
+		return Math.sqrt(Math.pow(centrox-x, 2) + Math.pow(centroy-y, 2))<=(RADIO+margenError);
 	}
 	
 	public void dibujar(Graphics2D g) {
@@ -72,8 +71,8 @@ public class Estacion2D {
 		g2d.draw(circulo);
 			
 		g2d.setColor(Color.BLACK);
-		g2d.setFont(new Font("Arial", selected? Font.BOLD : Font.PLAIN, 15));
-		g2d.drawString(nombre, RADIO.floatValue()/1.7f, RADIO.floatValue()/0.8f);
+		g2d.setFont(new Font(null, selected? Font.BOLD : Font.PLAIN, 15));
+		g2d.drawString(nombre, RADIO.floatValue()/2.4f, RADIO.floatValue()/0.8f);
 			
 		g2d.setTransform(rst);
 		
