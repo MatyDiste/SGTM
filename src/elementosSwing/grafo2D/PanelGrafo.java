@@ -14,7 +14,10 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.swing.DebugGraphics;
 import javax.swing.JPanel;
+import javax.swing.RepaintManager;
+import javax.swing.border.LineBorder;
 
 import elementosSwing.PanelInfo;
 import objetos.Estacion;
@@ -30,6 +33,8 @@ public class PanelGrafo extends JPanel {
 	public PanelGrafo() {
 		super();
 		pg=this;
+		this.setBorder(new LineBorder(Color.GRAY, 2));
+		this.setOpaque(true);
 		this.setPreferredSize(new Dimension(700, 550));
 		this.setMaximumSize(new Dimension(900,550));
 		this.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -91,7 +96,7 @@ public class PanelGrafo extends JPanel {
 			public void mouseDragged(MouseEvent event) {
 				try {
 					selectedEstacion.get().mover((double)event.getX(), (double)event.getY());
-					paintImmediately(0, 0, 1000, 1000);
+					paintImmediately(0, 0, 700, 760);
 				}
 				catch(NoSuchElementException e) {
 					selectedEstacion=Optional.empty();
@@ -100,6 +105,21 @@ public class PanelGrafo extends JPanel {
 				}
 			}
 		});
+		
+		/*
+		 * Thread que repinta constantemente el grafo, DEBUG
+		new Thread(()->{
+			while(true) {
+				this.paintImmediately(0,0,700,760);
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}).start();*/
+		
 		
 	}
 	
@@ -127,7 +147,7 @@ public class PanelGrafo extends JPanel {
 		g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setColor(Color.WHITE);
-		g2d.fill(new Rectangle(1000, 1000));
+		g2d.fill(new Rectangle(700, 760));
 	    dibujarEstaciones();
 		//dibujarFlechas();
 	}

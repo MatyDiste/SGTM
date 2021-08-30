@@ -46,6 +46,7 @@ public class Estacion2D {
 		this.posx=e.posx;
 		this.posy=e.posy;
 		nombre=e.getNombre();
+		//System.out.println("Añadida Estacion2D");
 		
 	}
 	
