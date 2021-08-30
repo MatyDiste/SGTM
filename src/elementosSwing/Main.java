@@ -56,7 +56,6 @@ public class Main {
 	
 	public static void debugGenLinea() {
 		new Linea("Ldbg"+Integer.toString((int)(Math.random()*31)), new Color((int)(Math.random()*Integer.MAX_VALUE-1)), true);
-		//System.out.println("Linea "+l.getNombre()+" | Color : "+l.getColor().toString());
 	}
 	
 	public static void debugGenConexiones(Linea l) {

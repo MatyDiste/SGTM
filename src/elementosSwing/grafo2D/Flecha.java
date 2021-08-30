@@ -22,7 +22,7 @@ public class Flecha {
 	
 	private static final int SELECTEDWIDTH=6;
 	private static final int UNSELECTEDWIDTH=2;
-	private static final float[] dash= {0.3f, 0.3f};
+	private static final float[] dash= {3f, 3f};
 	private static final float dashPhase=0f;
 	
 	public Conexion conect;
@@ -81,7 +81,7 @@ public class Flecha {
 	}
 	
 	public void updatePunta() {
-		//punta=new Path2D.Double();
+		punta=new Path2D.Double();
 		
 		punta.moveTo(0, 0);
 		punta.lineTo(-14d, -7d);
@@ -143,7 +143,7 @@ public class Flecha {
 		//System.out.println("Entre: x1="+x1.toString()+" y1="+y1.toString());
 		//System.out.println("       x2="+x2.toString()+" y2="+y2.toString());
 		
-		java.lang.Double offset = (x1<x2)? 0 : Math.PI;
+		java.lang.Double offset = (x1<=x2)? 0 : Math.PI;
 		java.lang.Double angulo=Math.atan((y2-y1)/(x2-x1)) + offset;
 		//System.out.println("Angulo calculado : alfa="+angulo.toString());
 		return angulo;

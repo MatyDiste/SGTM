@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 
 import com.formdev.flatlaf.extras.components.FlatButton.ButtonType;
 
+import elementosSwing.grafo2D.Estacion2D;
 import elementosSwing.grafo2D.PanelGrafo;
 import net.miginfocom.swing.MigLayout;
 import objetos.Estacion;

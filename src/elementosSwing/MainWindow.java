@@ -23,7 +23,7 @@ public class MainWindow extends JFrame{
 	public MainWindow(String t) {
 		super(t);
 		this.setBounds(0, 0, 1200, 800);
-		this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		//this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		this.setLocationRelativeTo(null);
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -49,6 +49,23 @@ public class MainWindow extends JFrame{
 		
 		grafoSizeX=pg.getWidth();
 		grafoSizeY=pg.getHeight();
-		
+		/*
+		 * Cambia el grafo cada 15 segundos, DEBUG
+		new Thread(() ->{
+			while(true) {
+				this.remove(pg);
+				this.revalidate();
+				pg=new PanelGrafo();
+				this.add(pg, BorderLayout.EAST);
+				this.repaint();
+				System.out.println("Cambiando de panel...");
+				try {
+					Thread.sleep(15000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+		}).start();*/
 	}
 }

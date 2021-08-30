@@ -21,9 +21,7 @@ public class Estacion implements Comparable<Estacion>{
 	public static HashSet<Estacion> listEstaciones=new HashSet<Estacion>(); //Util para que la clase se encargue de tener toda la lista de estaciones (al ser hashset, debe estar implementado hashcode e equals)
 	public static Short contadorId=1001;
 	private static Boolean borrarEstacion(Estacion e) { 
-		/* Estos son metodos estaticos que funcionan sobre todas las estaciones, son muy utiles
-		 * por ejemplo borrar, buscar.
-		 */
+		PanelGrafo.quitarEstacion(e.getE2d());
 		return listEstaciones.remove(e);
 		//TODO Comunicar DAO la eliminacion de e
 	}
