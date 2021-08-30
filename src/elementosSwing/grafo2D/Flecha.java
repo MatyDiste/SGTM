@@ -81,7 +81,7 @@ public class Flecha {
 	}
 	
 	public void updatePunta() {
-		//punta=new Path2D.Double();
+		punta=new Path2D.Double();
 		
 		punta.moveTo(0, 0);
 		punta.lineTo(-14d, -7d);
@@ -143,7 +143,7 @@ public class Flecha {
 		//System.out.println("Entre: x1="+x1.toString()+" y1="+y1.toString());
 		//System.out.println("       x2="+x2.toString()+" y2="+y2.toString());
 		
-		java.lang.Double offset = (x1<x2)? 0 : Math.PI;
+		java.lang.Double offset = (x1<=x2)? 0 : Math.PI;
 		java.lang.Double angulo=Math.atan((y2-y1)/(x2-x1)) + offset;
 		//System.out.println("Angulo calculado : alfa="+angulo.toString());
 		return angulo;

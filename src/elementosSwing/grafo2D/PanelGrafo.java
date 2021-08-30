@@ -9,6 +9,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -41,6 +42,7 @@ public class PanelGrafo extends JPanel {
 		//this.setSize(new Dimension(1000, 1000));
 		//TODO cargar estaciones y flechas
 		this.setVisible(true);
+		recargar();
 		this.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent event) {
 				try {
@@ -97,6 +99,7 @@ public class PanelGrafo extends JPanel {
 				try {
 					selectedEstacion.get().mover((double)event.getX(), (double)event.getY());
 					paintImmediately(0, 0, 700, 760);
+					event.consume();
 				}
 				catch(NoSuchElementException e) {
 					selectedEstacion=Optional.empty();
@@ -129,12 +132,14 @@ public class PanelGrafo extends JPanel {
 	}*/
 	
 	protected void dibujarEstaciones() {
-		listEstaciones.stream()
-					  .forEach(est -> est.dibujar(g2d));
+		listEstaciones.forEach(est -> est.dibujar(g2d));
+	}
+	
+	public static void quitarEstacion(Estacion2D e) {
+		pg.listEstaciones.remove(e);
 	}
 	
 	protected void recargar() {
-		listEstaciones.clear();
 		//listEstaciones.clear();
 		listEstaciones.addAll(Estacion.listEstaciones.stream().map(e->e.getE2d()).collect(Collectors.toList()));
 		//listEstaciones.addAll(Estacion.listEstaciones.stream().map(e->e.getE2d()).collect(Collectors.toList()));
@@ -143,16 +148,17 @@ public class PanelGrafo extends JPanel {
 	
 	@Override
 	protected void paintComponent(Graphics g) {
-		recargar();
 		g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setColor(Color.WHITE);
 		g2d.fill(new Rectangle(700, 760));
 	    dibujarEstaciones();
 		//dibujarFlechas();
+	    //System.out.println("PaintComponent "+LocalTime.now());
 	}
 	
 	public static void repintarGrafo() {
+		pg.recargar();
 		pg.repaint();
 	}
 	
