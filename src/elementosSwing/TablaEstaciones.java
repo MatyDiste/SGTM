@@ -35,7 +35,7 @@ public class TablaEstaciones extends JTable {
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				if(aux.getSelectedRow()!=-1) {
+				if(aux.getSelectedRow()!=-1 && PanelBusqueda.esSeleccionable()) {
 					//aux.setRowSorter(new TableRowSorter<MiTableModelEstacion>(tme));
 					RowSorter<MiTableModelEstacion> tm=(RowSorter<MiTableModelEstacion>)aux.getRowSorter();
 					Estacion est= Estacion.buscarID((short) aux.getModel().getValueAt(tm.convertRowIndexToModel(aux.getSelectedRow()), 0)).get(0);

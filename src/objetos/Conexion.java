@@ -1,7 +1,6 @@
 package objetos;
 
 import java.awt.Color;
-import java.time.LocalTime;
 
 import elementosSwing.grafo2D.Flecha;
 
@@ -19,6 +18,7 @@ public class Conexion {
 	private EstadoConexion estado;
 	private Double costo;
 	private Linea linea;
+	private Boolean seleccionado=false;
 
 	//Constructor DEBUG!!!!
 	public Conexion(Estacion a, Estacion b, Linea l) {
@@ -138,11 +138,16 @@ public class Conexion {
 	public void setLinea(Linea linea) {
 		this.linea = linea;
 	}
+	public Boolean getSeleccionado() {
+		return seleccionado;
+	}
 	public void select() {
-		flecha.select();
+		seleccionado=true;
+		//flecha.select();
 	}
 	public void unselect() {
-		flecha.unselect();
+		seleccionado=false;
+		//flecha.unselect();
 	}
 	
 	

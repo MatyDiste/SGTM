@@ -14,6 +14,7 @@ public class PanelBusqueda extends JPanel {
 	private JTable tabla;
 	private JScrollPane panel = new JScrollPane();
 	private Boolean esEstacion=true;
+	private Boolean puedeSeleccionar=true;
 	/**
 	 * Create the panel.
 	 */
@@ -69,4 +70,9 @@ public class PanelBusqueda extends JPanel {
 		}
 		panelstatic.recrearTabla(panelstatic.tabla);
 	}
+	
+	public static Boolean esSeleccionable() {
+		return !MainWindow.getInstance().getModoRecorrido();
+	}
+	
 }

@@ -1,11 +1,6 @@
 package elementosSwing;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
-import java.awt.LayoutManager;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
@@ -14,15 +9,19 @@ import javax.swing.JFrame;
 import elementosSwing.grafo2D.PanelGrafo;
 
 public class MainWindow extends JFrame{
-	private PanelGrafo pg=new PanelGrafo();
+	private static MainWindow mw;
+	private PanelGrafo pg=new PanelGrafo(Main.modoAdmin);
 	private PanelBusqueda pb=new PanelBusqueda();
-	private PanelInfo pi=new PanelInfo();
-	public static Integer grafoSizeX;
-	public static Integer grafoSizeY;
+	private PanelInfo pi=new PanelInfo(Main.modoAdmin);
+	private PanelRecorrido pr;
+	public Integer grafoSizeX;
+	public Integer grafoSizeY;
+	public Boolean modoRecorrido=false;
 	
 	public MainWindow(String t) {
 		super(t);
-		this.setBounds(0, 0, 1200, 800);
+		mw=this;
+		this.setBounds(0, 0, 1200, 870);
 		//this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		this.setLocationRelativeTo(null);
 		this.setLayout(new BorderLayout());
@@ -49,23 +48,32 @@ public class MainWindow extends JFrame{
 		
 		grafoSizeX=pg.getWidth();
 		grafoSizeY=pg.getHeight();
-		/*
-		 * Cambia el grafo cada 15 segundos, DEBUG
-		new Thread(() ->{
-			while(true) {
-				this.remove(pg);
-				this.revalidate();
-				pg=new PanelGrafo();
-				this.add(pg, BorderLayout.EAST);
-				this.repaint();
-				System.out.println("Cambiando de panel...");
-				try {
-					Thread.sleep(15000);
-				} catch (InterruptedException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			}
-		}).start();*/
+	}
+	
+	public void setModoRecorrido() {
+		modoRecorrido=true;
+		pr=new PanelRecorrido();
+		PanelGrafo.setModoRecorrido();
+		this.remove(pi);
+		this.revalidate();
+		this.add(pr, BorderLayout.WEST);
+		this.revalidate();
+		this.repaint();
+	}
+	public void unsetModoRecorrido() {
+		modoRecorrido=false;
+		pi=new PanelInfo(Main.modoAdmin);
+		PanelGrafo.unsetModoRecorrido();
+		this.remove(pr);
+		this.revalidate();
+		this.add(pi, BorderLayout.WEST);
+		this.revalidate();
+		this.repaint();
+	}
+	public Boolean getModoRecorrido() {
+		return modoRecorrido;
+	}
+	public static MainWindow getInstance() {
+		return mw;
 	}
 }

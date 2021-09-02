@@ -2,9 +2,6 @@ package elementosSwing;
 
 import javax.swing.JPanel;
 
-import com.formdev.flatlaf.extras.components.FlatButton.ButtonType;
-
-import elementosSwing.grafo2D.Estacion2D;
 import elementosSwing.grafo2D.PanelGrafo;
 import net.miginfocom.swing.MigLayout;
 import objetos.Estacion;
@@ -14,7 +11,6 @@ import javax.swing.JLabel;
 
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -35,19 +31,23 @@ public class PanelInfo extends JPanel {
 	private Boolean edit=false;
 	private Linea linea;
 	private Estacion estacion;
-	private JButton btnNewButton =   new JButton("EDITAR");
-	private JButton btnNewButton_1 = new JButton("ELIMINAR");
-	private JButton btnNewButton_2 = new JButton("NUEVO");
-	private JButton btnNewButton_3 = new JButton("");
-	private JButton btnNewButton_4 = new JButton("");
-	private JButton btnNewButton_5 = new JButton("");
-	private JButton btnNewButton_6 = new JButton("");
-	private JButton btnNewButton_7 = new JButton("");
+	private Boolean admin;
+	private JButton btnEdit =   new JButton("EDITAR");
+	private JButton btnDelete = new JButton("ELIMINAR");
+	private JButton btnAniadir = new JButton("NUEVO");
+	private JButton btnAceptarEdit = new JButton("");
+	private JButton btnDescartarEdit = new JButton("");
+	private JButton btnEstacion = new JButton("");
+	private JButton btnLinea = new JButton("");
+	private JButton btnConexion = new JButton("");
+	private JButton btnRecorrido = new JButton("Ingresar Recorrido");
 	
 	
-	public PanelInfo() {
+	public PanelInfo(Boolean admin) {
 		panel=this;
-		setLayout(new MigLayout("", "[grow]", "[][grow][][][]"));
+		this.admin=admin;
+		setLayout(new MigLayout("", "[grow]", "[][grow][][][][]"));
+		this.setMinimumSize(new Dimension(465,555));
 		
 		JLabel lblNewLabel = new JLabel("Información");
 		lblNewLabel.setFont(new Font(null, Font.BOLD, 20));
@@ -58,98 +58,115 @@ public class PanelInfo extends JPanel {
 		add(panel, "cell 0 1,grow");
 		
 
-		btnNewButton.setIcon(new ImageIcon("./assets/edit_icon.png"));
-		btnNewButton.setEnabled(false);
-		btnNewButton.putClientProperty("JButton.buttonType", "roundRect");
-		btnNewButton.addActionListener(e ->{
+		btnEdit.setIcon(new ImageIcon("./assets/edit_icon.png"));
+		btnEdit.setEnabled(false);
+		btnEdit.putClientProperty("JButton.buttonType", "roundRect");
+		btnEdit.addActionListener(e ->{
 			edit=!edit;
-			btnNewButton_3.setVisible(!btnNewButton_3.isVisible());
-			btnNewButton_4.setVisible(!btnNewButton_4.isVisible());
-			btnNewButton_5.setVisible(false);
-			btnNewButton_6.setVisible(false);
-			btnNewButton_7.setVisible(false);
+			btnAceptarEdit.setVisible(!btnAceptarEdit.isVisible());
+			btnDescartarEdit.setVisible(!btnDescartarEdit.isVisible());
+			btnEstacion.setVisible(false);
+			btnLinea.setVisible(false);
+			btnConexion.setVisible(false);
 			genLabelInfo();
 		});
-		add(btnNewButton, "flowx,cell 0 2,alignx left");
+		add(btnEdit, "flowx,cell 0 2,alignx left");
 		
-		btnNewButton_1.setIcon(new ImageIcon("./assets/delete_icon.png"));
-		btnNewButton_1.setEnabled(false);
-		btnNewButton_1.putClientProperty("JButton.buttonType", "roundRect");
-		btnNewButton_1.addActionListener(e -> {
+		btnDelete.setIcon(new ImageIcon("./assets/delete_icon.png"));
+		btnDelete.setEnabled(false);
+		btnDelete.putClientProperty("JButton.buttonType", "roundRect");
+		btnDelete.addActionListener(e -> {
 			edit=false;
 			eliminar();
 			setVacio();
 			PanelBusqueda.recargar();
 		});
-		add(btnNewButton_1, "cell 0 3,alignx left");
+		add(btnDelete, "cell 0 3,alignx left");
 		
-		btnNewButton_2.setIcon(new ImageIcon("./assets/add_icon.png"));
-		btnNewButton_2.putClientProperty("JButton.buttonType", "roundRect");
-		btnNewButton_2.addActionListener(e -> {
+		btnAniadir.setIcon(new ImageIcon("./assets/add_icon.png"));
+		btnAniadir.putClientProperty("JButton.buttonType", "roundRect");
+		btnAniadir.setEnabled(this.admin);
+		btnAniadir.addActionListener(e -> {
 			edit=false;
 			genLabelInfo();
-			btnNewButton_3.setVisible(false);
-			btnNewButton_4.setVisible(false);
-			btnNewButton_5.setVisible(!btnNewButton_5.isVisible());
-			btnNewButton_6.setVisible(!btnNewButton_6.isVisible());
-			btnNewButton_7.setVisible(!btnNewButton_7.isVisible());
+			btnAceptarEdit.setVisible(false);
+			btnDescartarEdit.setVisible(false);
+			btnEstacion.setVisible(!btnEstacion.isVisible());
+			btnLinea.setVisible(!btnLinea.isVisible());
+			btnConexion.setVisible(!btnConexion.isVisible());
 		});
-		add(btnNewButton_2, "flowx,cell 0 4,alignx left");
+		add(btnAniadir, "flowx,cell 0 4,alignx left");
 		
-		btnNewButton_3.setIcon(new ImageIcon("./assets/check_icon.png"));
-		btnNewButton_3.putClientProperty("JButton.buttonType", "roundRect");
-		btnNewButton_3.setVisible(false);
-		btnNewButton_3.addActionListener(e -> {
+		btnAceptarEdit.setIcon(new ImageIcon("./assets/check_icon.png"));
+		btnAceptarEdit.putClientProperty("JButton.buttonType", "roundRect");
+		btnAceptarEdit.setVisible(false);
+		btnAceptarEdit.addActionListener(e -> {
 			edit=false;
-			btnNewButton_3.setVisible(false);
-			btnNewButton_4.setVisible(false);
+			btnAceptarEdit.setVisible(false);
+			btnDescartarEdit.setVisible(false);
 			guardarInfo();
 			genLabelInfo();
 			PanelBusqueda.recargar();
 		});
-		add(btnNewButton_3, "cell 0 2");
+		add(btnAceptarEdit, "cell 0 2");
 		
-		btnNewButton_4.setIcon(new ImageIcon("./assets/cross_icon.png"));
-		btnNewButton_4.putClientProperty("JButton.buttonType", "roundRect");
-		btnNewButton_4.setVisible(false);
-		btnNewButton_4.addActionListener(e -> {
+		btnDescartarEdit.setIcon(new ImageIcon("./assets/cross_icon.png"));
+		btnDescartarEdit.putClientProperty("JButton.buttonType", "roundRect");
+		btnDescartarEdit.setVisible(false);
+		btnDescartarEdit.addActionListener(e -> {
 			edit=false;
-			btnNewButton_3.setVisible(false);
-			btnNewButton_4.setVisible(false);
+			btnAceptarEdit.setVisible(false);
+			btnDescartarEdit.setVisible(false);
 			genLabelInfo();
 			PanelBusqueda.recargar();
 		});
-		add(btnNewButton_4, "cell 0 2");
+		add(btnDescartarEdit, "cell 0 2");
 		
-		btnNewButton_5.setIcon(new ImageIcon("./assets/estacion_icon.png"));
-		btnNewButton_5.putClientProperty("JButton.buttonType", "roundRect");
-		btnNewButton_5.setToolTipText("Estación");
-		btnNewButton_5.setVisible(false);
-		btnNewButton_5.addActionListener(e -> {
+		btnEstacion.setIcon(new ImageIcon("./assets/estacion_icon.png"));
+		btnEstacion.putClientProperty("JButton.buttonType", "roundRect");
+		btnEstacion.setToolTipText("Estación");
+		btnEstacion.setVisible(false);
+		btnEstacion.addActionListener(e -> {
 			JDialog jd = new FAniadirEstacion();
 			jd.setVisible(true);
 		});
-		add(btnNewButton_5, "cell 0 4");
+		add(btnEstacion, "cell 0 4");
 		
-		btnNewButton_6.setIcon(new ImageIcon("./assets/linea_icon.png"));
-		btnNewButton_6.putClientProperty("JButton.buttonType", "roundRect");
-		btnNewButton_6.setToolTipText("Línea");
-		btnNewButton_6.setVisible(false);
-		btnNewButton_6.addActionListener(e -> {
+		btnLinea.setIcon(new ImageIcon("./assets/linea_icon.png"));
+		btnLinea.putClientProperty("JButton.buttonType", "roundRect");
+		btnLinea.setToolTipText("Línea");
+		btnLinea.setVisible(false);
+		btnLinea.addActionListener(e -> {
 			JDialog jd = new FAniadirLinea();
 			jd.setVisible(true);
 		});
-		add(btnNewButton_6, "cell 0 4");
+		add(btnLinea, "cell 0 4");
 		
-		btnNewButton_7.setIcon(new ImageIcon("./assets/conexion_icon.png"));
-		btnNewButton_7.putClientProperty("JButton.buttonType", "roundRect");
-		btnNewButton_7.setToolTipText("Conexión");
-		btnNewButton_7.setVisible(false);
-		btnNewButton_7.addActionListener(e -> {
+		btnConexion.setIcon(new ImageIcon("./assets/conexion_icon.png"));
+		btnConexion.putClientProperty("JButton.buttonType", "roundRect");
+		btnConexion.setToolTipText("Conexión");
+		btnConexion.setVisible(false);
+		btnConexion.addActionListener(e -> {
 			JFrame jf=new FAniadirConexion();
 			jf.setVisible(true);
 		});
-		add(btnNewButton_7, "cell 0 4");
+		add(btnConexion, "cell 0 4");
+		btnRecorrido.setIcon(new ImageIcon("./assets/recorrido_icon.png"));
+		btnRecorrido.putClientProperty("JButton.buttonType", "roundRect");
+		btnRecorrido.setToolTipText("Crear un nuevo recorrido y generar ticket");
+		btnRecorrido.addActionListener(e -> {
+			MainWindow.getInstance().setModoRecorrido();
+			setVacio();
+		});
+		
+		add(btnRecorrido, "cell 0 5");
+		
+		if(!this.admin) {
+			btnAniadir.setToolTipText("No eres administrador");
+			btnDelete.setToolTipText("No eres administrador");
+			btnEdit.setToolTipText("No eres administrador");
+			btnAceptarEdit.setToolTipText("No eres administrador");
+		}
 		
 		genLabelInfo();
 
@@ -173,18 +190,18 @@ public class PanelInfo extends JPanel {
 			JLabel nosel=new JLabel("No seleccionado");
 			nosel.setFont(new Font(null, Font.ITALIC, 16));
 			informacion.add(nosel);
-			informacion.add(Box.createRigidArea(new Dimension(300, 180)));
+			informacion.add(Box.createRigidArea(new Dimension(300, 160)));
 			break;
 		}
 		
 		add(informacion, "cell 0 1,grow");
 	}
 	public void hideBtns() {
-		btnNewButton_3.setVisible(false);
-		btnNewButton_4.setVisible(false);
-		btnNewButton_5.setVisible(false);
-		btnNewButton_6.setVisible(false);
-		btnNewButton_7.setVisible(false);
+		btnAceptarEdit.setVisible(false);
+		btnDescartarEdit.setVisible(false);
+		btnEstacion.setVisible(false);
+		btnLinea.setVisible(false);
+		btnConexion.setVisible(false);
 	}
 	public void quitarPanel() {
 		if(informacion != null) {
@@ -218,8 +235,8 @@ public class PanelInfo extends JPanel {
 	public static void setLinea(Linea l) {
 		if(panel.tipoSeleccionado==ESTACION) panel.estacion.unselect();
 		else if(panel.tipoSeleccionado==LINEA) panel.linea.unselect();
-		panel.btnNewButton.setEnabled(true);
-		panel.btnNewButton_1.setEnabled(true);
+		panel.btnEdit.setEnabled(panel.admin);
+		panel.btnDelete.setEnabled(panel.admin);
 		panel.edit=false;
 		panel.hideBtns();
 		panel.tipoSeleccionado=LINEA;
@@ -227,15 +244,15 @@ public class PanelInfo extends JPanel {
 		panel.estacion=null;
 		panel.genLabelInfo();
 		//panel.revalidate();
-		panel.repaint();
 		l.select();
+		panel.repaint();
 	}
 	public static void setEstacion(Estacion e) {
 		//panel.quitarPanel();
 		if(panel.tipoSeleccionado==ESTACION) panel.estacion.unselect();
 		else if(panel.tipoSeleccionado==LINEA) panel.linea.unselect();
-		panel.btnNewButton.setEnabled(true);
-		panel.btnNewButton_1.setEnabled(true);
+		panel.btnEdit.setEnabled(panel.admin);
+		panel.btnDelete.setEnabled(panel.admin);
 		panel.edit=false;
 		panel.hideBtns();
 		panel.tipoSeleccionado=ESTACION;
@@ -250,8 +267,8 @@ public class PanelInfo extends JPanel {
 		//panel.quitarPanel();
 		if(panel.tipoSeleccionado==ESTACION) panel.estacion.unselect();
 		else if(panel.tipoSeleccionado==LINEA) panel.linea.unselect();
-		panel.btnNewButton.setEnabled(false);
-		panel.btnNewButton_1.setEnabled(false);
+		panel.btnEdit.setEnabled(false);
+		panel.btnDelete.setEnabled(false);
 		panel.edit=false;
 		panel.hideBtns();
 		panel.linea=null;

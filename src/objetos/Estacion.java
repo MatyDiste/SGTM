@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import elementosSwing.MainWindow;
 import elementosSwing.grafo2D.Estacion2D;
 import elementosSwing.grafo2D.PanelGrafo;
 
@@ -31,7 +30,6 @@ public class Estacion implements Comparable<Estacion>{
 	 * Comunicarse con EstacionDAO para cargar todas las estaciones (método estático)
 	 */
 	
-	//Mas funciones sobre la lista, esta vez para buscar de acuerdo a algun atributo
 	private static void incrementarContador() {
 		contadorId++;
 	}
@@ -220,6 +218,7 @@ public class Estacion implements Comparable<Estacion>{
 	}
 	public void eliminar() { //Debe llamar al metodo estatico con this
 		//if(listConexiones.isEmpty()) System.out.println("ESTA VACIO QUE CARAJOS");
+		@SuppressWarnings("unchecked")
 		HashSet<Conexion> aux= (HashSet<Conexion>)listConexiones.clone();
 		aux.stream()
 					  .forEach(c ->{

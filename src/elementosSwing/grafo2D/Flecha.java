@@ -23,7 +23,7 @@ public class Flecha {
 	private static final int SELECTEDWIDTH=6;
 	private static final int UNSELECTEDWIDTH=2;
 	private static final float[] dash= {3f, 3f};
-	private static final float dashPhase=0f;
+	private static final float dashPhase=1f;
 	
 	public Conexion conect;
 	public Boolean selected=false;
@@ -59,7 +59,7 @@ public class Flecha {
 	}
 	
 	private BasicStroke getStroke() {
-		Integer size=selected? SELECTEDWIDTH : UNSELECTEDWIDTH;
+		Integer size=this.getEstado()? SELECTEDWIDTH : UNSELECTEDWIDTH;
 		return conect.estado().equals("ACTIVA")? new BasicStroke(size) : new BasicStroke(size, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1f, dash, dashPhase); 
 		//return new BasicStroke(size);
 	}
@@ -210,12 +210,16 @@ public class Flecha {
 		g2d.setTransform(rst);
 		
 	}
-
+	public Boolean getEstado() {
+		return selected || this.conect.getSeleccionado();
+	}
 	public void select() {
+		//System.out.println("Seleccionando flecha");
 		selected=true;
 		PanelGrafo.repintarGrafo();
 	}
 	public void unselect() {
+		//System.out.println("Deseleccionando flecha");
 		selected=false;
 		PanelGrafo.repintarGrafo();
 	}

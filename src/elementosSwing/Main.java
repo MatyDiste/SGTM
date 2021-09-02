@@ -47,7 +47,7 @@ public class Main {
 			debugGenConexiones(l);
 		});
 		@SuppressWarnings("unused")
-		MainWindow mw= new MainWindow("Sistema gestion de Transporte Multimodal");
+		MainWindow mw=new MainWindow("Sistema gestion de Transporte Multimodal");
 	}
 	
 	public static void debugGenEstacion() {

@@ -36,7 +36,7 @@ public class TablaLineas extends JTable {
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				if(aux.getSelectedRow()!=-1) {
+				if(aux.getSelectedRow()!=-1 && PanelBusqueda.esSeleccionable()) {
 					//aux.setRowSorter(new TableRowSorter<MiTableModelLinea>(tbl));
 					RowSorter<MiTableModelLinea> rs=(RowSorter<MiTableModelLinea>)aux.getRowSorter();
 					Linea lin= Linea.getLineaPorNombre((String) aux.getModel().getValueAt(rs.convertRowIndexToModel(aux.getSelectedRow()), 0));
