@@ -7,7 +7,6 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import net.miginfocom.swing.MigLayout;
-import java.awt.BorderLayout;
 
 public class PanelBusqueda extends JPanel {
 	private static PanelBusqueda panelstatic;
@@ -69,4 +68,9 @@ public class PanelBusqueda extends JPanel {
 		}
 		panelstatic.recrearTabla(panelstatic.tabla);
 	}
+	
+	public static Boolean esSeleccionable() {
+		return !MainWindow.getInstance().getModoRecorrido();
+	}
+	
 }

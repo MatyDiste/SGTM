@@ -1,7 +1,6 @@
 package objetos;
 
 import java.awt.Color;
-import java.time.LocalTime;
 
 import elementosSwing.grafo2D.Flecha;
 
@@ -19,8 +18,10 @@ public class Conexion {
 	private EstadoConexion estado;
 	private Double costo;
 	private Linea linea;
+	private Boolean seleccionado=false;
 
 	//Constructor DEBUG!!!!
+	
 	public Conexion(Estacion a, Estacion b, Linea l) {
 		a.addConexion(this);
 		b.addConexion(this);
@@ -29,6 +30,10 @@ public class Conexion {
 		linea=l;
 		estado=l.estado().equals("ACTIVA")? EstadoConexion.ACTIVA : EstadoConexion.INACTIVA;
 		flecha =new Flecha(a, b, this);
+		distancia=Math.random()*100;
+		duracion=Math.random()*50;
+		cantMaxPasajeros=(int)(Math.random()*200);
+		costo=Math.random()*100;
 		//System.out.println("Creada conexion entre "+a.getNombre()+" --> "+b.getNombre());
 	}
 	//END Constructor DEBUG!!!!
@@ -57,6 +62,7 @@ public class Conexion {
 		e1=null;
 		e2=null;
 		this.deshabilitar();
+		Estacion.generarPageRank(200);
 	}
 	
 	public Color getColor() {
@@ -138,11 +144,16 @@ public class Conexion {
 	public void setLinea(Linea linea) {
 		this.linea = linea;
 	}
+	public Boolean getSeleccionado() {
+		return seleccionado;
+	}
 	public void select() {
-		flecha.select();
+		seleccionado=true;
+		//flecha.select();
 	}
 	public void unselect() {
-		flecha.unselect();
+		seleccionado=false;
+		//flecha.unselect();
 	}
 	
 	

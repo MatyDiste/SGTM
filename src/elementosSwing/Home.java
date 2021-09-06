@@ -71,7 +71,7 @@ public class Home extends JFrame {
 		gbc.weighty=1.0;
 		gbc.insets=new Insets( 10, 0, 10, 5);
 		gbc.fill=GridBagConstraints.NONE;
-		this.add(btnuser, gbc);
+		this.add(btnadmin, gbc);
 		
 		gbc.gridx=1;
 		gbc.gridy=1;
@@ -81,7 +81,7 @@ public class Home extends JFrame {
 		gbc.weighty=1.0;
 		gbc.insets=new Insets( 10, 5, 10, 0);
 		gbc.fill=GridBagConstraints.NONE;
-		this.add(btnadmin, gbc);
+		this.add(btnuser, gbc);
 		
 		//this.pack();
 		this.setVisible(true);

@@ -1,18 +1,11 @@
 package elementosSwing;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.FlowLayout;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 import java.util.Stack;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.event.ListDataListener;
 
 import elementosSwing.grafo2D.PanelGrafo;
 import net.miginfocom.swing.MigLayout;
@@ -23,18 +16,15 @@ import objetos.Linea;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.BorderFactory;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.ScrollPaneLayout;
 
 public class FAniadirConexion extends JFrame {
 	private static FAniadirConexion frame;

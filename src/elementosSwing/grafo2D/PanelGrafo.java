@@ -9,18 +9,16 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.swing.DebugGraphics;
 import javax.swing.JPanel;
-import javax.swing.RepaintManager;
 import javax.swing.border.LineBorder;
 
 import elementosSwing.PanelInfo;
+import elementosSwing.PanelRecorrido;
 import objetos.Estacion;
 
 public class PanelGrafo extends JPanel {
@@ -29,107 +27,73 @@ public class PanelGrafo extends JPanel {
 	private HashSet<Estacion2D> listEstaciones= new HashSet<Estacion2D>();
 	private Graphics2D g2d;
 	public Optional<Estacion2D> selectedEstacion= Optional.empty();
+	public Optional<Estacion2D> selectedEstacion2= Optional.empty();
+	private Boolean modoRecorrido=false;
+	private Boolean editable;
 	
 	
-	public PanelGrafo() {
+	public PanelGrafo(Boolean b) {
 		super();
 		pg=this;
+		editable=b;
 		this.setBorder(new LineBorder(Color.GRAY, 2));
 		this.setOpaque(true);
 		this.setPreferredSize(new Dimension(700, 550));
 		this.setMaximumSize(new Dimension(900,550));
 		this.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		//this.setSize(new Dimension(1000, 1000));
-		//TODO cargar estaciones y flechas
 		this.setVisible(true);
 		recargar();
 		this.addMouseListener(new MouseAdapter() {
+			/*public void mousePressed(MouseEvent event) {
+				mouseClicked(event);
+			}*/
 			public void mouseClicked(MouseEvent event) {
-				try {
-					selectedEstacion = listEstaciones.stream()
-											   .filter(e -> e.puntoDentro((double)event.getX(), (double)event.getY()))
-										       .findAny();
-					selectedEstacion.get().select();
-					PanelInfo.setEstacion(selectedEstacion.get().e);
-					//PanelInfo.repintar();
-				}catch(NoSuchElementException e) {
-					selectedEstacion=Optional.empty();
-					PanelInfo.setVacio();
-					//PanelInfo.repintar();
-				}
-				
-				
-			}
-			public void mousePressed(MouseEvent event) {
-				try {
-					if(selectedEstacion.get().puntoDentro((double)event.getX(), (double)event.getY())) {
-						selectedEstacion.get().mover((double)event.getX(), (double)event.getY());
-					}
-					else {
-						selectedEstacion.get().unselect();
-						selectedEstacion=Optional.empty();
+				if (!modoRecorrido) {
+					try {
+						selectedEstacion = getClickeado((double)event.getX(), (double)event.getY());
+						selectedEstacion.get().select();
+						PanelInfo.setEstacion(selectedEstacion.get().e);
+						//PanelInfo.repintar();
+					} catch (NoSuchElementException e) {
+						selectedEstacion = Optional.empty();
 						PanelInfo.setVacio();
 						//PanelInfo.repintar();
+					} finally {
+						repaint();
+					} 
+				}
+				else {
+					try {
+						setearEstacion(getClickeado((double)event.getX(), (double)event.getY()).get());
+					} catch(NoSuchElementException exc) {
+						System.out.println("No clickeaste una estacion");
 					}
-					repaint();
-						
-				}
-				catch(NoSuchElementException e) {
-					selectedEstacion=Optional.empty();
-					PanelInfo.setVacio();
-					//PanelInfo.repintar();
-				}
-			}
-			public void mouseReleased(MouseEvent event) {
-				try {
-					//selectedEstacion.get().unselect();
-					//selectedEstacion=Optional.empty();
-					//PanelInformacion.setVacio();
-					repaint();
-				}
-				catch(NoSuchElementException e) {
-					//repaint();
 					
 				}
+				
 			}
+			
 		});
 		
 		this.addMouseMotionListener(new MouseAdapter() {
 			public void mouseDragged(MouseEvent event) {
-				try {
-					selectedEstacion.get().mover((double)event.getX(), (double)event.getY());
-					paintImmediately(0, 0, 700, 760);
-					event.consume();
-				}
-				catch(NoSuchElementException e) {
-					selectedEstacion=Optional.empty();
-					PanelInfo.setVacio();
-					//repaint();
-				}
+				if(editable) {
+					try {
+						
+						if (selectedEstacion.get().puntoDentro((double)event.getX(), (double)event.getY(), 100d)) {
+							selectedEstacion.get().mover((double) event.getX(), (double) event.getY());
+							paintImmediately(0, 0, 700, 760);
+							event.consume();
+						}
+					}
+					catch(NoSuchElementException e) {
+						selectedEstacion=Optional.empty();
+						PanelInfo.setVacio();
+					}
+				}	
 			}
 		});
-		
-		/*
-		 * Thread que repinta constantemente el grafo, DEBUG
-		new Thread(()->{
-			while(true) {
-				this.paintImmediately(0,0,700,760);
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		}).start();*/
-		
-		
 	}
-	
-	/*protected void dibujarFlechas() {
-		listFlechas.stream()
-				   .forEach(f -> f.dibujar(g2d));
-	}*/
 	
 	protected void dibujarEstaciones() {
 		listEstaciones.forEach(est -> est.dibujar(g2d));
@@ -160,6 +124,48 @@ public class PanelGrafo extends JPanel {
 	public static void repintarGrafo() {
 		pg.recargar();
 		pg.repaint();
+	}
+	public static void setEditable(Boolean e) {
+		pg.editable=e;
+	}
+	public static void unsetModoRecorrido() {
+		pg.modoRecorrido=false;
+		pg.selectedEstacion.ifPresentOrElse(e -> e.unselect(), ()->{});
+		pg.selectedEstacion2.ifPresentOrElse(e -> e.unselect(), ()->{});
+		pg.selectedEstacion=Optional.empty();
+		pg.selectedEstacion2=Optional.empty();
+	}
+	public static void setModoRecorrido() {
+		try {
+			pg.selectedEstacion.get().unselect();
+		} catch (NoSuchElementException e) {}
+		pg.selectedEstacion=Optional.empty();
+		pg.modoRecorrido=true;
+	}
+	
+	private Optional<Estacion2D> getClickeado(double x, double y) {
+		return listEstaciones.stream()
+							 .filter(e -> e.puntoDentro(x,y)).findAny();
+	}
+	
+	public static void setearEstacion(Estacion2D e) {
+		try {
+			if(PanelRecorrido.primerEstacion()) {
+				pg.selectedEstacion.get().unselect();
+				pg.selectedEstacion=Optional.of(e);
+			}
+			else {
+				pg.selectedEstacion2.get().unselect();
+				pg.selectedEstacion=Optional.of(e);
+			}
+		} catch (NoSuchElementException e1) {
+			pg.selectedEstacion=Optional.of(e);
+		} finally {
+			pg.selectedEstacion.get().select();
+			PanelRecorrido.setEstacion(pg.selectedEstacion.get().e);
+		}
+		
+		PanelGrafo.repintarGrafo();
 	}
 	
 }

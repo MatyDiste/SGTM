@@ -7,7 +7,6 @@ import java.util.List;
 import javax.swing.JTable;
 import javax.swing.RowSorter;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import objetos.Estacion;
@@ -35,10 +34,10 @@ public class TablaEstaciones extends JTable {
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				if(aux.getSelectedRow()!=-1) {
-					//aux.setRowSorter(new TableRowSorter<MiTableModelEstacion>(tme));
+				if(aux.getSelectedRow()!=-1 && PanelBusqueda.esSeleccionable()) {
+					@SuppressWarnings("unchecked")
 					RowSorter<MiTableModelEstacion> tm=(RowSorter<MiTableModelEstacion>)aux.getRowSorter();
-					Estacion est= Estacion.buscarID((short) aux.getModel().getValueAt(tm.convertRowIndexToModel(aux.getSelectedRow()), 0)).get(0);
+					Estacion est= Estacion.buscarID((short) aux.getModel().getValueAt(tm.convertRowIndexToModel(aux.getSelectedRow()), 0));
 					PanelInfo.setEstacion(est);
 				}
 			}

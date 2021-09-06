@@ -16,6 +16,7 @@ import com.formdev.flatlaf.extras.components.FlatButton;
 
 import elementosSwing.grafo2D.PanelGrafo;
 import objetos.Linea;
+import objetos.NombreOcupadoException;
 
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
@@ -132,7 +133,11 @@ public class FAniadirLinea extends JDialog {
 			{
 				JButton okButton = new JButton("Aceptar");
 				okButton.addActionListener(e -> {
-					PanelInfo.setLinea(new Linea(textField.getText(), color, true));
+					try {
+						PanelInfo.setLinea(new Linea(textField.getText(), color, true));
+					} catch (NombreOcupadoException e1) {
+						//Nombre ocupado
+					}
 					PanelGrafo.repintarGrafo();
 					PanelBusqueda.recargar();
 					this.dispose();
