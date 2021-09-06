@@ -1,11 +1,6 @@
 package elementosSwing;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
-import java.awt.LayoutManager;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
@@ -14,14 +9,20 @@ import javax.swing.JFrame;
 import elementosSwing.grafo2D.PanelGrafo;
 
 public class MainWindow extends JFrame{
-	private PanelGrafo pg=new PanelGrafo();
+	private static MainWindow mw;
+	private PanelGrafo pg=new PanelGrafo(Main.modoAdmin);
 	private PanelBusqueda pb=new PanelBusqueda();
-	private PanelInformacion pi=new PanelInformacion();
-	
+	private PanelInfo pi=new PanelInfo(Main.modoAdmin);
+	private PanelRecorrido pr;
+	public Integer grafoSizeX;
+	public Integer grafoSizeY;
+	public Boolean modoRecorrido=false;
 	
 	public MainWindow(String t) {
 		super(t);
-		this.setBounds(0, 0, 1000, 1000);
+		mw=this;
+		this.setBounds(0, 0, 1200, 870);
+		//this.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		this.setLocationRelativeTo(null);
 		this.setLayout(new BorderLayout());
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -45,5 +46,34 @@ public class MainWindow extends JFrame{
 			
 		});
 		
+		grafoSizeX=pg.getWidth();
+		grafoSizeY=pg.getHeight();
+	}
+	
+	public void setModoRecorrido() {
+		modoRecorrido=true;
+		pr=new PanelRecorrido();
+		PanelGrafo.setModoRecorrido();
+		this.remove(pi);
+		this.revalidate();
+		this.add(pr, BorderLayout.WEST);
+		this.revalidate();
+		this.repaint();
+	}
+	public void unsetModoRecorrido() {
+		modoRecorrido=false;
+		pi=new PanelInfo(Main.modoAdmin);
+		PanelGrafo.unsetModoRecorrido();
+		this.remove(pr);
+		this.revalidate();
+		this.add(pi, BorderLayout.WEST);
+		this.revalidate();
+		this.repaint();
+	}
+	public Boolean getModoRecorrido() {
+		return modoRecorrido;
+	}
+	public static MainWindow getInstance() {
+		return mw;
 	}
 }

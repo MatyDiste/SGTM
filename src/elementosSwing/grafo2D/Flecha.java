@@ -4,34 +4,28 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.BasicStroke;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 
 import objetos.Conexion;
 import objetos.Estacion;
-import objetos.Linea;
 
 
 
 public class Flecha {
 	
 	
-	private static final int SELECTEDWIDTH=4;
+	private static final int SELECTEDWIDTH=6;
 	private static final int UNSELECTEDWIDTH=2;
-	private static final float[] dash= {0.3f, 0.3f};
-	private static final float dashPhase=0f;
+	private static final float[] dash= {3f, 3f};
+	private static final float dashPhase=1f;
 	
 	public Conexion conect;
-	
 	public Boolean selected=false;
 	public java.lang.Double x1,x2,y1,y2;
 	public Color color;
 	public Graphics2D g2d;
-	public final Estacion2D e1,e2;
+	public Estacion2D e1,e2;
 	public final java.lang.Double xoffsetRandom=Math.random();
 	public final java.lang.Double yoffsetRandom=Math.random();
 	public Point.Double puntoBorde=new Point.Double();
@@ -42,10 +36,27 @@ public class Flecha {
 	public AffineTransform rst;
 	public AffineTransform recta;
 	
+	public void eliminar() {
+		conect=null;
+		selected=false;
+		x1=0d; x2=0d; y1=0d; y2=0d;
+		color=null;
+		g2d=null;
+		e1.quitarFlechaSalida(this);
+		e2.quitarFlechaLlegada(this);
+		e1=null;
+		e2=null;
+		curva=null;
+		punta=null;
+		rst=null;
+		recta=null;
+		//System.out.println("Eliminando flecha");
+	}
+	
 	private BasicStroke getStroke() {
-		Integer size=selected? SELECTEDWIDTH : UNSELECTEDWIDTH;
-		//return conect.estado().equals("ACTIVA")? new BasicStroke(size) : new BasicStroke(size, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1f, dash, dashPhase); 
-		return new BasicStroke(size);
+		Integer size=this.getEstado()? SELECTEDWIDTH : UNSELECTEDWIDTH;
+		return conect.estado().equals("ACTIVA")? new BasicStroke(size) : new BasicStroke(size, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1f, dash, dashPhase); 
+		//return new BasicStroke(size);
 	}
 	
 	public void updateTransform() {
@@ -65,7 +76,7 @@ public class Flecha {
 	}
 	
 	public void updatePunta() {
-		//punta=new Path2D.Double();
+		punta=new Path2D.Double();
 		
 		punta.moveTo(0, 0);
 		punta.lineTo(-14d, -7d);
@@ -107,7 +118,7 @@ public class Flecha {
 	
 	public void updateCurva() {
 		curva=new Path2D.Double();
-		java.lang.Double mod=getModulo()/3;
+		java.lang.Double mod=getModulo()/2.3;
 		curva.moveTo(Math.cos(anguloOffseted)*Estacion2D.RADIO, Math.sin(anguloOffseted)*Estacion2D.RADIO);
 		curva.curveTo(Math.cos(anguloOffseted)*(mod), Math.sin(anguloOffseted)*(mod), Math.cos(Math.PI-anguloOffseted)*(mod) + getModulo(), Math.sin(Math.PI-anguloOffseted)*(mod), puntoBorde.x, puntoBorde.y);
 		//System.out.println("Curva x:"+Math.cos(anguloOffseted)*Estacion2D.RADIO +" | y:"+Math.sin(anguloOffseted)*Estacion2D.RADIO);
@@ -127,7 +138,7 @@ public class Flecha {
 		//System.out.println("Entre: x1="+x1.toString()+" y1="+y1.toString());
 		//System.out.println("       x2="+x2.toString()+" y2="+y2.toString());
 		
-		java.lang.Double offset = (x1<x2)? 0 : Math.PI;
+		java.lang.Double offset = (x1<=x2)? 0 : Math.PI;
 		java.lang.Double angulo=Math.atan((y2-y1)/(x2-x1)) + offset;
 		//System.out.println("Angulo calculado : alfa="+angulo.toString());
 		return angulo;
@@ -137,20 +148,6 @@ public class Flecha {
 		return Math.sqrt(Math.pow(x2-x1,2)+ Math.pow(y2-y1,2));
 	}
 	
-	/*private void debugPuntos() {
-		System.out.println("Dibujando puntos debug1: x="+e1.centrox.toString()+" y="+e2.centroy.toString());
-		System.out.println("Dibujando puntos debug2: x="+e2.centrox.toString()+" y="+e2.centroy.toString());
-		g2d.setColor(Color.RED);
-		g2d.fill(new Ellipse2D.Double(e1.centrox, e1.centroy, 15, 15));
-		g2d.fill(new Ellipse2D.Double(e2.centrox, e2.centroy, 15, 15));
-		g2d.setColor(color);
-	}*/
-	
-	/*private void debugLineas() {
-		g2d.setColor(new Color(127,127,127, 100));
-		g2d.draw(new Line2D.Double(x1, y1, x2, y2));
-		g2d.setColor(color);
-	}*/
 	
 	public void updateCoord() {
 		//System.out.println("Nodo 1: "+e1.nombre);
@@ -184,7 +181,7 @@ public class Flecha {
 		
 		
 		this.mayorAngulo=Math.random()<0.5;
-		this.anguloOffseted= mayorAngulo? Math.random()*25 +20 : Math.random()*(-25) -20;
+		this.anguloOffseted= mayorAngulo? Math.random()*55 +10 : Math.random()*(-55) -10;
 		this.anguloOffseted=Math.toRadians(anguloOffseted);
 		
 		e1.addSalida(this);
@@ -208,11 +205,17 @@ public class Flecha {
 		g2d.setTransform(rst);
 		
 	}
-
+	public Boolean getEstado() {
+		return selected || this.conect.getSeleccionado();
+	}
 	public void select() {
+		//System.out.println("Seleccionando flecha");
 		selected=true;
+		PanelGrafo.repintarGrafo();
 	}
 	public void unselect() {
+		//System.out.println("Deseleccionando flecha");
 		selected=false;
+		PanelGrafo.repintarGrafo();
 	}
 }

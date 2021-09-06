@@ -4,10 +4,9 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
-import java.util.ArrayList;
+import java.util.HashSet;
 
 import objetos.Estacion;
 
@@ -19,8 +18,8 @@ public class Estacion2D {
 	public static final Double RADIO=25d;
 	
 	public Estacion e;
-	public ArrayList<Flecha> listFlechasSalida=new ArrayList<Flecha>();
-	public ArrayList<Flecha> listFlechasLlegada=new ArrayList<Flecha>();
+	public HashSet<Flecha> listFlechasSalida=new HashSet<Flecha>();
+	public HashSet<Flecha> listFlechasLlegada=new HashSet<Flecha>();
 	public Boolean selected=false;
 	public Double posx, posy;
 	public Double centrox;
@@ -29,6 +28,12 @@ public class Estacion2D {
 	public Ellipse2D.Double circulo;
 	public Graphics2D g2d;
 	
+	public void quitarFlechaLlegada(Flecha f) {
+		listFlechasLlegada.remove(f);
+	}
+	public void quitarFlechaSalida(Flecha f) {
+		listFlechasSalida.remove(f);
+	}
 	
 	public Estacion2D(Estacion estacion) {
 		circulo= new Ellipse2D.Double(0, 0, RADIO*2, RADIO*2);
@@ -39,15 +44,15 @@ public class Estacion2D {
 		this.posx=e.posx;
 		this.posy=e.posy;
 		nombre=e.getNombre();
+		//System.out.println("Añadida Estacion2D");
 		
 	}
 	
 	public Boolean puntoDentro(Double x, Double y) {
-		/*if(Math.sqrt(Math.pow(centrox-x, 2) + Math.pow(centroy-y, 2))<=radio*2) {
-		System.out.println("Centro en: x="+centrox.toString()+" y="+centroy.toString());
-		System.out.println("Tiro en: x="+x.toString()+" y="+y.toString());
-		}*/
 		return Math.sqrt(Math.pow(centrox-x, 2) + Math.pow(centroy-y, 2))<=RADIO;
+	}
+	public Boolean puntoDentro(Double x, Double y, Double margenError) {
+		return Math.sqrt(Math.pow(centrox-x, 2) + Math.pow(centroy-y, 2))<=(RADIO+margenError);
 	}
 	
 	public void dibujar(Graphics2D g) {
@@ -65,8 +70,8 @@ public class Estacion2D {
 		g2d.draw(circulo);
 			
 		g2d.setColor(Color.BLACK);
-		g2d.setFont(new Font("Arial", selected? Font.BOLD : Font.PLAIN, 15));
-		g2d.drawString(nombre, RADIO.floatValue()/1.7f, RADIO.floatValue()/0.8f);
+		g2d.setFont(new Font(null, selected? Font.BOLD : Font.PLAIN, 15));
+		g2d.drawString(nombre, RADIO.floatValue()/2.4f, RADIO.floatValue()/0.8f);
 			
 		g2d.setTransform(rst);
 		
@@ -91,10 +96,12 @@ public class Estacion2D {
 	
 	public void select() {
 		selected=true;
+		PanelGrafo.repintarGrafo();
 		//this.dibujar(g2d);
 	}
 	public void unselect() {
 		selected=false;
+		PanelGrafo.repintarGrafo();
 		//this.dibujar(g2d);
 	}
 	public void mover(Double x, Double y) {

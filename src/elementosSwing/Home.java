@@ -11,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
 import com.formdev.flatlaf.extras.components.*;
+import com.formdev.flatlaf.extras.components.FlatButton.ButtonType;
 
 public class Home extends JFrame {
 	
@@ -26,7 +27,9 @@ public class Home extends JFrame {
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		//añadir cosas
-		btnuser=new BtnPrincipal("Usuario");
+		btnuser=new FlatButton();
+		btnuser.setText("Usuario");
+		btnuser.setButtonType(ButtonType.roundRect);
 		btnuser.addActionListener(e -> {
 			Main.setModoAdmin(false);
 			Main.openMainWindow();
@@ -35,7 +38,9 @@ public class Home extends JFrame {
 		});
 		btnuser.setPreferredSize(new Dimension(175,175));
 		btnuser.setIcon(new ImageIcon("./assets/user_icon.png"));
-		btnadmin=new BtnPrincipal("Administrador");
+		btnadmin=new FlatButton();
+		btnadmin.setText("Administrador");
+		btnadmin.setButtonType(ButtonType.roundRect);
 		btnadmin.addActionListener(e -> {
 			Main.setModoAdmin(true);
 			Main.openMainWindow();
@@ -66,7 +71,7 @@ public class Home extends JFrame {
 		gbc.weighty=1.0;
 		gbc.insets=new Insets( 10, 0, 10, 5);
 		gbc.fill=GridBagConstraints.NONE;
-		this.add(btnuser, gbc);
+		this.add(btnadmin, gbc);
 		
 		gbc.gridx=1;
 		gbc.gridy=1;
@@ -76,7 +81,7 @@ public class Home extends JFrame {
 		gbc.weighty=1.0;
 		gbc.insets=new Insets( 10, 5, 10, 0);
 		gbc.fill=GridBagConstraints.NONE;
-		this.add(btnadmin, gbc);
+		this.add(btnuser, gbc);
 		
 		//this.pack();
 		this.setVisible(true);

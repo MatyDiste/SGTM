@@ -15,8 +15,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
-import elementosSwing.PanelInformacion;
+import elementosSwing.PanelInfo;
+import elementosSwing.PanelRecorrido;
 import objetos.Estacion;
 
 public class PanelGrafo extends JPanel {
@@ -25,118 +27,145 @@ public class PanelGrafo extends JPanel {
 	private HashSet<Estacion2D> listEstaciones= new HashSet<Estacion2D>();
 	private Graphics2D g2d;
 	public Optional<Estacion2D> selectedEstacion= Optional.empty();
+	public Optional<Estacion2D> selectedEstacion2= Optional.empty();
+	private Boolean modoRecorrido=false;
+	private Boolean editable;
 	
 	
-	public PanelGrafo() {
+	public PanelGrafo(Boolean b) {
 		super();
 		pg=this;
+		editable=b;
+		this.setBorder(new LineBorder(Color.GRAY, 2));
+		this.setOpaque(true);
 		this.setPreferredSize(new Dimension(700, 550));
-		this.setMaximumSize(new Dimension(700,550));
+		this.setMaximumSize(new Dimension(900,550));
 		this.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		//this.setSize(new Dimension(1000, 1000));
-		//TODO cargar estaciones y flechas
 		this.setVisible(true);
+		recargar();
 		this.addMouseListener(new MouseAdapter() {
+			/*public void mousePressed(MouseEvent event) {
+				mouseClicked(event);
+			}*/
 			public void mouseClicked(MouseEvent event) {
-				try {
-					selectedEstacion = listEstaciones.stream()
-											   .filter(e -> e.puntoDentro((double)event.getX(), (double)event.getY()))
-										       .findAny();
-					selectedEstacion.get().select();
-					PanelInformacion.setEstacion(selectedEstacion.get().e);
-				}catch(NoSuchElementException e) {
-					selectedEstacion=Optional.empty();
-					PanelInformacion.setVacio();
+				if (!modoRecorrido) {
+					try {
+						selectedEstacion = getClickeado((double)event.getX(), (double)event.getY());
+						selectedEstacion.get().select();
+						PanelInfo.setEstacion(selectedEstacion.get().e);
+						//PanelInfo.repintar();
+					} catch (NoSuchElementException e) {
+						selectedEstacion = Optional.empty();
+						PanelInfo.setVacio();
+						//PanelInfo.repintar();
+					} finally {
+						repaint();
+					} 
 				}
-				
-				
-			}
-			public void mousePressed(MouseEvent event) {
-				try {
-					if(selectedEstacion.get().puntoDentro((double)event.getX(), (double)event.getY())) {
-						selectedEstacion.get().mover((double)event.getX(), (double)event.getY());
+				else {
+					try {
+						setearEstacion(getClickeado((double)event.getX(), (double)event.getY()).get());
+					} catch(NoSuchElementException exc) {
+						System.out.println("No clickeaste una estacion");
 					}
-					else {
-						selectedEstacion.get().unselect();
-						selectedEstacion=Optional.empty();
-						PanelInformacion.setVacio();
-					}
-					repaint();
-						
-				}
-				catch(NoSuchElementException e) {
-					selectedEstacion=Optional.empty();
-					PanelInformacion.setVacio();
-					//repaint();
-				}
-			}
-			public void mouseReleased(MouseEvent event) {
-				try {
-					//selectedEstacion.get().unselect();
-					//selectedEstacion=Optional.empty();
-					//PanelInformacion.setVacio();
-					repaint();
-				}
-				catch(NoSuchElementException e) {
-					//repaint();
 					
 				}
+				
 			}
+			
 		});
 		
 		this.addMouseMotionListener(new MouseAdapter() {
 			public void mouseDragged(MouseEvent event) {
-				try {
-					if(selectedEstacion.get().puntoDentro((double)event.getX(), (double)event.getY())) {
-						selectedEstacion.get().mover((double)event.getX(), (double)event.getY());
-					}
-					else {
-						selectedEstacion.get().unselect();
-						selectedEstacion=Optional.empty();
-						PanelInformacion.setVacio();
-					}
-					repaint();
+				if(editable) {
+					try {
 						
-				}
-				catch(NoSuchElementException e) {
-					selectedEstacion=Optional.empty();
-					PanelInformacion.setVacio();
-					//repaint();
-				}
+						if (selectedEstacion.get().puntoDentro((double)event.getX(), (double)event.getY(), 100d)) {
+							selectedEstacion.get().mover((double) event.getX(), (double) event.getY());
+							paintImmediately(0, 0, 700, 760);
+							event.consume();
+						}
+					}
+					catch(NoSuchElementException e) {
+						selectedEstacion=Optional.empty();
+						PanelInfo.setVacio();
+					}
+				}	
 			}
 		});
-		
 	}
 	
-	/*protected void dibujarFlechas() {
-		listFlechas.stream()
-				   .forEach(f -> f.dibujar(g2d));
-	}*/
-	
 	protected void dibujarEstaciones() {
-		listEstaciones.stream()
-					  .forEach(est -> est.dibujar(g2d));
+		listEstaciones.forEach(est -> est.dibujar(g2d));
+	}
+	
+	public static void quitarEstacion(Estacion2D e) {
+		pg.listEstaciones.remove(e);
 	}
 	
 	protected void recargar() {
-		listEstaciones.clear();
+		//listEstaciones.clear();
 		listEstaciones.addAll(Estacion.listEstaciones.stream().map(e->e.getE2d()).collect(Collectors.toList()));
+		//listEstaciones.addAll(Estacion.listEstaciones.stream().map(e->e.getE2d()).collect(Collectors.toList()));
 		//System.out.println("Hay "+listEstaciones.size()+" estaciones2D en la lista");
 	}
 	
 	@Override
 	protected void paintComponent(Graphics g) {
-		recargar();
 		g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		g2d.setColor(Color.WHITE);
-		g2d.fill(new Rectangle(700, 700));
-		dibujarEstaciones();
+		g2d.fill(new Rectangle(700, 760));
+	    dibujarEstaciones();
 		//dibujarFlechas();
+	    //System.out.println("PaintComponent "+LocalTime.now());
 	}
 	
 	public static void repintarGrafo() {
-		pg.paintComponent(pg.g2d);
+		pg.recargar();
+		pg.repaint();
+	}
+	public static void setEditable(Boolean e) {
+		pg.editable=e;
+	}
+	public static void unsetModoRecorrido() {
+		pg.modoRecorrido=false;
+		pg.selectedEstacion.ifPresentOrElse(e -> e.unselect(), ()->{});
+		pg.selectedEstacion2.ifPresentOrElse(e -> e.unselect(), ()->{});
+		pg.selectedEstacion=Optional.empty();
+		pg.selectedEstacion2=Optional.empty();
+	}
+	public static void setModoRecorrido() {
+		try {
+			pg.selectedEstacion.get().unselect();
+		} catch (NoSuchElementException e) {}
+		pg.selectedEstacion=Optional.empty();
+		pg.modoRecorrido=true;
+	}
+	
+	private Optional<Estacion2D> getClickeado(double x, double y) {
+		return listEstaciones.stream()
+							 .filter(e -> e.puntoDentro(x,y)).findAny();
+	}
+	
+	public static void setearEstacion(Estacion2D e) {
+		try {
+			if(PanelRecorrido.primerEstacion()) {
+				pg.selectedEstacion.get().unselect();
+				pg.selectedEstacion=Optional.of(e);
+			}
+			else {
+				pg.selectedEstacion2.get().unselect();
+				pg.selectedEstacion=Optional.of(e);
+			}
+		} catch (NoSuchElementException e1) {
+			pg.selectedEstacion=Optional.of(e);
+		} finally {
+			pg.selectedEstacion.get().select();
+			PanelRecorrido.setEstacion(pg.selectedEstacion.get().e);
+		}
+		
+		PanelGrafo.repintarGrafo();
 	}
 	
 }

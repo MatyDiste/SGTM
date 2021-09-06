@@ -1,10 +1,13 @@
 package elementosSwing;
 
-import java.util.ArrayList;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
 
 import javax.swing.JTable;
+import javax.swing.RowSorter;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableRowSorter;
 
 import objetos.Estacion;
 
@@ -12,12 +15,52 @@ public class TablaEstaciones extends JTable {
 	
 	public TablaEstaciones() {
 		super(new MiTableModelEstacion());
-		this.setAutoCreateRowSorter(true);
+		MiTableModelEstacion tme=(MiTableModelEstacion) this.getModel();
+		TableRowSorter<MiTableModelEstacion> trs=new TableRowSorter<MiTableModelEstacion>(tme);
+		this.setRowSorter(trs);
+		JTable aux=this;
+		this.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				if(aux.getSelectedRow()!=-1 && PanelBusqueda.esSeleccionable()) {
+					@SuppressWarnings("unchecked")
+					RowSorter<MiTableModelEstacion> tm=(RowSorter<MiTableModelEstacion>)aux.getRowSorter();
+					Estacion est= Estacion.buscarID((short) aux.getModel().getValueAt(tm.convertRowIndexToModel(aux.getSelectedRow()), 0));
+					PanelInfo.setEstacion(est);
+				}
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
 	}
 	
 }
 
 class MiTableModelEstacion extends AbstractTableModel{
+	List<Estacion> listEst=Estacion.listEstaciones.stream().toList();
 	
 	public MiTableModelEstacion() {
 		super();
@@ -50,8 +93,6 @@ class MiTableModelEstacion extends AbstractTableModel{
 
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		List<Estacion> listEst=new ArrayList<Estacion>();
-		listEst.addAll(Estacion.listEstaciones.stream().toList());
 		switch(columnIndex) {
 		case 0: return listEst.get(rowIndex).getId();
 		case 1: return listEst.get(rowIndex).getNombre();
