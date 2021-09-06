@@ -8,6 +8,8 @@ import javax.swing.border.LineBorder;
 import elementosSwing.grafo2D.PanelGrafo;
 import net.miginfocom.swing.MigLayout;
 import objetos.Estacion;
+import objetos.Linea;
+import objetos.Recorrido;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -15,16 +17,17 @@ import java.awt.Color;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
-import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
+import java.util.Optional;
 
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
-import java.awt.Component;
 import javax.swing.JRadioButton;
 
 public class PanelRecorrido extends JPanel {
@@ -35,9 +38,16 @@ public class PanelRecorrido extends JPanel {
 	private PanelEstacion pehasta=new PanelEstacion();
 	private PanelEstacion panelSeleccionado=pedesde;
 	private JButton btnRecorridos = new JButton("Comprar ticket");
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
+	private JTextField tfBarati;
+	private JTextField tfRapido;
+	private JTextField tfCorto;
+	private JRadioButton rdbtnBarato = new JRadioButton("Más barato");
+	private JRadioButton rdbtnRapido = new JRadioButton("Más rápido");
+	private JRadioButton rdbtnCorto = new JRadioButton("Más corto");
+	private Recorrido recorridoSeleccionado;
+	private ActionListener baratoBtn;
+	private ActionListener rapidoBtn;
+	private ActionListener cortoBtn;
 	/**
 	 * Create the panel.
 	 */
@@ -50,10 +60,12 @@ public class PanelRecorrido extends JPanel {
 		btnAtras.setToolTipText("Volver al cuadro anterior");
 		btnAtras.addActionListener(e -> {
 			MainWindow.getInstance().unsetModoRecorrido();
+			Linea.listLineas.forEach(l -> l.unselect());
+			
 		});
 		add(btnAtras, BorderLayout.NORTH);
 		
-		panelEstaciones.setLayout(new MigLayout("", "[][grow]", "[][][][][][][][][]"));
+		panelEstaciones.setLayout(new MigLayout("", "[grow][grow]", "[][][][][][][][][]"));
 		
 		JLabel lblNewLabel_3 = new JLabel("Nuevo recorrido");
 		lblNewLabel_3.setIcon(new ImageIcon("./assets/recorrido_icon.png"));
@@ -70,37 +82,34 @@ public class PanelRecorrido extends JPanel {
 		panelEstaciones.add(lblHasta, "cell 0 3,alignx center,aligny center");
 		panelEstaciones.add(pehasta, "cell 0 4 2 1,alignx center,aligny top");
 		add(panelEstaciones, BorderLayout.CENTER);
-		JRadioButton rdbtnNewRadioButton = new JRadioButton("M\u00E1s barato");
-		rdbtnNewRadioButton.setEnabled(false);
-		panelEstaciones.add(rdbtnNewRadioButton, "cell 0 6");
+		rdbtnBarato.setEnabled(false);
+		panelEstaciones.add(rdbtnBarato, "cell 0 6");
 		
-		textField = new JTextField();
-		textField.setEditable(false);
-		panelEstaciones.add(textField, "cell 1 6,growx");
-		textField.setColumns(10);
+		tfBarati = new JTextField();
+		tfBarati.setEditable(false);
+		panelEstaciones.add(tfBarati, "cell 1 6,growx");
+		tfBarati.setColumns(10);
 		
-		JRadioButton rdbtnNewRadioButton_1 = new JRadioButton("M\u00E1s r\u00E1pido");
-		rdbtnNewRadioButton_1.setEnabled(false);
-		panelEstaciones.add(rdbtnNewRadioButton_1, "cell 0 7");
+		rdbtnRapido.setEnabled(false);
+		panelEstaciones.add(rdbtnRapido, "cell 0 7");
 		
-		textField_1 = new JTextField();
-		textField_1.setEditable(false);
-		panelEstaciones.add(textField_1, "cell 1 7,growx");
-		textField_1.setColumns(10);
+		tfRapido = new JTextField();
+		tfRapido.setEditable(false);
+		panelEstaciones.add(tfRapido, "cell 1 7,growx");
+		tfRapido.setColumns(10);
 		
-		JRadioButton rdbtnNewRadioButton_2 = new JRadioButton("Menor distancia");
-		rdbtnNewRadioButton_2.setEnabled(false);
-		panelEstaciones.add(rdbtnNewRadioButton_2, "cell 0 8");
+		rdbtnCorto.setEnabled(false);
+		panelEstaciones.add(rdbtnCorto, "cell 0 8");
 		
 		ButtonGroup radioButtons=new ButtonGroup();
-		radioButtons.add(rdbtnNewRadioButton);
-		radioButtons.add(rdbtnNewRadioButton_1);
-		radioButtons.add(rdbtnNewRadioButton_2);
+		radioButtons.add(rdbtnBarato);
+		radioButtons.add(rdbtnRapido);
+		radioButtons.add(rdbtnCorto);
 		
-		textField_2 = new JTextField();
-		textField_2.setEditable(false);
-		panelEstaciones.add(textField_2, "cell 1 8,growx");
-		textField_2.setColumns(10);
+		tfCorto = new JTextField();
+		tfCorto.setEditable(false);
+		panelEstaciones.add(tfCorto, "cell 1 8,growx");
+		tfCorto.setColumns(10);
 		
 		btnRecorridos.setEnabled(false);
 		btnRecorridos.setToolTipText("Comprar ticket para el recorrido seleccionado");
@@ -133,6 +142,14 @@ public class PanelRecorrido extends JPanel {
 	public static void setEstacion(Estacion e) {
 		
 		if(pr.panelSeleccionado.equals(pr.pedesde)) {
+			if(pr.pedesde!=null) {
+				pr.pehasta.unselectEstacion();
+				pr.pehasta.unselect();
+				pr.panelEstaciones.remove(pr.pehasta);
+				pr.panelEstaciones.revalidate();
+				pr.pehasta=new PanelEstacion();
+				pr.panelEstaciones.add(pr.pehasta, "cell 0 4 2 1,alignx center,aligny top");
+			}
 			//es el primer panel
 			pr.pedesde.unselectEstacion();
 			pr.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -167,11 +184,93 @@ public class PanelRecorrido extends JPanel {
 			btnRecorridos.setEnabled(true);	
 			generarRecorridos();
 		}
+		else {
+			btnRecorridos.setEnabled(false);
+			eliminarRecorridos();
+		}
+	}
+	
+	public void eliminarRecorridos() {
+		//TODO
 	}
 	
 	public void generarRecorridos() {
 		//TODO generar recorridos, setear radiocheckboxes y completar campos de informacion
 		//También habilitar el botón ComprarTicket
+		
+		Estacion e1=this.pedesde.getEstacion();
+		Estacion e2=this.pehasta.getEstacion();
+		LinkedList<Recorrido> recorridos=e1.getRecorridos(e2);
+		if (!recorridos.isEmpty()) {
+			Recorrido masCorto = recorridos.stream().reduce((acum, rec) -> {
+				return (acum.distanciaTotal() < rec.distanciaTotal()) ? acum : rec;
+			}).get();
+			Recorrido masBarato = recorridos.stream().reduce((acum, rec) -> {
+				return (acum.costoTotal() < rec.costoTotal()) ? acum : rec;
+			}).get();
+			Recorrido masRapido = recorridos.stream().reduce((acum, rec) -> {
+				return (acum.duracionTotal() < rec.duracionTotal()) ? acum : rec;
+			}).get();
+			if (baratoBtn != null)
+				rdbtnBarato.removeActionListener(baratoBtn);
+			if (cortoBtn != null)
+				rdbtnCorto.removeActionListener(cortoBtn);
+			if (rapidoBtn != null)
+				rdbtnRapido.removeActionListener(rapidoBtn);
+			if (recorridoSeleccionado != null) {
+				recorridoSeleccionado.unselect();
+				recorridoSeleccionado = null;
+			}
+			baratoBtn = new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (recorridoSeleccionado != null)
+						recorridoSeleccionado.unselect();
+					recorridoSeleccionado = masBarato;
+					recorridoSeleccionado.select();
+				}
+			};
+			rapidoBtn = new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (recorridoSeleccionado != null)
+						recorridoSeleccionado.unselect();
+					recorridoSeleccionado = masRapido;
+					recorridoSeleccionado.select();
+				}
+			};
+			cortoBtn = new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (recorridoSeleccionado != null)
+						recorridoSeleccionado.unselect();
+					recorridoSeleccionado = masCorto;
+					recorridoSeleccionado.select();
+				}
+			};
+			rdbtnBarato.addActionListener(baratoBtn);
+			rdbtnCorto.addActionListener(cortoBtn);
+			rdbtnRapido.addActionListener(rapidoBtn);
+			rdbtnBarato.setEnabled(true);
+			rdbtnCorto.setEnabled(true);
+			rdbtnRapido.setEnabled(true);
+			
+		}
+		else {
+			rdbtnBarato.setSelected(false);
+			rdbtnCorto.setSelected(false);
+			rdbtnRapido.setSelected(false);
+			rdbtnBarato.setEnabled(false);
+			rdbtnCorto.setEnabled(false);
+			rdbtnRapido.setEnabled(false);
+			if(recorridoSeleccionado!=null) {
+				recorridoSeleccionado.unselect();
+				recorridoSeleccionado=null;
+			}
+			btnRecorridos.setEnabled(false);
+			
+		}
+		
 	}
 	
 	public static Boolean primerEstacion() {
@@ -195,7 +294,7 @@ class PanelEstacion extends JPanel {
 	 */
 	public PanelEstacion(Estacion e) {
 		this.estacion=e;
-		setLayout(new MigLayout("", "[][grow]", "[][][][]"));
+		setLayout(new MigLayout("", "[][grow]", "[grow][grow][grow][grow]"));
 		
 		JLabel lblNewLabel = new JLabel("Estación "+e.getNombre());
 		lblNewLabel.setIcon(new ImageIcon("./assets/estacion_icon.png"));

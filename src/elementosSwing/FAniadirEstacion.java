@@ -14,6 +14,7 @@ import com.formdev.flatlaf.extras.components.FlatButton;
 
 import elementosSwing.grafo2D.PanelGrafo;
 import objetos.Estacion;
+import objetos.NombreOcupadoException;
 
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
@@ -21,11 +22,9 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.time.format.DateTimeParseException;
 
 import javax.swing.JTextField;
-import javax.swing.JFormattedTextField;
 
 public class FAniadirEstacion extends JDialog {
 
@@ -173,6 +172,8 @@ public class FAniadirEstacion extends JDialog {
 						});
 						popup.add(ok, BorderLayout.CENTER);
 						popup.setVisible(true);
+					} catch (NombreOcupadoException e1) {
+						//Nombre ocupado
 					}
 				});
 				buttonPane.add(okButton);

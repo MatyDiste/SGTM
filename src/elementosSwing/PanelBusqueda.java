@@ -7,14 +7,12 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import net.miginfocom.swing.MigLayout;
-import java.awt.BorderLayout;
 
 public class PanelBusqueda extends JPanel {
 	private static PanelBusqueda panelstatic;
 	private JTable tabla;
 	private JScrollPane panel = new JScrollPane();
 	private Boolean esEstacion=true;
-	private Boolean puedeSeleccionar=true;
 	/**
 	 * Create the panel.
 	 */

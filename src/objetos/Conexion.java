@@ -21,6 +21,7 @@ public class Conexion {
 	private Boolean seleccionado=false;
 
 	//Constructor DEBUG!!!!
+	
 	public Conexion(Estacion a, Estacion b, Linea l) {
 		a.addConexion(this);
 		b.addConexion(this);
@@ -29,6 +30,10 @@ public class Conexion {
 		linea=l;
 		estado=l.estado().equals("ACTIVA")? EstadoConexion.ACTIVA : EstadoConexion.INACTIVA;
 		flecha =new Flecha(a, b, this);
+		distancia=Math.random()*100;
+		duracion=Math.random()*50;
+		cantMaxPasajeros=(int)(Math.random()*200);
+		costo=Math.random()*100;
 		//System.out.println("Creada conexion entre "+a.getNombre()+" --> "+b.getNombre());
 	}
 	//END Constructor DEBUG!!!!
@@ -57,6 +62,7 @@ public class Conexion {
 		e1=null;
 		e2=null;
 		this.deshabilitar();
+		Estacion.generarPageRank(200);
 	}
 	
 	public Color getColor() {

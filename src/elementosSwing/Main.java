@@ -11,6 +11,7 @@ import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatNightOwlContra
 import objetos.Conexion;
 import objetos.Estacion;
 import objetos.Linea;
+import objetos.NombreOcupadoException;
 
 
 public class Main {
@@ -35,6 +36,8 @@ public class Main {
 	}
 	
 	public static void openMainWindow() {
+		//TODO
+		//Aca se deberia cargar desde la DB en vez de estos generadores debug
 		for(int i=0; i<9; i++) {
 			debugGenEstacion();
 		}
@@ -46,16 +49,22 @@ public class Main {
 			//System.out.println("Creada conexion");
 			debugGenConexiones(l);
 		});
+		Estacion.generarPageRank(200);
+		
 		@SuppressWarnings("unused")
 		MainWindow mw=new MainWindow("Sistema gestion de Transporte Multimodal");
 	}
 	
 	public static void debugGenEstacion() {
-		new Estacion("DBG"+Integer.toString((int)(Math.random()*31)), LocalTime.of((int)(Math.random()*24), 0), LocalTime.of((int)(Math.random()*24), 0), true);
+		try {
+			new Estacion("DBG"+Integer.toString((int)(Math.random()*31)), LocalTime.of((int)(Math.random()*24), 0), LocalTime.of((int)(Math.random()*24), 0), true);
+		} catch (NombreOcupadoException e) { System.out.println("No se pudo generar Estacion"); }
 	}
 	
 	public static void debugGenLinea() {
-		new Linea("Ldbg"+Integer.toString((int)(Math.random()*31)), new Color((int)(Math.random()*Integer.MAX_VALUE-1)), true);
+		try {
+			new Linea("Ldbg"+Integer.toString((int)(Math.random()*31)), new Color((int)(Math.random()*Integer.MAX_VALUE-1)), true);
+		} catch (NombreOcupadoException e) { System.out.println("No se pudo generar Linea"); }
 	}
 	
 	public static void debugGenConexiones(Linea l) {

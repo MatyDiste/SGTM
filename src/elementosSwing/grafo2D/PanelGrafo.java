@@ -44,6 +44,9 @@ public class PanelGrafo extends JPanel {
 		this.setVisible(true);
 		recargar();
 		this.addMouseListener(new MouseAdapter() {
+			/*public void mousePressed(MouseEvent event) {
+				mouseClicked(event);
+			}*/
 			public void mouseClicked(MouseEvent event) {
 				if (!modoRecorrido) {
 					try {
@@ -76,9 +79,12 @@ public class PanelGrafo extends JPanel {
 			public void mouseDragged(MouseEvent event) {
 				if(editable) {
 					try {
-						selectedEstacion.get().mover((double)event.getX(), (double)event.getY());
-						paintImmediately(0, 0, 700, 760);
-						event.consume();
+						
+						if (selectedEstacion.get().puntoDentro((double)event.getX(), (double)event.getY(), 100d)) {
+							selectedEstacion.get().mover((double) event.getX(), (double) event.getY());
+							paintImmediately(0, 0, 700, 760);
+							event.consume();
+						}
 					}
 					catch(NoSuchElementException e) {
 						selectedEstacion=Optional.empty();
@@ -124,6 +130,10 @@ public class PanelGrafo extends JPanel {
 	}
 	public static void unsetModoRecorrido() {
 		pg.modoRecorrido=false;
+		pg.selectedEstacion.ifPresentOrElse(e -> e.unselect(), ()->{});
+		pg.selectedEstacion2.ifPresentOrElse(e -> e.unselect(), ()->{});
+		pg.selectedEstacion=Optional.empty();
+		pg.selectedEstacion2=Optional.empty();
 	}
 	public static void setModoRecorrido() {
 		try {

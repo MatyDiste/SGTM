@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import elementosSwing.grafo2D.Estacion2D;
@@ -16,9 +18,9 @@ enum EstadoEstacion {
 
 public class Estacion implements Comparable<Estacion>{
 	
-	//Todos los atributos y métodos estáticos deberian implementarse ya en la interfaz
-	public static HashSet<Estacion> listEstaciones=new HashSet<Estacion>(); //Util para que la clase se encargue de tener toda la lista de estaciones (al ser hashset, debe estar implementado hashcode e equals)
+	public static HashSet<Estacion> listEstaciones=new HashSet<Estacion>(); 
 	public static Short contadorId=1001;
+	public static final Double D_PAGERANK=0.5d;
 	private static Boolean borrarEstacion(Estacion e) { 
 		PanelGrafo.quitarEstacion(e.getE2d());
 		return listEstaciones.remove(e);
@@ -29,6 +31,9 @@ public class Estacion implements Comparable<Estacion>{
 	 * TODO
 	 * Comunicarse con EstacionDAO para cargar todas las estaciones (método estático)
 	 */
+	public static Boolean nombreDisponible(String s) {
+		return !listEstaciones.stream().anyMatch(e -> e.getNombre().equals(s));
+	}
 	
 	private static void incrementarContador() {
 		contadorId++;
@@ -36,18 +41,11 @@ public class Estacion implements Comparable<Estacion>{
 	public static Short getContadorId() {
 		return contadorId;
 	}
-	public static List<Estacion> buscarID(short id){
-		return listEstaciones
-				.stream()
-				.filter( (e) -> e.getId()==id)
-				.collect(Collectors.toList());
+	public static Estacion buscarID(short id) throws NoSuchElementException{
+		return listEstaciones.stream().filter(e -> e.id==id).findAny().get();
 	}
-	public static List<Estacion> buscarNombre(String name){
-		return listEstaciones
-				.stream()
-				.filter( (e) -> e.getNombre().equals(name))
-				.collect(Collectors.toList());
-
+	public static Estacion buscarNombre(String name) throws NoSuchElementException{
+		return listEstaciones.stream().filter(e -> e.nombre.equals(name)).findAny().get();
 	}
 	public static List<Estacion> buscarHorarioApertura(LocalTime lt){
 		return listEstaciones
@@ -61,61 +59,58 @@ public class Estacion implements Comparable<Estacion>{
 				.filter( (e) -> e.getHorarioCierre().equals(lt))
 				.collect(Collectors.toList());
 	}
-	
-	public Estacion(String nombre, LocalTime horarioApertura, LocalTime horarioCierre, Boolean estado) {
-		this.id=contadorId;
-		incrementarContador();
-		this.nombre=nombre;
-		this.horarioApertura=horarioApertura;
-		this.horarioCierre=horarioCierre;
-		this.estado=(estado)? EstadoEstacion.OPERATIVA : EstadoEstacion.EN_MANTENIMIENTO;
-		listEstaciones.add(this);
-		this.e2d=new Estacion2D(this);
-		this.posx=Math.random() * 500+ 50;
-		this.posy=Math.random() * 500 + 50;
-		
-		//System.out.println("A�adida estacion "+this.nombre);
+	public static void generarPageRank(Integer iteraciones) {
+		listEstaciones.forEach(e -> e.pagerank=1d);
+		for(int i=0; i<iteraciones; i++) {
+			listEstaciones.forEach(e ->{
+				e.calculatePageRank();
+			});
+		}
 	}
-	
-	public List<Estacion> subgrafoInmediato() {
-		return this.listConexiones.stream()
-				  .filter((c) -> c.getE1().equals(this))
-		          .map(c -> c.getE2())
-		          .collect(Collectors.toList());
-
-	}
-	
-	
-	/*
-	 * Terminamos con los metodos y atributos de clase, ahora con los abstractos de instancia
-	 * Estos son los getters y setters que debe tener.
-	 * Notar que no hay setID(), esto es porque no debe ser posible cambiar el ID, ya que esto va a ser PK en la BD
-	 */
-	
-	public Estacion2D getE2d() {
-		return e2d;
-	}
-
-	public void setE2d(Estacion2D e2d) {
-		this.e2d = e2d;
-	}
-
-
+	/*---------------------------------------------------*/
 	private Short id;
 	private String nombre;
 	private LocalTime horarioApertura;
 	private LocalTime horarioCierre;
 	private EstadoEstacion estado;
-	private LocalDate fechaUltimoMantenimiento=LocalDate.now(); //Por default, el ultimo mantenimiento es su dia de ingreso
+	private LocalDate fechaUltimoMantenimiento=LocalDate.now();
 	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
-	private Double pagerank = 1.0; //?
-	private Double pesoTotal = 0.0; //?
+	private Double pagerank = 1.0;
+	private Double pesoTotal = 0.0;
 	private ArrayList<Mantenimiento> listaMantenimientos=new ArrayList<Mantenimiento>();
 	private Estacion2D e2d;
 	public Double posx=Math.random()*600+50;
 	public Double posy=Math.random()*450+50;
 	
+	public Estacion(String nombre, LocalTime horarioApertura, LocalTime horarioCierre, Boolean estado) throws NombreOcupadoException {
+		
+		if(nombreDisponible(nombre)) {
+			this.id = contadorId;
+			incrementarContador();
+			this.nombre = nombre;
+			this.horarioApertura = horarioApertura;
+			this.horarioCierre = horarioCierre;
+			this.estado = (estado) ? EstadoEstacion.OPERATIVA : EstadoEstacion.EN_MANTENIMIENTO;
+			this.e2d = new Estacion2D(this);
+			this.posx = Math.random() * 500 + 50;
+			this.posy = Math.random() * 500 + 50;
+			listEstaciones.add(this);
+		}
+		else throw new NombreOcupadoException(nombre);
+		
+	}
+	/*--------------------------------------------------*/
+
+	
+	
 	//METODOS GETTERS AND SETTERS
+	public Estacion2D getE2d() {
+		return e2d;
+	}
+	
+	public void setE2d(Estacion2D e2d) {
+		this.e2d = e2d;
+	}
 	
 	public Short getId() {
 		return id;
@@ -171,12 +166,7 @@ public class Estacion implements Comparable<Estacion>{
 	public HashSet<Conexion> getListConexiones() {
 		return listConexiones;
 	}
-	/*public void setListConexiones(HashSet<Conexion> listConexiones) {
-		this.listConexiones = listConexiones;
-	}*/
-	public void addConexion(Conexion c) {
-		listConexiones.add(c);
-	}
+	
 	public Double getPagerank() {
 		return pagerank;
 	}
@@ -189,10 +179,54 @@ public class Estacion implements Comparable<Estacion>{
 	public void setPesoTotal(Double pesoTotal) {
 		this.pesoTotal = pesoTotal;
 	}
+	public void addConexion(Conexion c) {
+		listConexiones.add(c);
+	}
 	public void quitarConexion(Conexion c) {
 		listConexiones.remove(c);
+	}
+	/*--------------------------------------------------*/
+	public Integer cantSalientes() {
+		return (int)listConexiones.stream()
+				.filter(c -> c.getE1().equals(this))
+				.count();
+	}
+	public HashSet<Estacion> listEstacionesEntrantes(){
+		return (HashSet<Estacion>)listConexiones.stream()
+				.filter(c -> c.getE2().equals(this))
+				.map(c -> c.getE1())
+				.collect(Collectors.toSet());
+	}
+	public void calculatePageRank() {
+		this.pagerank = D_PAGERANK;
+		
+		this.listEstacionesEntrantes().forEach(e -> {
+			this.pagerank += D_PAGERANK * (e.pagerank/e.cantSalientes());
+		});
+	}
+	
+	public LinkedList<Recorrido> getRecorridos(Estacion hasta) {
+		LinkedList<Recorrido> ret=new LinkedList<Recorrido>();
+		depthFirst(ret, hasta, new LinkedList<Conexion>());
+		return ret;
+	}
+	private void depthFirst(LinkedList<Recorrido> lista, Estacion hasta, LinkedList<Conexion> conexiones) {
+		
+		if(this.equals(hasta)) {
+			lista.addLast(new Recorrido(conexiones));
+		}
+		else {
+			listConexiones.forEach(c -> {
+				if(c.getE1().equals(this) && c.estado().equals("ACTIVA") && !conexiones.contains(c)) { 
+					conexiones.addLast(c);
+					c.getE2().depthFirst(lista, hasta, conexiones);
+					conexiones.removeLast();
+				}
+			});
+		}
 		
 	}
+	
 	public void select() {
 		this.e2d.select();
 	}
@@ -200,29 +234,19 @@ public class Estacion implements Comparable<Estacion>{
 		this.e2d.unselect();
 	}
 	
-	/*
-	 * Metodos que deben implementarse:
-	 * equals() <- Para poder describir que una estacion es igual a otra si... (sus nombres son iguales)
-	 * hashCode() <- Debe basarse en los mismos atributos que utilice equals(), esto para el HashSet
-	 * eliminar() <- Método de instancia de eliminacion. Debe eliminar a la estacion de la listaEstaciones (llamar a Estacion.eliminar(this), y a todos los objetos que mantienen alguna referencia a el mismo)
-	 * luego, al dejar de referenciar a esa estacion en donde usemos este metodo, el garbage collector va a eliminarlo porque no deben existir mas referencias.
-	 * compareTo() <- Debe devolver -1 si this es menor
-	 */
-	public boolean equals(Estacion o) { //Deberia utilizar lo mismo que hash (ID, nombre?)
-		return this.nombre.equals(o.getNombre());
+	public boolean equals(Estacion o) { 
+		return this.nombre.equals(o.getNombre()) || this.id==o.id;
 	}
 	@Override
-	public int hashCode() { //Debería diferenciar entre estaciones de acuerdo a sus atributos (ID, nombre?)
+	public int hashCode() { 
 		return nombre.hashCode();
 		
 	}
-	public void eliminar() { //Debe llamar al metodo estatico con this
-		//if(listConexiones.isEmpty()) System.out.println("ESTA VACIO QUE CARAJOS");
+	public void eliminar() { 
 		@SuppressWarnings("unchecked")
 		HashSet<Conexion> aux= (HashSet<Conexion>)listConexiones.clone();
 		aux.stream()
 					  .forEach(c ->{
-						  //System.out.println("Eliminando conexion...");
 						  c.getLinea().quitarConexion(c);
 						  c.eliminar();
 					  });

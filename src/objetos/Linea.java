@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import elementosSwing.grafo2D.Flecha;
 import elementosSwing.grafo2D.PanelGrafo;
 
 enum EstadoLinea {
@@ -27,6 +26,9 @@ public class Linea implements Comparable<Linea>{
 	public static Short getContadorId() {
 		return contadorId;
 	}
+	public static Boolean nombreDisponible(String s) {
+		return !listLineas.stream().anyMatch(l -> l.getNombre().equals(s));
+	}
 	
 	private List<Estacion> listEstaciones=new ArrayList<Estacion>();
 	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
@@ -35,13 +37,16 @@ public class Linea implements Comparable<Linea>{
 	private Color color;
 	private EstadoLinea estado;
 	
-	public Linea(String nombre, Color color, Boolean estado) {
-		this.id=contadorId;
-		incrementarContador();
-		this.nombre = nombre;
-		this.color = color;
-		this.estado = (estado)? EstadoLinea.ACTIVA : EstadoLinea.INACTIVA;
-		listLineas.add(this);
+	public Linea(String nombre, Color color, Boolean estado) throws NombreOcupadoException {
+		if (nombreDisponible(nombre)) {
+			this.id = contadorId;
+			incrementarContador();
+			this.nombre = nombre;
+			this.color = color;
+			this.estado = (estado) ? EstadoLinea.ACTIVA : EstadoLinea.INACTIVA;
+			listLineas.add(this);
+		}
+		else throw new NombreOcupadoException(nombre);
 	}
 	
 	//METODOS GETTERS AND SETTERS
@@ -101,6 +106,7 @@ public class Linea implements Comparable<Linea>{
 		//TODO lo mismo que activar()
 	}
 	public void quitarRecorrido() {
+		@SuppressWarnings("unchecked")
 		HashSet<Conexion> aux= (HashSet<Conexion>)listConexiones.clone();
 		aux.forEach(c -> c.eliminar());
 		listConexiones.clear();
@@ -141,6 +147,6 @@ public class Linea implements Comparable<Linea>{
 		return this.nombre;
 	}
 	public boolean equals(Linea l) {
-		return this.nombre.equalsIgnoreCase(l.nombre);
+		return this.nombre.equalsIgnoreCase(l.nombre) || this.id==l.id;
 	}
 }
