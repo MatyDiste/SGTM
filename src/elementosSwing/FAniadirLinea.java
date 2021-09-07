@@ -35,6 +35,7 @@ public class FAniadirLinea extends JDialog {
 	 */
 	public FAniadirLinea() {
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		setAlwaysOnTop(true);
 		setTitle("A\u00F1adir nueva l\u00EDnea");
 		setBounds(100, 100, 400, 175);
 		getContentPane().setLayout(new BorderLayout());

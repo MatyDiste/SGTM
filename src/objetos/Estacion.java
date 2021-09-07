@@ -1,5 +1,6 @@
 package objetos;
 
+import java.awt.Dialog;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -9,8 +10,18 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.WindowConstants;
+
+import elementosSwing.MainWindow;
 import elementosSwing.grafo2D.Estacion2D;
 import elementosSwing.grafo2D.PanelGrafo;
+import sun.jvm.hotspot.ui.tree.BadAddressTreeNodeAdapter;
 
 enum EstadoEstacion {
 	OPERATIVA, EN_MANTENIMIENTO
@@ -77,7 +88,7 @@ public class Estacion implements Comparable<Estacion>{
 	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
 	private Double pagerank = 1.0;
 	private Double pesoTotal = 0.0;
-	private ArrayList<Mantenimiento> listaMantenimientos=new ArrayList<Mantenimiento>();
+	private LinkedList<Mantenimiento> listaMantenimientos=new LinkedList<Mantenimiento>();
 	private Estacion2D e2d;
 	public Double posx=Math.random()*600+50;
 	public Double posy=Math.random()*450+50;
@@ -144,18 +155,67 @@ public class Estacion implements Comparable<Estacion>{
 		listaMantenimientos.add(new Mantenimiento(descripcion));
 	}
 	public void setMantenimiento() {
-		this.estado = EstadoEstacion.EN_MANTENIMIENTO;
-		listaMantenimientos.add(new Mantenimiento());
+		if (this.estado==EstadoEstacion.OPERATIVA) {
+			
+			String comentarioMant="";
+			JFrame dialog=new JFrame();
+			JPanel rootp=new JPanel();
+			dialog.setLocationRelativeTo(null);
+			dialog.setAlwaysOnTop(true);
+			dialog.setTitle("Comentario inicio mantenimiento");
+			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			rootp.setLayout(new BoxLayout(rootp, BoxLayout.Y_AXIS));
+			rootp.add(new JLabel("Ingrese comentario de comienzo de mantenimiento"));
+			JTextArea jt=new JTextArea(10,51);
+			jt.setLineWrap(true);
+			rootp.add(jt);
+			JButton btnAceptar=new JButton("Aceptar");
+			btnAceptar.addActionListener(e -> {
+				dialog.dispose();
+			});
+			comentarioMant=((JTextArea)(rootp.getComponent(1))).getText();
+			rootp.add(btnAceptar);
+			dialog.setContentPane(rootp);
+			dialog.pack();
+			dialog.setVisible(true);
+			listaMantenimientos.add(new Mantenimiento(comentarioMant));
+			this.estado = EstadoEstacion.EN_MANTENIMIENTO;
+			PanelGrafo.repintarGrafo();
+		}
 	}
 	public void setOperativa(String descripcion) {
-		Mantenimiento ultimoMantenimiento = listaMantenimientos.get(listaMantenimientos.size()-1);
+		Mantenimiento ultimoMantenimiento = listaMantenimientos.getLast();
 		ultimoMantenimiento.finMantenimiento(descripcion);
 		this.estado = EstadoEstacion.OPERATIVA;
 	}
 	public void setOperativa() {
-		Mantenimiento ultimoMantenimiento = listaMantenimientos.get(listaMantenimientos.size()-1);
-		ultimoMantenimiento.finMantenimiento();
-		this.estado = EstadoEstacion.OPERATIVA;
+		if(this.estado==EstadoEstacion.EN_MANTENIMIENTO) {
+			Mantenimiento ultimoMantenimiento = listaMantenimientos.getLast();
+			String comentarioMant="";
+			JFrame dialog=new JFrame();
+			JPanel rootp=new JPanel();
+			dialog.setLocationRelativeTo(null);
+			dialog.setAlwaysOnTop(true);
+			dialog.setTitle("Comentario inicio mantenimiento");
+			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+			rootp.setLayout(new BoxLayout(rootp, BoxLayout.Y_AXIS));
+			rootp.add(new JLabel("Ingrese comentario de finalización de mantenimiento"));
+			JTextArea jt=new JTextArea(10,51);
+			jt.setLineWrap(true);
+			rootp.add(jt);
+			JButton btnAceptar=new JButton("Aceptar");
+			btnAceptar.addActionListener(e -> {
+				dialog.dispose();
+			});
+			comentarioMant=((JTextArea)(rootp.getComponent(1))).getText();
+			rootp.add(btnAceptar);
+			dialog.setContentPane(rootp);
+			dialog.pack();
+			dialog.setVisible(true);
+			ultimoMantenimiento.finMantenimiento(comentarioMant);
+			this.estado = EstadoEstacion.OPERATIVA;
+			PanelGrafo.repintarGrafo();
+		}
 	}
 	public LocalDate getFechaUltimoMantenimiento() {
 		return fechaUltimoMantenimiento;

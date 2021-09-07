@@ -62,16 +62,16 @@ public class Estacion2D {
 		AffineTransform rst = g2d.getTransform();
 		g2d.translate(this.posx, this.posy);
 		
-		g2d.setColor(new Color(80, 172, 230));
+		g2d.setColor(e.getEstado().equals("OPERATIVA")? new Color(80, 172, 230) : Color.GRAY);
 		g2d.fill(circulo);
 		
-		g2d.setColor(new Color(56, 79, 212));
+		g2d.setColor(e.getEstado().equals("OPERATIVA")? new Color(56, 79, 212) : Color.DARK_GRAY);
 		g2d.setStroke(new BasicStroke(selected? SELECTEDSTROKE : UNSELECTEDSTROKE));
 		g2d.draw(circulo);
 			
 		g2d.setColor(Color.BLACK);
 		g2d.setFont(new Font(null, selected? Font.BOLD : Font.PLAIN, 15));
-		g2d.drawString(nombre, RADIO.floatValue()/2.4f, RADIO.floatValue()/0.8f);
+		g2d.drawString(e.getNombre(), RADIO.floatValue()/5f, RADIO.floatValue()*2.6f);
 			
 		g2d.setTransform(rst);
 		

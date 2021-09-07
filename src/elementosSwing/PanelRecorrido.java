@@ -15,6 +15,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import java.awt.Font;
@@ -22,6 +23,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.Optional;
@@ -38,7 +41,7 @@ public class PanelRecorrido extends JPanel {
 	private PanelEstacion pehasta=new PanelEstacion();
 	private PanelEstacion panelSeleccionado=pedesde;
 	private JButton btnRecorridos = new JButton("Comprar ticket");
-	private JTextField tfBarati;
+	private JTextField tfBarato;
 	private JTextField tfRapido;
 	private JTextField tfCorto;
 	private JRadioButton rdbtnBarato = new JRadioButton("Más barato");
@@ -48,6 +51,7 @@ public class PanelRecorrido extends JPanel {
 	private ActionListener baratoBtn;
 	private ActionListener rapidoBtn;
 	private ActionListener cortoBtn;
+	private ButtonGroup radioButtons=new ButtonGroup();
 	/**
 	 * Create the panel.
 	 */
@@ -60,8 +64,6 @@ public class PanelRecorrido extends JPanel {
 		btnAtras.setToolTipText("Volver al cuadro anterior");
 		btnAtras.addActionListener(e -> {
 			MainWindow.getInstance().unsetModoRecorrido();
-			Linea.listLineas.forEach(l -> l.unselect());
-			
 		});
 		add(btnAtras, BorderLayout.NORTH);
 		
@@ -85,10 +87,10 @@ public class PanelRecorrido extends JPanel {
 		rdbtnBarato.setEnabled(false);
 		panelEstaciones.add(rdbtnBarato, "cell 0 6");
 		
-		tfBarati = new JTextField();
-		tfBarati.setEditable(false);
-		panelEstaciones.add(tfBarati, "cell 1 6,growx");
-		tfBarati.setColumns(10);
+		tfBarato = new JTextField();
+		tfBarato.setEditable(false);
+		panelEstaciones.add(tfBarato, "cell 1 6,growx");
+		tfBarato.setColumns(10);
 		
 		rdbtnRapido.setEnabled(false);
 		panelEstaciones.add(rdbtnRapido, "cell 0 7");
@@ -101,7 +103,6 @@ public class PanelRecorrido extends JPanel {
 		rdbtnCorto.setEnabled(false);
 		panelEstaciones.add(rdbtnCorto, "cell 0 8");
 		
-		ButtonGroup radioButtons=new ButtonGroup();
 		radioButtons.add(rdbtnBarato);
 		radioButtons.add(rdbtnRapido);
 		radioButtons.add(rdbtnCorto);
@@ -114,6 +115,10 @@ public class PanelRecorrido extends JPanel {
 		btnRecorridos.setEnabled(false);
 		btnRecorridos.setToolTipText("Comprar ticket para el recorrido seleccionado");
 		btnRecorridos.setIcon(new ImageIcon("./assets/buy_icon.png"));
+		btnRecorridos.addActionListener(e -> {
+			JFrame jf=new FGenerarTicket(recorridoSeleccionado);
+			jf.setVisible(true);
+		});
 		btnRecorridos.putClientProperty("JButton.buttonType", "roundRect");
 		
 		JPanel panel_1 = new JPanel();
@@ -191,7 +196,21 @@ public class PanelRecorrido extends JPanel {
 	}
 	
 	public void eliminarRecorridos() {
-		//TODO
+		rdbtnBarato.setSelected(false);
+		rdbtnCorto.setSelected(false);
+		rdbtnRapido.setSelected(false);
+		rdbtnBarato.setEnabled(false);
+		rdbtnCorto.setEnabled(false);
+		rdbtnRapido.setEnabled(false);
+		if(recorridoSeleccionado!=null) {
+			recorridoSeleccionado.unselect();
+			recorridoSeleccionado=null;
+		}
+		btnRecorridos.setEnabled(false);
+		tfBarato.setText("");
+		tfRapido.setText("");
+		tfCorto.setText("");
+		radioButtons.clearSelection();
 	}
 	
 	public void generarRecorridos() {
@@ -255,20 +274,15 @@ public class PanelRecorrido extends JPanel {
 			rdbtnCorto.setEnabled(true);
 			rdbtnRapido.setEnabled(true);
 			
+			DecimalFormat df=new DecimalFormat("#.##");
+			df.setRoundingMode(RoundingMode.FLOOR);
+			tfBarato.setText("$"+df.format(masBarato.costoTotal())+" pesos");
+			tfRapido.setText(""+df.format(masRapido.duracionTotal())+" minutos");
+			tfCorto.setText(""+df.format(masCorto.distanciaTotal())+" metros");
+			
 		}
 		else {
-			rdbtnBarato.setSelected(false);
-			rdbtnCorto.setSelected(false);
-			rdbtnRapido.setSelected(false);
-			rdbtnBarato.setEnabled(false);
-			rdbtnCorto.setEnabled(false);
-			rdbtnRapido.setEnabled(false);
-			if(recorridoSeleccionado!=null) {
-				recorridoSeleccionado.unselect();
-				recorridoSeleccionado=null;
-			}
-			btnRecorridos.setEnabled(false);
-			
+			eliminarRecorridos();
 		}
 		
 	}

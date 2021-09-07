@@ -47,6 +47,15 @@ public class Recorrido {
 		caminos.forEach(c -> c.unselect());
 		PanelGrafo.repintarGrafo();
 	}
-	
+	public Estacion getEstacionInicial() {
+		if(!caminos.isEmpty())
+			return caminos.getFirst().getE1();
+		else return null;
+	}
+	public Estacion getEstacionFinal() {
+		if(!caminos.isEmpty())
+			return caminos.getLast().getE2();
+		else return null;
+	}
 	
 }

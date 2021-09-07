@@ -40,6 +40,7 @@ public class FAniadirConexion extends JFrame {
 	 */
 	public FAniadirConexion() {
 		frame=this;
+		setAlwaysOnTop(true);
 		setTitle("Nuevo recorrido");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 850, 425);
