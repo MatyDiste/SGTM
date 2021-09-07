@@ -209,6 +209,7 @@ public class PanelRecorrido extends JPanel {
 		tfRapido.setText("");
 		tfCorto.setText("");
 		radioButtons.clearSelection();
+		btnRecorridos.setEnabled(false);
 	}
 	
 	public void generarRecorridos() {
@@ -245,6 +246,7 @@ public class PanelRecorrido extends JPanel {
 						recorridoSeleccionado.unselect();
 					recorridoSeleccionado = masBarato;
 					recorridoSeleccionado.select();
+					btnRecorridos.setEnabled(true);
 				}
 			};
 			rapidoBtn = new ActionListener() {
@@ -254,6 +256,7 @@ public class PanelRecorrido extends JPanel {
 						recorridoSeleccionado.unselect();
 					recorridoSeleccionado = masRapido;
 					recorridoSeleccionado.select();
+					btnRecorridos.setEnabled(true);
 				}
 			};
 			cortoBtn = new ActionListener() {
@@ -263,6 +266,7 @@ public class PanelRecorrido extends JPanel {
 						recorridoSeleccionado.unselect();
 					recorridoSeleccionado = masCorto;
 					recorridoSeleccionado.select();
+					btnRecorridos.setEnabled(true);
 				}
 			};
 			rdbtnBarato.addActionListener(baratoBtn);
@@ -277,6 +281,7 @@ public class PanelRecorrido extends JPanel {
 			tfBarato.setText("$"+df.format(masBarato.costoTotal())+" pesos");
 			tfRapido.setText(""+df.format(masRapido.duracionTotal())+" minutos");
 			tfCorto.setText(""+df.format(masCorto.distanciaTotal())+" metros");
+			btnRecorridos.setEnabled(false);
 			
 		}
 		else {
