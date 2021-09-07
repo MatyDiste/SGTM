@@ -1,9 +1,7 @@
 package objetos;
 
-import java.awt.Dialog;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,10 +16,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 
-import elementosSwing.MainWindow;
 import elementosSwing.grafo2D.Estacion2D;
 import elementosSwing.grafo2D.PanelGrafo;
-import sun.jvm.hotspot.ui.tree.BadAddressTreeNodeAdapter;
 
 enum EstadoEstacion {
 	OPERATIVA, EN_MANTENIMIENTO
@@ -84,7 +80,7 @@ public class Estacion implements Comparable<Estacion>{
 	private LocalTime horarioApertura;
 	private LocalTime horarioCierre;
 	private EstadoEstacion estado;
-	private LocalDate fechaUltimoMantenimiento=LocalDate.now();
+	private LocalDate fechaCreacion=LocalDate.now();
 	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
 	private Double pagerank = 1.0;
 	private Double pesoTotal = 0.0;
@@ -218,10 +214,10 @@ public class Estacion implements Comparable<Estacion>{
 		}
 	}
 	public LocalDate getFechaUltimoMantenimiento() {
-		return fechaUltimoMantenimiento;
-	}
-	public void setFechaUltimoMantenimiento(LocalDate fechaUltimoMantenimiento) {
-		this.fechaUltimoMantenimiento = fechaUltimoMantenimiento;
+		if(listaMantenimientos.isEmpty())
+			return fechaCreacion;
+		else
+			return listaMantenimientos.getLast().getFechaInicio();
 	}
 	public HashSet<Conexion> getListConexiones() {
 		return listConexiones;

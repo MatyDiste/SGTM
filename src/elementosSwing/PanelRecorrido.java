@@ -8,7 +8,6 @@ import javax.swing.border.LineBorder;
 import elementosSwing.grafo2D.PanelGrafo;
 import net.miginfocom.swing.MigLayout;
 import objetos.Estacion;
-import objetos.Linea;
 import objetos.Recorrido;
 
 import java.awt.BorderLayout;
@@ -27,7 +26,6 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
-import java.util.Optional;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
