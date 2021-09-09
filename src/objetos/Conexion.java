@@ -112,7 +112,7 @@ public class Conexion {
 	}
 	
 	public String estado() {
-		if(this.estado==EstadoConexion.ACTIVA && this.linea.estado().equals("ACTIVA")) {
+		if(this.estado==EstadoConexion.ACTIVA && this.linea.estado().equals("ACTIVA") && this.e1.getEstado().equals("OPERATIVA") && this.e2.getEstado().equals("OPERATIVA")) {
 			return "ACTIVA";
 		}
 		else {

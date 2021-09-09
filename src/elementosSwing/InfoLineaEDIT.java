@@ -27,7 +27,7 @@ public class InfoLineaEDIT extends JPanel implements InfoLineaInterface {
 	private JTextField textField;
 	private JTextField textField_2;
 	private JCheckBox chckbxNewCheckBox = new JCheckBox("Activa");
-	private Color color=Color.black;
+	private Color color;
 	private JPanel panel;
 	/**
 	 * Create the panel.
@@ -101,7 +101,7 @@ public class InfoLineaEDIT extends JPanel implements InfoLineaInterface {
 		
 		panel = new CuadroColor(l.getColor());
 		add(panel, "cell 1 2,alignx left,aligny center");
-
+		setColor(l.getColor());
 	}
 	
 	@Override

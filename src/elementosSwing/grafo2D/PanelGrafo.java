@@ -20,6 +20,7 @@ import javax.swing.border.LineBorder;
 import elementosSwing.PanelInfo;
 import elementosSwing.PanelRecorrido;
 import objetos.Estacion;
+import objetos.Linea;
 
 public class PanelGrafo extends JPanel {
 	public static PanelGrafo pg;
@@ -134,6 +135,7 @@ public class PanelGrafo extends JPanel {
 		pg.selectedEstacion2.ifPresentOrElse(e -> e.unselect(), ()->{});
 		pg.selectedEstacion=Optional.empty();
 		pg.selectedEstacion2=Optional.empty();
+		Linea.listLineas.forEach(l -> l.unselect());
 	}
 	public static void setModoRecorrido() {
 		try {
