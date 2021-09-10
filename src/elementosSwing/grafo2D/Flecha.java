@@ -9,6 +9,7 @@ import java.awt.geom.Path2D;
 
 import objetos.Conexion;
 import objetos.Estacion;
+import objetos.Linea;
 
 
 
@@ -16,9 +17,10 @@ public class Flecha {
 	
 	
 	private static final int SELECTEDWIDTH=6;
-	private static final int UNSELECTEDWIDTH=2;
-	private static final float[] dash= {3f, 3f};
-	private static final float dashPhase=1f;
+	private static final int UNSELECTEDWIDTH=3;
+	private static final float[] dashSubte= {8f, 8f, 30f, 8f, 8f};
+	private static final float[] dashTren= {6f};
+	private static final float dashPhase=50f;
 	
 	public Conexion conect;
 	public Boolean selected=false;
@@ -55,7 +57,10 @@ public class Flecha {
 	
 	private BasicStroke getStroke() {
 		Integer size=this.getEstado()? SELECTEDWIDTH : UNSELECTEDWIDTH;
-		return conect.estado().equals("ACTIVA")? new BasicStroke(size) : new BasicStroke(size, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER, 1f, dash, dashPhase); 
+		if(conect.getTipo()==Linea.COLECTIVO) return new BasicStroke(size);
+		else if(conect.getTipo()==Linea.SUBTERRANEO) return new BasicStroke(size, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 1f, dashSubte, dashPhase);
+		else return new BasicStroke(size, BasicStroke.CAP_ROUND, BasicStroke.JOIN_MITER, 1f, dashTren, dashPhase);
+		
 		//return new BasicStroke(size);
 	}
 	
@@ -63,6 +68,8 @@ public class Flecha {
 		//Mantiene la transformacion de manera que E1 y E2 esten sobre la recta y=0
 		
 		this.color=conect.getColor();
+		this.color=new Color(color.getRed(), color.getGreen(), color.getBlue(), (conect.estado().equals("ACTIVA"))? 255 : 30);
+		if(conect.estado().equals("ACTIVA")) color=color.brighter().brighter();
 		g2d.setStroke(this.getStroke());
 		g2d.setColor(color);
 		g2d.translate(x1, y1);
@@ -77,10 +84,12 @@ public class Flecha {
 	
 	public void updatePunta() {
 		punta=new Path2D.Double();
+		Double mult= getEstado()? 2d : 1d ;
 		
+		if(selected) System.out.println("Punta gruesa"); else System.out.println();
 		punta.moveTo(0, 0);
-		punta.lineTo(-14d, -7d);
-		punta.lineTo(-14d, 7d);
+		punta.lineTo(-14*mult, -7*mult);
+		punta.lineTo(-14*mult, 7*mult);
 		punta.closePath();
 		
 		//java.lang.Double a=angulo();

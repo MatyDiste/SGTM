@@ -1,6 +1,8 @@
 package elementosSwing;
 
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+
 import net.miginfocom.swing.MigLayout;
 import objetos.Linea;
 
@@ -20,6 +22,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
@@ -29,11 +32,14 @@ public class InfoLineaEDIT extends JPanel implements InfoLineaInterface {
 	private JCheckBox chckbxNewCheckBox = new JCheckBox("Activa");
 	private Color color;
 	private JPanel panel;
+	private JRadioButton rdbtnCole = new JRadioButton("Colectivo");
+	private JRadioButton rdbtnTren = new JRadioButton("Tren");
+	private JRadioButton rdbtnSubte = new JRadioButton("Subterráneo");
 	/**
 	 * Create the panel.
 	 */
 	public InfoLineaEDIT(Linea l) {
-		setLayout(new MigLayout("", "[][][]", "[][][pref!,grow,baseline][]"));
+		setLayout(new MigLayout("", "[trailing][][]", "[][][pref!,grow,baseline][][]"));
 		
 		JLabel lblNewLabel_3 = new JLabel("L\u00CDNEA");
 		lblNewLabel_3.setFont(new Font(null,Font.BOLD, 16));
@@ -99,6 +105,26 @@ public class InfoLineaEDIT extends JPanel implements InfoLineaInterface {
 		});
 		add(btnNewButton, "flowx,cell 1 2,alignx left,aligny center");
 		
+		JLabel lblNewLabel_4 = new JLabel("Tipo");
+		add(lblNewLabel_4, "cell 0 4");
+		
+		
+
+		rdbtnSubte.setSelected(l.getTipo()==Linea.SUBTERRANEO);
+		
+		add(rdbtnCole, "flowx,cell 1 4");
+		
+		rdbtnTren.setSelected(l.getTipo()==Linea.TREN);
+		add(rdbtnTren, "cell 1 4");
+		
+		rdbtnCole.setSelected(l.getTipo()==Linea.COLECTIVO);
+		add(rdbtnSubte, "cell 1 4");
+		
+		ButtonGroup btnGroup=new ButtonGroup();
+		btnGroup.add(rdbtnCole);
+		btnGroup.add(rdbtnTren);
+		btnGroup.add(rdbtnSubte);
+		
 		panel = new CuadroColor(l.getColor());
 		add(panel, "cell 1 2,alignx left,aligny center");
 		setColor(l.getColor());
@@ -119,6 +145,7 @@ public class InfoLineaEDIT extends JPanel implements InfoLineaInterface {
 		revalidate();
 		panel=new CuadroColor(c);
 		add(panel, "cell 1 2, alignx left");
+		
 		repaint();
 	}
 
@@ -126,7 +153,11 @@ public class InfoLineaEDIT extends JPanel implements InfoLineaInterface {
 	public Boolean getEstado() {
 		return chckbxNewCheckBox.isSelected();
 	}
-	
+	public Short getTipo() {
+		if(rdbtnCole.isSelected()) return Linea.COLECTIVO;
+		if(rdbtnTren.isSelected()) return Linea.TREN;
+		else return Linea.SUBTERRANEO;
+	}
 
 }
 

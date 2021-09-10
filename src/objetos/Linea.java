@@ -12,8 +12,10 @@ enum EstadoLinea {
 }
 
 public class Linea implements Comparable<Linea>{
-	
-	//TODO NO TERMINADO!
+	public static final Short COLECTIVO=0;
+	public static final Short TREN=1;
+	public static final Short SUBTERRANEO=2;
+
 	public static HashSet<Linea> listLineas=new HashSet<Linea>();
 	private static Short contadorId=1001;
 	public static Boolean borrarLinea(Linea e) {
@@ -36,15 +38,26 @@ public class Linea implements Comparable<Linea>{
 	private String nombre;
 	private Color color;
 	private EstadoLinea estado;
+	private Short tipo=0;
 	
-	public Linea(String nombre, Color color, Boolean estado) throws NombreOcupadoException {
+	public Short getTipo() {
+		return tipo;
+	}
+	public void setTipo(Short tipo) {
+		this.tipo = tipo;
+	}
+	public Linea(String nombre, Color color, Boolean estado, Short tipo) throws NombreOcupadoException {
 		if (nombreDisponible(nombre)) {
-			this.id = contadorId;
-			incrementarContador();
-			this.nombre = nombre;
-			this.color = color;
-			this.estado = (estado) ? EstadoLinea.ACTIVA : EstadoLinea.INACTIVA;
-			listLineas.add(this);
+			if (tipo>-1 && tipo<3) {
+				this.id = contadorId;
+				incrementarContador();
+				this.nombre = nombre;
+				this.color = color;
+				this.estado = (estado) ? EstadoLinea.ACTIVA : EstadoLinea.INACTIVA;
+				this.tipo=tipo;
+				listLineas.add(this);
+			}
+			else throw new NombreOcupadoException("Mal argumento tipo. Debe estar entre 0 y 2");
 		}
 		else throw new NombreOcupadoException(nombre);
 	}
