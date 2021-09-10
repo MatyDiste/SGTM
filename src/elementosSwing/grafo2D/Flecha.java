@@ -18,8 +18,8 @@ public class Flecha {
 	
 	private static final int SELECTEDWIDTH=6;
 	private static final int UNSELECTEDWIDTH=3;
-	private static final float[] dashTren= {10f, 10f, 30f, 10f, 10f};
-	private static final float[] dashSubte= {6f};
+	private static final float[] dashSubte= {8f, 8f, 30f, 8f, 8f};
+	private static final float[] dashTren= {6f};
 	private static final float dashPhase=50f;
 	
 	public Conexion conect;
@@ -68,7 +68,8 @@ public class Flecha {
 		//Mantiene la transformacion de manera que E1 y E2 esten sobre la recta y=0
 		
 		this.color=conect.getColor();
-		this.color=new Color(color.getRed(), color.getGreen(), color.getBlue(), (getEstado())? 255 : 150);
+		this.color=new Color(color.getRed(), color.getGreen(), color.getBlue(), (conect.estado().equals("ACTIVA"))? 255 : 30);
+		if(conect.estado().equals("ACTIVA")) color=color.brighter().brighter();
 		g2d.setStroke(this.getStroke());
 		g2d.setColor(color);
 		g2d.translate(x1, y1);
