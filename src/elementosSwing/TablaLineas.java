@@ -86,7 +86,7 @@ class MiTableModelLinea extends AbstractTableModel{
 
 	@Override
 	public int getColumnCount() {
-		return 3;
+		return 4;
 	}
 
 	@Override
@@ -96,7 +96,20 @@ class MiTableModelLinea extends AbstractTableModel{
 		case 1: 
 			Color lin=listLinea.get(rowIndex).getColor();
 			return "R:"+lin.getRed()+" G:"+lin.getGreen()+" B:"+lin.getBlue();
-		case 2: return listLinea.get(rowIndex).estado();
+		case 2: 
+			switch(listLinea.get(rowIndex).getTipo()) {
+			case 0:
+				return "Colectivo";
+			case 1:
+				return "Tren";
+			case 2:
+				return "Subterráneo";
+			default:
+				return "ERROR";
+				
+				
+			}
+		case 3: return listLinea.get(rowIndex).estado();
 		default: return "ERROR";
 		}
 	}

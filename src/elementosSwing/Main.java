@@ -63,7 +63,7 @@ public class Main {
 	
 	public static void debugGenLinea() {
 		try {
-			new Linea("Ldbg"+Integer.toString((int)(Math.random()*31)), new Color((int)(Math.random()*Integer.MAX_VALUE-1)), true);
+			new Linea("Ldbg"+Integer.toString((int)(Math.random()*31)), new Color((int)(Math.random()*Integer.MAX_VALUE-1)), true, (short)(Math.random()*3));
 		} catch (NombreOcupadoException e) { System.out.println("No se pudo generar Linea"); }
 	}
 	

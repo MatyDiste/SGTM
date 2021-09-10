@@ -90,8 +90,9 @@ public class InfoEstacionEDIT extends JPanel implements InfoEstacionInterface {
 		
 		textField_5 = new JTextField(e.getFechaUltimoMantenimiento().format(DateTimeFormatter.ISO_LOCAL_DATE));
 		textField_5.setPreferredSize(new Dimension(150,10));
-		add(textField_5, "cell 1 6,alignx left");
 		textField_5.setColumns(15);
+		textField_5.setEditable(false);
+		add(textField_5, "cell 1 6,alignx left");
 
 	}
 	public Short getID() {

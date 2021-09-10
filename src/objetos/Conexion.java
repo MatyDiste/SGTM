@@ -155,6 +155,8 @@ public class Conexion {
 		seleccionado=false;
 		//flecha.unselect();
 	}
-	
+	public Short getTipo() {
+		return linea.getTipo();
+	}
 	
 }
