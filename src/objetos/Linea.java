@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import ConexionDB.GestorLineaPostgreSQLDAO;
 import elementosSwing.grafo2D.PanelGrafo;
 
 enum EstadoLinea {
@@ -14,8 +15,9 @@ enum EstadoLinea {
 public class Linea implements Comparable<Linea>{
 	
 	//TODO NO TERMINADO!
+	private GestorLineaPostgreSQLDAO gestorLinea = new GestorLineaPostgreSQLDAO();
 	public static HashSet<Linea> listLineas=new HashSet<Linea>();
-	private static Short contadorId=1001;
+	private static Integer contadorId;
 	public static Boolean borrarLinea(Linea e) {
 		return listLineas.remove(e);
 		//TODO Comunicar DAO la eliminacion de e
@@ -23,8 +25,11 @@ public class Linea implements Comparable<Linea>{
 	private static void incrementarContador() {
 		contadorId++;
 	}
-	public static Short getContadorId() {
+	public static Integer getContadorId() {
 		return contadorId;
+	}
+	public static void setContadorId(Integer id) {
+		contadorId=id;
 	}
 	public static Boolean nombreDisponible(String s) {
 		return !listLineas.stream().anyMatch(l -> l.getNombre().equals(s));
@@ -32,24 +37,51 @@ public class Linea implements Comparable<Linea>{
 	
 	private List<Estacion> listEstaciones=new ArrayList<Estacion>();
 	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
-	private Short id;
+	private Integer id;
 	private String nombre;
 	private Color color;
 	private EstadoLinea estado;
+	//private short tipo;
 	
-	public Linea(String nombre, Color color, Boolean estado) throws NombreOcupadoException {
+	public Linea(String nombre, Color color, Boolean estado /*, short tipo*/) throws NombreOcupadoException {
 		if (nombreDisponible(nombre)) {
 			this.id = contadorId;
 			incrementarContador();
 			this.nombre = nombre;
 			this.color = color;
 			this.estado = (estado) ? EstadoLinea.ACTIVA : EstadoLinea.INACTIVA;
+			//this.setTipo(tipo);
 			listLineas.add(this);
+			gestorLinea.insertarEntidad(this);
 		}
 		else throw new NombreOcupadoException(nombre);
 	}
 	
-	//METODOS GETTERS AND SETTERS
+	public Linea(Integer id, String nombre, Color color, String estado /*, short tipo*/) { //throws NombreOcupadoException {
+		//if (nombreDisponible(nombre)) {
+			this.id = id;
+			this.nombre = nombre;
+			this.color = color;
+			if(estado.equals("ACTIVA")) {
+				this.estado = EstadoLinea.ACTIVA;
+			}
+			else {
+				this.estado = EstadoLinea.INACTIVA;
+			}
+			//this.setTipo(tipo);
+			boolean repetido = false;
+			for(Linea l: Linea.listLineas) {
+				if(this.equals(l)) {
+					repetido=true;
+				}
+			}
+			if(!repetido) {
+				listLineas.add(this);
+			}
+		//}
+		//else throw new NombreOcupadoException(nombre);
+	}
+	
 	public void addConexion(Conexion c) {
 		if(listEstaciones.isEmpty()) {
 			listEstaciones.add(c.getE1());
@@ -57,9 +89,17 @@ public class Linea implements Comparable<Linea>{
 		listEstaciones.add(c.getE2());
 		listConexiones.add(c);
 	}
+	
+	//METODOS GETTERS AND SETTERS
 
 	public static Linea getLineaPorNombre(String n) {
 		return listLineas.stream().filter(lin -> lin.getNombre().equals(n)).findAny().get();
+	}
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	public static HashSet<Linea> getListaLineas() {
 		return listLineas;
@@ -95,6 +135,15 @@ public class Linea implements Comparable<Linea>{
 		return estado.name();
 
 	}
+	/*public short getTipo() {
+		return tipo;
+	}
+	public void setTipo(short tipo) {
+		this.tipo = tipo;
+	}*/
+	
+	//Otros métodos
+	
 	public void activar() {
 		this.estado=EstadoLinea.ACTIVA;
 		PanelGrafo.repintarGrafo();
@@ -148,5 +197,15 @@ public class Linea implements Comparable<Linea>{
 	}
 	public boolean equals(Linea l) {
 		return this.nombre.equalsIgnoreCase(l.nombre) || this.id==l.id;
+	}
+	@Override
+	public boolean equals(Object o) {
+		Linea l = (Linea) o;
+		if(id == l.id) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }

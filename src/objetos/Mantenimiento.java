@@ -1,11 +1,16 @@
 package objetos;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+
+import ConexionDB.GestorMantenimientoPostgreSQLDAO;
 
 public class Mantenimiento {
 	
-	private static short contadorId=0;
-	private short id;
+	private GestorMantenimientoPostgreSQLDAO gestorMantenimiento = new GestorMantenimientoPostgreSQLDAO();
+	public static HashSet<Mantenimiento> listMantenimientos=new HashSet<Mantenimiento>(); 
+	private static Integer contadorId;
+	private Integer id;
 	private LocalDate fechaInicio;
 	private LocalDate fechaFin;
 	private String descripcion;
@@ -15,12 +20,32 @@ public class Mantenimiento {
 		this.fechaInicio=LocalDate.now();
 		this.descripcion= "Inicio mantenimiento: " + descripcion;
 		incrementarContador();
+		listMantenimientos.add(this);
+		gestorMantenimiento.insertarEntidad(this);
 	}
 
 	public Mantenimiento() {
 		this.id=contadorId;
 		this.fechaInicio=LocalDate.now();
 		incrementarContador();
+		listMantenimientos.add(this);
+		gestorMantenimiento.insertarEntidad(this);
+	}
+	
+	public Mantenimiento(Integer id, LocalDate fechaInicio, LocalDate fechaFin, String descripcion) {
+		this.id=id;
+		this.fechaInicio=fechaInicio;
+		this.fechaFin=fechaFin;
+		this.descripcion=descripcion;
+		boolean repetido = false;
+		for(Mantenimiento m: Mantenimiento.listMantenimientos) {
+			if(this.equals(m)) {
+				repetido=true;
+			}
+		}
+		if(!repetido) {
+			listMantenimientos.add(this);
+		}
 	}
 	
 	public void finMantenimiento (String descripcion) {
@@ -38,11 +63,15 @@ public class Mantenimiento {
 
 	//METODOS GETTERS AND SETTERS
 	
-	public static short getContadorId() {
+	public static Integer getContadorId() {
 		return contadorId;
 	}
+	
+	public static void setContadorId(Integer id) {
+		contadorId=id;
+	}
 
-	public short getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -69,5 +98,14 @@ public class Mantenimiento {
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
-
+	@Override
+	public boolean equals(Object o) {
+		Mantenimiento m = (Mantenimiento) o;
+		if(id == m.id) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 }

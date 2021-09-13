@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import ConexionDB.GestorEstacionPostgreSQLDAO;
 import elementosSwing.grafo2D.Estacion2D;
 import elementosSwing.grafo2D.PanelGrafo;
 
@@ -18,8 +19,9 @@ enum EstadoEstacion {
 
 public class Estacion implements Comparable<Estacion>{
 	
+	private GestorEstacionPostgreSQLDAO gestorEstacion = new GestorEstacionPostgreSQLDAO();
 	public static HashSet<Estacion> listEstaciones=new HashSet<Estacion>(); 
-	public static Short contadorId=1001;
+	public static Integer contadorId;
 	public static final Double D_PAGERANK=0.5d;
 	private static Boolean borrarEstacion(Estacion e) { 
 		PanelGrafo.quitarEstacion(e.getE2d());
@@ -38,9 +40,14 @@ public class Estacion implements Comparable<Estacion>{
 	private static void incrementarContador() {
 		contadorId++;
 	}
-	public static Short getContadorId() {
+	public static Integer getContadorId() {
 		return contadorId;
 	}
+	
+	public static void setContadorId(Integer id) {
+		contadorId=id;
+	}
+	
 	public static Estacion buscarID(short id) throws NoSuchElementException{
 		return listEstaciones.stream().filter(e -> e.id==id).findAny().get();
 	}
@@ -68,20 +75,20 @@ public class Estacion implements Comparable<Estacion>{
 		}
 	}
 	/*---------------------------------------------------*/
-	private Short id;
+	private Integer id;
 	private String nombre;
 	private LocalTime horarioApertura;
 	private LocalTime horarioCierre;
 	private EstadoEstacion estado;
 	private LocalDate fechaUltimoMantenimiento=LocalDate.now();
-	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
 	private Double pagerank = 1.0;
 	private Double pesoTotal = 0.0;
-	private ArrayList<Mantenimiento> listaMantenimientos=new ArrayList<Mantenimiento>();
 	private Estacion2D e2d;
 	public Double posx=Math.random()*600+50;
 	public Double posy=Math.random()*450+50;
-	
+	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
+	private ArrayList<Mantenimiento> listaMantenimientos=new ArrayList<Mantenimiento>();
+
 	public Estacion(String nombre, LocalTime horarioApertura, LocalTime horarioCierre, Boolean estado) throws NombreOcupadoException {
 		
 		if(nombreDisponible(nombre)) {
@@ -95,15 +102,53 @@ public class Estacion implements Comparable<Estacion>{
 			this.posx = Math.random() * 500 + 50;
 			this.posy = Math.random() * 500 + 50;
 			listEstaciones.add(this);
+			gestorEstacion.insertarEntidad(this);
 		}
 		else throw new NombreOcupadoException(nombre);
 		
 	}
+	
+	public Estacion(Integer id, String nombre, LocalTime horarioApertura, LocalTime horarioCierre, 
+			String estado, LocalDate ultimoMantenimiento, Double pagerank, Double pesoTotal, 
+			Double posicionX, Double posicionY) { //throws NombreOcupadoException {
+		
+		//if(nombreDisponible(nombre)) {
+			this.id = id;
+			this.nombre = nombre;
+			this.horarioApertura = horarioApertura;
+			this.horarioCierre = horarioCierre;
+			if (estado.equals("OPERATIVA")) {
+				this.estado = EstadoEstacion.OPERATIVA;
+			}
+			else {
+				this.estado = EstadoEstacion.EN_MANTENIMIENTO;
+			}
+			this.fechaUltimoMantenimiento = ultimoMantenimiento;
+			this.pagerank = pagerank;
+			this.pesoTotal = pesoTotal;
+			this.e2d = new Estacion2D(this);
+			this.posx = posicionX;
+			this.posy = posicionY;
+			boolean repetido = false;
+			for(Estacion e: Estacion.listEstaciones) {
+				if(this.equals(e)) {
+					repetido=true;
+				}
+			}
+			if(!repetido) {
+				listEstaciones.add(this);
+			}
+		//}
+		//else throw new NombreOcupadoException(nombre);
+		
+	}
+	
 	/*--------------------------------------------------*/
 
 	
 	
 	//METODOS GETTERS AND SETTERS
+	
 	public Estacion2D getE2d() {
 		return e2d;
 	}
@@ -112,10 +157,10 @@ public class Estacion implements Comparable<Estacion>{
 		this.e2d = e2d;
 	}
 	
-	public Short getId() {
+	public Integer getId() {
 		return id;
 	}
-	public void setId(Short id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	public String getNombre() {
@@ -166,7 +211,17 @@ public class Estacion implements Comparable<Estacion>{
 	public HashSet<Conexion> getListConexiones() {
 		return listConexiones;
 	}
-	
+	public void setListConexiones (HashSet<Conexion> listaConexiones) {
+		this.listConexiones = listaConexiones;
+	}
+
+	public ArrayList<Mantenimiento> getListaMantenimientos() {
+		return listaMantenimientos;
+	}
+
+	public void setListaMantenimientos(ArrayList<Mantenimiento> listaMantenimientos) {
+		this.listaMantenimientos = listaMantenimientos;
+	}
 	public Double getPagerank() {
 		return pagerank;
 	}
@@ -179,6 +234,22 @@ public class Estacion implements Comparable<Estacion>{
 	public void setPesoTotal(Double pesoTotal) {
 		this.pesoTotal = pesoTotal;
 	}
+	public Double getPosx() {
+		return posx;
+	}
+
+	public void setPosx(Double posx) {
+		this.posx = posx;
+	}
+
+	public Double getPosy() {
+		return posy;
+	}
+
+	public void setPosy(Double posy) {
+		this.posy = posy;
+	}
+
 	public void addConexion(Conexion c) {
 		listConexiones.add(c);
 	}
@@ -260,5 +331,15 @@ public class Estacion implements Comparable<Estacion>{
 	}
 	public String toString() {
 		return this.nombre;
+	}
+	@Override
+	public boolean equals(Object o) {
+		Estacion e = (Estacion) o;
+		if(id == e.id) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }
