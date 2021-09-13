@@ -213,6 +213,28 @@ public class PanelInfo extends JPanel {
 	
 	private void guardarInfo() {
 		//TODO guardar info de la estacion o linea y actualizar con genLabelInfo()
+		switch(tipoSeleccionado) {
+		case 1:
+			InfoEstacionEDIT p=(InfoEstacionEDIT) informacion;
+			estacion.setNombre(p.getNombre());
+			estacion.setHorarioApertura(p.getHorarioApertura());
+			estacion.setHorarioCierre(p.getHorarioCierre());
+			if(p.getEstado()) estacion.setOperativa(); 
+			else estacion.setMantenimiento(); 
+			
+			break;
+		case 2:
+			InfoLineaEDIT q=(InfoLineaEDIT) informacion;
+			linea.setNombre(q.getNombre());
+			linea.setColor(q.getColor());
+			if(q.getEstado()) linea.activar(); 
+			else linea.inactivar(); 
+			linea.setTipo(q.getTipo());
+			break;
+		default:
+			break;
+		}
+		PanelGrafo.repintarGrafo();
 	}
 	
 	private void eliminar() {

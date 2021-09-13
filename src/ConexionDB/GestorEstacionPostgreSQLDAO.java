@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 import objetos.Conexion;
 import objetos.Estacion;
@@ -123,7 +124,7 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 				
 				ResultSet rsAux = null;
 				HashSet<Conexion> listaDeConexionesAux = new HashSet<Conexion>();
-				ArrayList<Mantenimiento> listaDeMantenimientosAux = new ArrayList<Mantenimiento>();
+				LinkedList<Mantenimiento> listaDeMantenimientosAux = new LinkedList<Mantenimiento>();
 				
 				pstm = conex.prepareStatement("SELECT * FROM lista_conexiones_estaciones "
 						+ "WHERE id_estacion = " + rs.getInt(1));
@@ -220,7 +221,7 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 				
 				ResultSet rsAux = null;
 				HashSet<Conexion> listaDeConexionesAux = new HashSet<Conexion>();
-				ArrayList<Mantenimiento> listaDeMantenimientosAux = new ArrayList<Mantenimiento>();
+				LinkedList<Mantenimiento> listaDeMantenimientosAux = new LinkedList<Mantenimiento>();
 				
 				pstm = conex.prepareStatement("SELECT * FROM lista_conexiones_estaciones "
 												+ "WHERE id_estacion = " + rs.getInt(1));

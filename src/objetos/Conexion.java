@@ -12,7 +12,7 @@ enum EstadoConexion {
 
 public class Conexion{
 	
-	private GestorConexionPostgreSQLDAO gestorConexion = new GestorConexionPostgreSQLDAO();
+	private static GestorConexionPostgreSQLDAO gestorConexion = new GestorConexionPostgreSQLDAO();
 	public static HashSet<Conexion> listConexiones=new HashSet<Conexion>(); 
 	private static Integer contadorId;
 	private Integer id;
@@ -110,6 +110,7 @@ public class Conexion{
 		e2=null;
 		this.deshabilitar();
 		Estacion.generarPageRank(200);
+		
 	}
 	
 	public Color getColor() {
@@ -175,7 +176,7 @@ public class Conexion{
 	}
 	
 	public String estado() {
-		if(this.estado==EstadoConexion.ACTIVA && this.linea.estado().equals("ACTIVA")) {
+		if(this.estado==EstadoConexion.ACTIVA && this.linea.estado().equals("ACTIVA") && this.e1.getEstado().equals("OPERATIVA") && this.e2.getEstado().equals("OPERATIVA")) {
 			return "ACTIVA";
 		}
 		else {
@@ -216,7 +217,6 @@ public class Conexion{
 		seleccionado=false;
 		//flecha.unselect();
 	}
-	
 	@Override
 	public boolean equals(Object o) {
 		Conexion c = (Conexion) o;
@@ -226,5 +226,8 @@ public class Conexion{
 		else {
 			return false;
 		}
+	}
+	public Short getTipo() {
+		return linea.getTipo();
 	}
 }

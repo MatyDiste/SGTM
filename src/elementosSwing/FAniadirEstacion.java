@@ -38,6 +38,7 @@ public class FAniadirEstacion extends JDialog {
 	 */
 	public FAniadirEstacion() {
 		setTitle("Crear nueva estaci\u00F3n");
+		setAlwaysOnTop(true);
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));

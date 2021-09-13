@@ -14,21 +14,26 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
+import javax.swing.JRadioButton;
 
 public class InfoLinea extends JPanel implements InfoLineaInterface {
 	private JTextField textField;
 	private JTextField textField_2;  
 	private Color color=Color.black;
-	JCheckBox chckbxNewCheckBox = new JCheckBox("Activa");
+	private JCheckBox chckbxNewCheckBox = new JCheckBox("Activa");
+	private JRadioButton rdbtnCole = new JRadioButton("Colectivo");
+	private JRadioButton rdbtnTren = new JRadioButton("Tren");
+	private JRadioButton rdbtnSubte = new JRadioButton("Subterráneo");
 	/**
 	 * Create the panel.
 	 */
 	
 	public InfoLinea(Linea l) {
-		setLayout(new MigLayout("", "[][grow][]", "[][][pref!,grow][]"));
+		setLayout(new MigLayout("", "[trailing][grow][]", "[][][pref!,grow][][]"));
 		
 		JLabel lblNewLabel_3 = new JLabel("L\u00CDNEA");
 		lblNewLabel_3.setFont(new Font(null,Font.BOLD, 16));
@@ -65,6 +70,27 @@ public class InfoLinea extends JPanel implements InfoLineaInterface {
 		
 		JPanel panel = new CuadradoColor(l.getColor());
 		add(panel, "cell 1 2,alignx left,aligny center");
+		
+		JLabel lblNewLabel_4 = new JLabel("Tipo");
+		lblNewLabel_4.setHorizontalAlignment(SwingConstants.RIGHT);
+		add(lblNewLabel_4, "cell 0 4");
+		
+		rdbtnCole.setEnabled(false);
+		rdbtnCole.setSelected(l.getTipo()==Linea.COLECTIVO);
+		add(rdbtnCole, "flowx,cell 1 4");
+		
+		rdbtnTren.setEnabled(false);
+		rdbtnTren.setSelected(l.getTipo()==Linea.TREN);
+		add(rdbtnTren, "cell 1 4");
+		
+		rdbtnSubte.setEnabled(false);
+		rdbtnSubte.setSelected(l.getTipo()==Linea.SUBTERRANEO);
+		add(rdbtnSubte, "cell 1 4");
+		
+		ButtonGroup btnGroup=new ButtonGroup();
+		btnGroup.add(rdbtnCole);
+		btnGroup.add(rdbtnTren);
+		btnGroup.add(rdbtnSubte);
 
 	}
 
@@ -81,6 +107,12 @@ public class InfoLinea extends JPanel implements InfoLineaInterface {
 	@Override
 	public Boolean getEstado() {
 		return chckbxNewCheckBox.isSelected();
+	}
+	@Override
+	public Short getTipo() {
+		if(rdbtnCole.isSelected()) return Linea.COLECTIVO;
+		if(rdbtnTren.isSelected()) return Linea.TREN;
+		else return Linea.SUBTERRANEO;
 	}
 	
 

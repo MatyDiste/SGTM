@@ -7,7 +7,7 @@ import ConexionDB.GestorMantenimientoPostgreSQLDAO;
 
 public class Mantenimiento {
 	
-	private GestorMantenimientoPostgreSQLDAO gestorMantenimiento = new GestorMantenimientoPostgreSQLDAO();
+	private static GestorMantenimientoPostgreSQLDAO gestorMantenimiento = new GestorMantenimientoPostgreSQLDAO();
 	public static HashSet<Mantenimiento> listMantenimientos=new HashSet<Mantenimiento>(); 
 	private static Integer contadorId;
 	private Integer id;

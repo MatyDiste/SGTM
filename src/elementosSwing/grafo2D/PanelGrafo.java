@@ -20,6 +20,7 @@ import javax.swing.border.LineBorder;
 import elementosSwing.PanelInfo;
 import elementosSwing.PanelRecorrido;
 import objetos.Estacion;
+import objetos.Linea;
 
 public class PanelGrafo extends JPanel {
 	public static PanelGrafo pg;
@@ -114,7 +115,7 @@ public class PanelGrafo extends JPanel {
 	protected void paintComponent(Graphics g) {
 		g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2d.setColor(Color.WHITE);
+		g2d.setColor(Color.LIGHT_GRAY);
 		g2d.fill(new Rectangle(700, 760));
 	    dibujarEstaciones();
 		//dibujarFlechas();
@@ -134,6 +135,7 @@ public class PanelGrafo extends JPanel {
 		pg.selectedEstacion2.ifPresentOrElse(e -> e.unselect(), ()->{});
 		pg.selectedEstacion=Optional.empty();
 		pg.selectedEstacion2=Optional.empty();
+		Linea.listLineas.forEach(l -> l.unselect());
 	}
 	public static void setModoRecorrido() {
 		try {
