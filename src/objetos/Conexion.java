@@ -1,15 +1,21 @@
 package objetos;
 
 import java.awt.Color;
+import java.util.HashSet;
 
+import ConexionDB.GestorConexionPostgreSQLDAO;
 import elementosSwing.grafo2D.Flecha;
 
 enum EstadoConexion {
 	ACTIVA, INACTIVA
 };
 
-public class Conexion {
+public class Conexion{
 	
+	private static GestorConexionPostgreSQLDAO gestorConexion = new GestorConexionPostgreSQLDAO();
+	public static HashSet<Conexion> listConexiones=new HashSet<Conexion>(); 
+	private static short contadorId;
+	private short id;
 	private Estacion e1, e2;
 	private Flecha flecha;
 	private Double distancia;
@@ -25,6 +31,8 @@ public class Conexion {
 	public Conexion(Estacion a, Estacion b, Linea l) {
 		a.addConexion(this);
 		b.addConexion(this);
+		setId(contadorId);
+		incrementarContador();
 		e1=a;
 		e2=b;
 		linea=l;
@@ -34,12 +42,17 @@ public class Conexion {
 		duracion=Math.random()*50;
 		cantMaxPasajeros=(int)(Math.random()*200);
 		costo=Math.random()*100;
+		listConexiones.add(this);
+		gestorConexion.insertarEntidad(this);
 		//System.out.println("Creada conexion entre "+a.getNombre()+" --> "+b.getNombre());
 	}
+	
 	//END Constructor DEBUG!!!!
 	public Conexion(Estacion a, Estacion b, Linea l, Double dist, Double durMinutos, Integer cantPasajeros, Double precio) {
 		a.addConexion(this);
 		b.addConexion(this);
+		setId(contadorId);
+		incrementarContador();
 		e1=a;
 		e2=b;
 		linea=l;
@@ -49,9 +62,43 @@ public class Conexion {
 		duracion=durMinutos;
 		cantMaxPasajeros=cantPasajeros;
 		costo=precio;
-		
 		linea.addConexion(this);
+		listConexiones.add(this);
+		gestorConexion.insertarEntidad(this);
 		//System.out.println("Creada conexion entre "+a.getNombre()+" --> "+b.getNombre());
+	}
+	
+	public Conexion(short idConexion, Double distancia, Double duracion, 
+			Integer capacidadMaxPasajeros, String estado, Double costo, 
+			Estacion estacion1, Estacion estacion2, Linea linea) {
+		this.id=idConexion;
+		this.distancia=distancia;
+		this.duracion=duracion;
+		this.cantMaxPasajeros=capacidadMaxPasajeros;
+		if (estado.equals("ACTIVA")) {
+			this.estado = EstadoConexion.ACTIVA;
+		}
+		else {
+			this.estado = EstadoConexion.INACTIVA;
+		}
+		this.costo=costo;
+		this.e1 = estacion1;
+		this.e2 = estacion2;
+		this.linea = linea;
+		this.flecha = new Flecha(estacion1, estacion2, this);
+		boolean repetido = false;
+		for(Conexion c: Conexion.listConexiones) {
+			if(this.equals(c)) {
+				repetido=true;
+			}
+		}
+		if(!repetido) {
+			listConexiones.add(this);
+		}
+	}
+	
+	private static void incrementarContador() {
+		contadorId++;
 	}
 	
 	public void eliminar() {
@@ -63,6 +110,7 @@ public class Conexion {
 		e2=null;
 		this.deshabilitar();
 		Estacion.generarPageRank(200);
+		
 	}
 	
 	public Color getColor() {
@@ -70,6 +118,22 @@ public class Conexion {
 	}
 	
 	//METODOS GETTERS AND SETTERS
+	
+	public static short getContadorId() {
+		return contadorId;
+	}
+	
+	public static void setContadorId(short id) {
+		contadorId=id;
+	}
+	
+	public short getId() {
+		return id;
+	}
+
+	public void setId(short id) {
+		this.id = id;
+	}
 	
 	public Estacion getE1() {
 		return e1;
@@ -118,8 +182,6 @@ public class Conexion {
 		else {
 			return "INACTIVA";
 		}
-		
-		
 	}
 	
 	public void deshabilitar() {
@@ -155,8 +217,17 @@ public class Conexion {
 		seleccionado=false;
 		//flecha.unselect();
 	}
+	@Override
+	public boolean equals(Object o) {
+		Conexion c = (Conexion) o;
+		if(id == c.id) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 	public Short getTipo() {
 		return linea.getTipo();
 	}
-	
 }

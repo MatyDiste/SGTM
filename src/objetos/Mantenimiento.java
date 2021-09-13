@@ -1,10 +1,15 @@
 package objetos;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+
+import ConexionDB.GestorMantenimientoPostgreSQLDAO;
 
 public class Mantenimiento {
 	
-	private static short contadorId=0;
+	private static GestorMantenimientoPostgreSQLDAO gestorMantenimiento = new GestorMantenimientoPostgreSQLDAO();
+	public static HashSet<Mantenimiento> listMantenimientos=new HashSet<Mantenimiento>(); 
+	private static short contadorId;
 	private short id;
 	private LocalDate fechaInicio;
 	private LocalDate fechaFin;
@@ -15,12 +20,32 @@ public class Mantenimiento {
 		this.fechaInicio=LocalDate.now();
 		this.descripcion= "Inicio mantenimiento: " + descripcion;
 		incrementarContador();
+		listMantenimientos.add(this);
+		gestorMantenimiento.insertarEntidad(this);
 	}
 
 	public Mantenimiento() {
 		this.id=contadorId;
 		this.fechaInicio=LocalDate.now();
 		incrementarContador();
+		listMantenimientos.add(this);
+		gestorMantenimiento.insertarEntidad(this);
+	}
+	
+	public Mantenimiento(short id, LocalDate fechaInicio, LocalDate fechaFin, String descripcion) {
+		this.id=id;
+		this.fechaInicio=fechaInicio;
+		this.fechaFin=fechaFin;
+		this.descripcion=descripcion;
+		boolean repetido = false;
+		for(Mantenimiento m: Mantenimiento.listMantenimientos) {
+			if(this.equals(m)) {
+				repetido=true;
+			}
+		}
+		if(!repetido) {
+			listMantenimientos.add(this);
+		}
 	}
 	
 	public void finMantenimiento (String descripcion) {
@@ -40,6 +65,10 @@ public class Mantenimiento {
 	
 	public static short getContadorId() {
 		return contadorId;
+	}
+	
+	public static void setContadorId(short id) {
+		contadorId=id;
 	}
 
 	public short getId() {
@@ -69,5 +98,14 @@ public class Mantenimiento {
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}
-
+	@Override
+	public boolean equals(Object o) {
+		Mantenimiento m = (Mantenimiento) o;
+		if(id == m.id) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 }

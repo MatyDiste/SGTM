@@ -68,7 +68,7 @@ public class FAniadirEstacion extends JDialog {
 			contentPanel.add(lblNewLabel_1, gbc_lblNewLabel_1);
 		}
 		{
-			textField = new JTextField(Short.toString(Estacion.getContadorId()));
+			textField = new JTextField(Integer.toString(Estacion.getContadorId()));
 			GridBagConstraints gbc_textField = new GridBagConstraints();
 			gbc_textField.insets = new Insets(0, 0, 5, 5);
 			gbc_textField.fill = GridBagConstraints.HORIZONTAL;

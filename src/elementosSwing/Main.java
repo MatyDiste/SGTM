@@ -5,6 +5,8 @@ import java.time.LocalTime;
 
 import javax.swing.JFrame;
 
+import ConexionDB.PostgreSQL;
+
 import com.formdev.flatlaf.extras.FlatInspector;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatNightOwlContrastIJTheme;
 
@@ -23,6 +25,7 @@ public class Main {
 		FlatNightOwlContrastIJTheme.install();
 		FlatInspector.install( "ctrl shift alt T" ); //Con CTRL+SHIFT+ALT+T se activa el modo inspector, ESC para salir
 		
+		PostgreSQL.setearContadoresId();
 		
 		@SuppressWarnings("unused")
 		JFrame vnt=new Home("Sistema de gestion de Transporte Multimodal");

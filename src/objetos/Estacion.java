@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-
+import ConexionDB.GestorEstacionPostgreSQLDAO;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,7 +15,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
-
 import elementosSwing.grafo2D.Estacion2D;
 import elementosSwing.grafo2D.PanelGrafo;
 
@@ -25,8 +24,9 @@ enum EstadoEstacion {
 
 public class Estacion implements Comparable<Estacion>{
 	
+	private static GestorEstacionPostgreSQLDAO gestorEstacion = new GestorEstacionPostgreSQLDAO();
 	public static HashSet<Estacion> listEstaciones=new HashSet<Estacion>(); 
-	public static Short contadorId=1001;
+	public static short contadorId;
 	public static final Double D_PAGERANK=0.5d;
 	private static Boolean borrarEstacion(Estacion e) { 
 		PanelGrafo.quitarEstacion(e.getE2d());
@@ -45,9 +45,14 @@ public class Estacion implements Comparable<Estacion>{
 	private static void incrementarContador() {
 		contadorId++;
 	}
-	public static Short getContadorId() {
+	public static short getContadorId() {
 		return contadorId;
 	}
+	
+	public static void setContadorId(short id) {
+		contadorId=id;
+	}
+	
 	public static Estacion buscarID(short id) throws NoSuchElementException{
 		return listEstaciones.stream().filter(e -> e.id==id).findAny().get();
 	}
@@ -75,7 +80,7 @@ public class Estacion implements Comparable<Estacion>{
 		}
 	}
 	/*---------------------------------------------------*/
-	private Short id;
+	private short id;
 	private String nombre;
 	private LocalTime horarioApertura;
 	private LocalTime horarioCierre;
@@ -88,7 +93,7 @@ public class Estacion implements Comparable<Estacion>{
 	private Estacion2D e2d;
 	public Double posx=Math.random()*600+50;
 	public Double posy=Math.random()*450+50;
-	
+
 	public Estacion(String nombre, LocalTime horarioApertura, LocalTime horarioCierre, Boolean estado) throws NombreOcupadoException {
 		
 		if(nombreDisponible(nombre)) {
@@ -102,19 +107,61 @@ public class Estacion implements Comparable<Estacion>{
 			this.posx = Math.random() * 500 + 50;
 			this.posy = Math.random() * 500 + 50;
 			listEstaciones.add(this);
+			gestorEstacion.insertarEntidad(this);
 		}
 		else throw new NombreOcupadoException(nombre);
 		
 	}
+	
+	public Estacion(short id, String nombre, LocalTime horarioApertura, LocalTime horarioCierre, 
+			String estado, LocalDate fechaCreacion, Double pagerank, Double pesoTotal, 
+			Double posicionX, Double posicionY) {
+		
+		this.id = id;
+		this.nombre = nombre;
+		this.horarioApertura = horarioApertura;
+		this.horarioCierre = horarioCierre;
+		if (estado.equals("OPERATIVA")) {
+			this.estado = EstadoEstacion.OPERATIVA;
+		}
+		else {
+			this.estado = EstadoEstacion.EN_MANTENIMIENTO;
+		}
+		this.fechaCreacion = fechaCreacion;
+		this.pagerank = pagerank;
+		this.pesoTotal = pesoTotal;
+		this.e2d = new Estacion2D(this);
+		this.posx = posicionX;
+		this.posy = posicionY;
+		boolean repetido = false;
+		for(Estacion e: Estacion.listEstaciones) {
+			if(this.equals(e)) {
+				repetido=true;
+			}
+		}
+		if(!repetido) {
+			listEstaciones.add(this);
+		}
+	}
+	
 	/*--------------------------------------------------*/
 
 	
 	
 	//METODOS GETTERS AND SETTERS
+	
 	public Estacion2D getE2d() {
 		return e2d;
 	}
 	
+	public LocalDate getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(LocalDate fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
 	public void setE2d(Estacion2D e2d) {
 		this.e2d = e2d;
 	}
@@ -122,7 +169,7 @@ public class Estacion implements Comparable<Estacion>{
 	public Short getId() {
 		return id;
 	}
-	public void setId(Short id) {
+	public void setId(short id) {
 		this.id = id;
 	}
 	public String getNombre() {
@@ -222,7 +269,17 @@ public class Estacion implements Comparable<Estacion>{
 	public HashSet<Conexion> getListConexiones() {
 		return listConexiones;
 	}
-	
+	public void setListConexiones (HashSet<Conexion> listaConexiones) {
+		this.listConexiones = listaConexiones;
+	}
+
+	public LinkedList<Mantenimiento> getListaMantenimientos() {
+		return listaMantenimientos;
+	}
+
+	public void setListaMantenimientos(LinkedList<Mantenimiento> listaMantenimientos) {
+		this.listaMantenimientos = listaMantenimientos;
+	}
 	public Double getPagerank() {
 		return pagerank;
 	}
@@ -235,6 +292,22 @@ public class Estacion implements Comparable<Estacion>{
 	public void setPesoTotal(Double pesoTotal) {
 		this.pesoTotal = pesoTotal;
 	}
+	public Double getPosx() {
+		return posx;
+	}
+
+	public void setPosx(Double posx) {
+		this.posx = posx;
+	}
+
+	public Double getPosy() {
+		return posy;
+	}
+
+	public void setPosy(Double posy) {
+		this.posy = posy;
+	}
+
 	public void addConexion(Conexion c) {
 		listConexiones.add(c);
 	}
@@ -316,5 +389,15 @@ public class Estacion implements Comparable<Estacion>{
 	}
 	public String toString() {
 		return this.nombre;
+	}
+	@Override
+	public boolean equals(Object o) {
+		Estacion e = (Estacion) o;
+		if(id == e.id) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }
