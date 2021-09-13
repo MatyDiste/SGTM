@@ -9,8 +9,8 @@ public class Mantenimiento {
 	
 	private static GestorMantenimientoPostgreSQLDAO gestorMantenimiento = new GestorMantenimientoPostgreSQLDAO();
 	public static HashSet<Mantenimiento> listMantenimientos=new HashSet<Mantenimiento>(); 
-	private static Integer contadorId;
-	private Integer id;
+	private static short contadorId;
+	private short id;
 	private LocalDate fechaInicio;
 	private LocalDate fechaFin;
 	private String descripcion;
@@ -32,7 +32,7 @@ public class Mantenimiento {
 		gestorMantenimiento.insertarEntidad(this);
 	}
 	
-	public Mantenimiento(Integer id, LocalDate fechaInicio, LocalDate fechaFin, String descripcion) {
+	public Mantenimiento(short id, LocalDate fechaInicio, LocalDate fechaFin, String descripcion) {
 		this.id=id;
 		this.fechaInicio=fechaInicio;
 		this.fechaFin=fechaFin;
@@ -63,15 +63,15 @@ public class Mantenimiento {
 
 	//METODOS GETTERS AND SETTERS
 	
-	public static Integer getContadorId() {
+	public static short getContadorId() {
 		return contadorId;
 	}
 	
-	public static void setContadorId(Integer id) {
+	public static void setContadorId(short id) {
 		contadorId=id;
 	}
 
-	public Integer getId() {
+	public short getId() {
 		return id;
 	}
 

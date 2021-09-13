@@ -16,10 +16,10 @@ public class GestorMantenimientoPostgreSQLDAO extends PostgreSQL{
 	private PreparedStatement pstm = null;
 	private ResultSet rs = null;
 	
-	public Integer insertarEntidad(Object o) {
+	public short insertarEntidad(Object o) {
 		
 		Mantenimiento mantenimiento = (Mantenimiento) o;
-		Integer id=0;
+		short id=0;
 		
 		try {
 			Class.forName("org.postgresql.Driver");
@@ -83,13 +83,13 @@ public class GestorMantenimientoPostgreSQLDAO extends PostgreSQL{
 			while(rs.next()) {
 				
 				if(rs.getDate(3) == null) {
-					new Mantenimiento(rs.getInt(1),
+					new Mantenimiento(rs.getShort(1),
 							rs.getDate(2).toLocalDate(),
 							null,
 							rs.getString(4));
 				}
 				else {
-					new Mantenimiento(rs.getInt(1),
+					new Mantenimiento(rs.getShort(1),
 							rs.getDate(2).toLocalDate(),
 							rs.getDate(3).toLocalDate(),
 							rs.getString(4));
@@ -182,7 +182,7 @@ public class GestorMantenimientoPostgreSQLDAO extends PostgreSQL{
 	}
 
 	@Override
-	public Object recuperarEntidad(Integer id) {
+	public Object recuperarEntidad(short id) {
 		
 		Mantenimiento mantenimientoDB = null;
 		
@@ -199,13 +199,13 @@ public class GestorMantenimientoPostgreSQLDAO extends PostgreSQL{
 			while(rs.next()) {
 				
 				if(rs.getDate(3) == null) {
-					mantenimientoDB = new Mantenimiento(rs.getInt(1),
+					mantenimientoDB = new Mantenimiento(rs.getShort(1),
 							rs.getDate(2).toLocalDate(),
 							null,
 							rs.getString(4));
 				}
 				else {
-					mantenimientoDB = new Mantenimiento(rs.getInt(1),
+					mantenimientoDB = new Mantenimiento(rs.getShort(1),
 							rs.getDate(2).toLocalDate(),
 							rs.getDate(3).toLocalDate(),
 							rs.getString(4));

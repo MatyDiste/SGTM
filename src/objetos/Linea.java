@@ -19,7 +19,7 @@ public class Linea implements Comparable<Linea>{
 	public static final Short TREN=1;
 	public static final Short SUBTERRANEO=2;
 	public static HashSet<Linea> listLineas=new HashSet<Linea>();
-	private static Integer contadorId;
+	private static short contadorId;
 	public static Boolean borrarLinea(Linea e) {
 		return listLineas.remove(e);
 		//TODO Comunicar DAO la eliminacion de e
@@ -27,10 +27,10 @@ public class Linea implements Comparable<Linea>{
 	private static void incrementarContador() {
 		contadorId++;
 	}
-	public static Integer getContadorId() {
+	public static short getContadorId() {
 		return contadorId;
 	}
-	public static void setContadorId(Integer id) {
+	public static void setContadorId(short id) {
 		contadorId=id;
 	}
 	public static Boolean nombreDisponible(String s) {
@@ -39,7 +39,7 @@ public class Linea implements Comparable<Linea>{
 	
 	private List<Estacion> listEstaciones=new ArrayList<Estacion>();
 	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
-	private Integer id;
+	private short id;
 	private String nombre;
 	private Color color;
 	private EstadoLinea estado;
@@ -63,29 +63,27 @@ public class Linea implements Comparable<Linea>{
 		else throw new NombreOcupadoException(nombre);
 	}
 	
-	public Linea(Integer id, String nombre, Color color, String estado /*, short tipo*/) { //throws NombreOcupadoException {
-		//if (nombreDisponible(nombre)) {
-			this.id = id;
-			this.nombre = nombre;
-			this.color = color;
-			if(estado.equals("ACTIVA")) {
-				this.estado = EstadoLinea.ACTIVA;
+	public Linea(short id, String nombre, Color color, String estado, short tipo) {
+		
+		this.id = id;
+		this.nombre = nombre;
+		this.color = color;
+		if(estado.equals("ACTIVA")) {
+			this.estado = EstadoLinea.ACTIVA;
+		}
+		else {
+			this.estado = EstadoLinea.INACTIVA;
+		}
+		this.tipo=tipo;
+		boolean repetido = false;
+		for(Linea l: Linea.listLineas) {
+			if(this.equals(l)) {
+				repetido=true;
 			}
-			else {
-				this.estado = EstadoLinea.INACTIVA;
-			}
-			//this.setTipo(tipo);
-			boolean repetido = false;
-			for(Linea l: Linea.listLineas) {
-				if(this.equals(l)) {
-					repetido=true;
-				}
-			}
-			if(!repetido) {
-				listLineas.add(this);
-			}
-		//}
-		//else throw new NombreOcupadoException(nombre);
+		}
+		if(!repetido) {
+			listLineas.add(this);
+		}
 	}
 	
 	public void addConexion(Conexion c) {
@@ -101,10 +99,10 @@ public class Linea implements Comparable<Linea>{
 	public static Linea getLineaPorNombre(String n) {
 		return listLineas.stream().filter(lin -> lin.getNombre().equals(n)).findAny().get();
 	}
-	public Integer getId() {
+	public short getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(short id) {
 		this.id = id;
 	}
 	public static HashSet<Linea> getListaLineas() {

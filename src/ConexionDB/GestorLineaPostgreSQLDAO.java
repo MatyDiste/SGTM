@@ -21,24 +21,23 @@ public class GestorLineaPostgreSQLDAO extends PostgreSQL{
 	private PreparedStatement pstm = null;
 	private ResultSet rs = null;
 	
-	public Integer insertarEntidad(Object o) {
+	public short insertarEntidad(Object o) {
 		
 		Linea linea = (Linea) o;
-		Integer id=0;
+		short id=0;
 		
 		try {
 			Class.forName("org.postgresql.Driver");
 			
 			conex = DriverManager.getConnection(url, "postgres", clave);
 			
-			//pstm = conex.prepareStatement("INSERT INTO linea VALUES (?,?,?,?,?)");
-			pstm = conex.prepareStatement("INSERT INTO linea VALUES (?,?,?,?)");
+			pstm = conex.prepareStatement("INSERT INTO linea VALUES (?,?,?,?,?)");
 			
 			pstm.setInt(1, linea.getId());
 			pstm.setString(2, linea.getNombre());
 			pstm.setInt(3, linea.getColor().getRGB());
 			pstm.setString(4, linea.estado());
-			//pstm.setShort(5, linea.getTipo());
+			pstm.setShort(5, linea.getTipo());
 			
 			Integer tuplaIncertada = pstm.executeUpdate();
 			
@@ -120,10 +119,11 @@ public class GestorLineaPostgreSQLDAO extends PostgreSQL{
 				List<Estacion> listEstacionesAux=new ArrayList<Estacion>();
 				HashSet<Conexion> listConexionesAux=new HashSet<Conexion>();
 				
-				lineaDB = new Linea(rs.getInt(1),
+				lineaDB = new Linea(rs.getShort(1),
 						rs.getString(2),
 						new Color(rs.getInt(3)),
-						rs.getString(4));
+						rs.getString(4),
+						rs.getShort(5));
 				
 				pstm = conex.prepareStatement("SELECT * FROM lista_conexiones_lineas "
 						+ "WHERE id_linea = " + rs.getInt(1));
@@ -131,7 +131,7 @@ public class GestorLineaPostgreSQLDAO extends PostgreSQL{
 				rsAux = pstm.executeQuery();
 				
 				while(rsAux.next()) {
-					Conexion cn = (Conexion) gestorConexion.recuperarEntidad(rsAux.getInt(2));
+					Conexion cn = (Conexion) gestorConexion.recuperarEntidad(rsAux.getShort(2));
 					listConexionesAux.add(cn);
 				}
 				
@@ -141,7 +141,7 @@ public class GestorLineaPostgreSQLDAO extends PostgreSQL{
 				rsAux = pstm.executeQuery();
 				
 				while(rsAux.next()) {
-					Estacion en = (Estacion) gestorEstacion.recuperarEntidad(rsAux.getInt(2));
+					Estacion en = (Estacion) gestorEstacion.recuperarEntidad(rsAux.getShort(2));
 					listEstacionesAux.add(en);
 				}
 				
@@ -189,7 +189,7 @@ public class GestorLineaPostgreSQLDAO extends PostgreSQL{
 	}
 
 	@Override
-	public Object recuperarEntidad(Integer id) {
+	public Object recuperarEntidad(short id) {
 		
 		Linea lineaDB = null;
 		GestorConexionPostgreSQLDAO gestorConexion = new GestorConexionPostgreSQLDAO();
@@ -211,10 +211,11 @@ public class GestorLineaPostgreSQLDAO extends PostgreSQL{
 				List<Estacion> listEstacionesAux=new ArrayList<Estacion>();
 				HashSet<Conexion> listConexionesAux=new HashSet<Conexion>();
 				
-				lineaDB = new Linea(rs.getInt(1),
+				lineaDB = new Linea(rs.getShort(1),
 						rs.getString(2),
 						new Color(rs.getInt(3)),
-						rs.getString(4));
+						rs.getString(4),
+						rs.getShort(5));
 				
 				pstm = conex.prepareStatement("SELECT * FROM lista_conexiones_lineas "
 						+ "WHERE id_linea = " + rs.getInt(1));
@@ -222,7 +223,7 @@ public class GestorLineaPostgreSQLDAO extends PostgreSQL{
 				rsAux = pstm.executeQuery();
 				
 				while(rsAux.next()) {
-					Conexion cn = (Conexion) gestorConexion.recuperarEntidad(rsAux.getInt(2));
+					Conexion cn = (Conexion) gestorConexion.recuperarEntidad(rsAux.getShort(2));
 					listConexionesAux.add(cn);
 				}
 				
@@ -232,7 +233,7 @@ public class GestorLineaPostgreSQLDAO extends PostgreSQL{
 				rsAux = pstm.executeQuery();
 				
 				while(rsAux.next()) {
-					Estacion en = (Estacion) gestorEstacion.recuperarEntidad(rsAux.getInt(2));
+					Estacion en = (Estacion) gestorEstacion.recuperarEntidad(rsAux.getShort(2));
 					listEstacionesAux.add(en);
 				}
 				

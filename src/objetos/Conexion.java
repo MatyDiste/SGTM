@@ -14,8 +14,8 @@ public class Conexion{
 	
 	private static GestorConexionPostgreSQLDAO gestorConexion = new GestorConexionPostgreSQLDAO();
 	public static HashSet<Conexion> listConexiones=new HashSet<Conexion>(); 
-	private static Integer contadorId;
-	private Integer id;
+	private static short contadorId;
+	private short id;
 	private Estacion e1, e2;
 	private Flecha flecha;
 	private Double distancia;
@@ -68,7 +68,7 @@ public class Conexion{
 		//System.out.println("Creada conexion entre "+a.getNombre()+" --> "+b.getNombre());
 	}
 	
-	public Conexion(Integer idConexion, Double distancia, Double duracion, 
+	public Conexion(short idConexion, Double distancia, Double duracion, 
 			Integer capacidadMaxPasajeros, String estado, Double costo, 
 			Estacion estacion1, Estacion estacion2, Linea linea) {
 		this.id=idConexion;
@@ -119,19 +119,19 @@ public class Conexion{
 	
 	//METODOS GETTERS AND SETTERS
 	
-	public static Integer getContadorId() {
+	public static short getContadorId() {
 		return contadorId;
 	}
 	
-	public static void setContadorId(Integer id) {
+	public static void setContadorId(short id) {
 		contadorId=id;
 	}
 	
-	public Integer getId() {
+	public short getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(short id) {
 		this.id = id;
 	}
 	

@@ -17,10 +17,10 @@ public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 	private PreparedStatement pstm = null;
 	private ResultSet rs = null;
 	
-	public Integer insertarEntidad(Object o) {
+	public short insertarEntidad(Object o) {
 		
 		Conexion conexion = (Conexion) o;
-		Integer id=0;
+		short id=0;
 		
 		try {
 			Class.forName("org.postgresql.Driver");
@@ -90,11 +90,11 @@ public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 			
 			while(rs.next()) {
 				
-				Estacion estacion1 = (Estacion) gestorEstacion.recuperarEntidad(rs.getInt(7));
-				Estacion estacion2 = (Estacion) gestorEstacion.recuperarEntidad(rs.getInt(8));
-				Linea linea = (Linea) gestorLinea.recuperarEntidad(rs.getInt(9));
+				Estacion estacion1 = (Estacion) gestorEstacion.recuperarEntidad(rs.getShort(7));
+				Estacion estacion2 = (Estacion) gestorEstacion.recuperarEntidad(rs.getShort(8));
+				Linea linea = (Linea) gestorLinea.recuperarEntidad(rs.getShort(9));
 				
-				new Conexion(rs.getInt(1), 
+				new Conexion(rs.getShort(1), 
 						rs.getDouble(2),
 						rs.getDouble(3),
 						rs.getInt(4),
@@ -201,7 +201,7 @@ public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 	}
 
 	@Override
-	public Object recuperarEntidad(Integer id) {
+	public Object recuperarEntidad(short id) {
 		
 		Conexion conexionDB = null;
 		GestorEstacionPostgreSQLDAO gestorEstacion = new GestorEstacionPostgreSQLDAO();
@@ -219,11 +219,11 @@ public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 			
 			while(rs.next()) {
 				
-				Estacion estacion1 = (Estacion) gestorEstacion.recuperarEntidad(rs.getInt(7));
-				Estacion estacion2 = (Estacion) gestorEstacion.recuperarEntidad(rs.getInt(8));
-				Linea linea = (Linea) gestorLinea.recuperarEntidad(rs.getInt(9));
+				Estacion estacion1 = (Estacion) gestorEstacion.recuperarEntidad(rs.getShort(7));
+				Estacion estacion2 = (Estacion) gestorEstacion.recuperarEntidad(rs.getShort(8));
+				Linea linea = (Linea) gestorLinea.recuperarEntidad(rs.getShort(9));
 				
-				conexionDB = new Conexion(rs.getInt(1), 
+				conexionDB = new Conexion(rs.getShort(1), 
 						rs.getDouble(2),
 						rs.getDouble(3),
 						rs.getInt(4),

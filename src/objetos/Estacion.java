@@ -26,7 +26,7 @@ public class Estacion implements Comparable<Estacion>{
 	
 	private static GestorEstacionPostgreSQLDAO gestorEstacion = new GestorEstacionPostgreSQLDAO();
 	public static HashSet<Estacion> listEstaciones=new HashSet<Estacion>(); 
-	public static Integer contadorId;
+	public static short contadorId;
 	public static final Double D_PAGERANK=0.5d;
 	private static Boolean borrarEstacion(Estacion e) { 
 		PanelGrafo.quitarEstacion(e.getE2d());
@@ -45,11 +45,11 @@ public class Estacion implements Comparable<Estacion>{
 	private static void incrementarContador() {
 		contadorId++;
 	}
-	public static Integer getContadorId() {
+	public static short getContadorId() {
 		return contadorId;
 	}
 	
-	public static void setContadorId(Integer id) {
+	public static void setContadorId(short id) {
 		contadorId=id;
 	}
 	
@@ -80,7 +80,7 @@ public class Estacion implements Comparable<Estacion>{
 		}
 	}
 	/*---------------------------------------------------*/
-	private Integer id;
+	private short id;
 	private String nombre;
 	private LocalTime horarioApertura;
 	private LocalTime horarioCierre;
@@ -113,39 +113,35 @@ public class Estacion implements Comparable<Estacion>{
 		
 	}
 	
-	public Estacion(Integer id, String nombre, LocalTime horarioApertura, LocalTime horarioCierre, 
+	public Estacion(short id, String nombre, LocalTime horarioApertura, LocalTime horarioCierre, 
 			String estado, LocalDate fechaCreacion, Double pagerank, Double pesoTotal, 
-			Double posicionX, Double posicionY) { //throws NombreOcupadoException {
+			Double posicionX, Double posicionY) {
 		
-		//if(nombreDisponible(nombre)) {
-			this.id = id;
-			this.nombre = nombre;
-			this.horarioApertura = horarioApertura;
-			this.horarioCierre = horarioCierre;
-			if (estado.equals("OPERATIVA")) {
-				this.estado = EstadoEstacion.OPERATIVA;
+		this.id = id;
+		this.nombre = nombre;
+		this.horarioApertura = horarioApertura;
+		this.horarioCierre = horarioCierre;
+		if (estado.equals("OPERATIVA")) {
+			this.estado = EstadoEstacion.OPERATIVA;
+		}
+		else {
+			this.estado = EstadoEstacion.EN_MANTENIMIENTO;
+		}
+		this.fechaCreacion = fechaCreacion;
+		this.pagerank = pagerank;
+		this.pesoTotal = pesoTotal;
+		this.e2d = new Estacion2D(this);
+		this.posx = posicionX;
+		this.posy = posicionY;
+		boolean repetido = false;
+		for(Estacion e: Estacion.listEstaciones) {
+			if(this.equals(e)) {
+				repetido=true;
 			}
-			else {
-				this.estado = EstadoEstacion.EN_MANTENIMIENTO;
-			}
-			this.fechaCreacion = fechaCreacion; //cambiar en db
-			this.pagerank = pagerank;
-			this.pesoTotal = pesoTotal;
-			this.e2d = new Estacion2D(this);
-			this.posx = posicionX;
-			this.posy = posicionY;
-			boolean repetido = false;
-			for(Estacion e: Estacion.listEstaciones) {
-				if(this.equals(e)) {
-					repetido=true;
-				}
-			}
-			if(!repetido) {
-				listEstaciones.add(this);
-			}
-		//}
-		//else throw new NombreOcupadoException(nombre);
-		
+		}
+		if(!repetido) {
+			listEstaciones.add(this);
+		}
 	}
 	
 	/*--------------------------------------------------*/
@@ -158,14 +154,22 @@ public class Estacion implements Comparable<Estacion>{
 		return e2d;
 	}
 	
+	public LocalDate getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(LocalDate fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
 	public void setE2d(Estacion2D e2d) {
 		this.e2d = e2d;
 	}
 	
-	public Integer getId() {
+	public Short getId() {
 		return id;
 	}
-	public void setId(Integer id) {
+	public void setId(short id) {
 		this.id = id;
 	}
 	public String getNombre() {

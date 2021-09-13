@@ -19,11 +19,11 @@ public abstract class PostgreSQL {
 	private static PreparedStatement pstm = null;
 	private static ResultSet rs = null;
 	
-	public abstract Integer insertarEntidad(Object o); //Numero ID de la entidad insertada
+	public abstract short insertarEntidad(Object o); //Numero ID de la entidad insertada
 	public abstract Integer recuperarEntidades(); //Cantidad de tuplas recuperadas de la DB
 	public abstract boolean actualizarEntidad(Object o); //TRUE: Éxito -- FALSE:Fracaso
 	public abstract boolean eliminarEntidad(Object o); //TRUE: Éxito -- FALSE:Fracaso
-	public abstract Object recuperarEntidad(Integer id); //Objeto casteable a Conexion, 
+	public abstract Object recuperarEntidad(short id); //Objeto casteable a Conexion, 
 											//Estacion, Linea o Mantenimiento según el caso.
 	
 	public static void setearContadoresId() {
@@ -41,10 +41,10 @@ public abstract class PostgreSQL {
 			while (rs.next()) {
 				
 				if(rs.getString(1) != null) {
-					Conexion.setContadorId(Integer.parseInt(rs.getString(1)) + 1);
+					Conexion.setContadorId((short) (Short.parseShort(rs.getString(1)) + 1));
 				}
 				else {
-					Conexion.setContadorId(1);
+					Conexion.setContadorId((short) 1);
 				}
 			}
 
@@ -55,10 +55,10 @@ public abstract class PostgreSQL {
 			while (rs.next()) {
 				
 				if(rs.getString(1) != null) {
-					Estacion.setContadorId(Integer.parseInt(rs.getString(1)) + 1);
+					Estacion.setContadorId((short) (Short.parseShort(rs.getString(1)) + 1));
 				}
 				else {
-					Estacion.setContadorId(1001);
+					Estacion.setContadorId((short) 1001);
 				}
 			}
 			
@@ -69,10 +69,10 @@ public abstract class PostgreSQL {
 			while (rs.next()) {
 				
 				if(rs.getString(1) != null) {
-					Linea.setContadorId(Integer.parseInt(rs.getString(1)) + 1);
+					Linea.setContadorId((short) (Short.parseShort(rs.getString(1)) + 1));
 				}
 				else {
-					Linea.setContadorId(1001);
+					Linea.setContadorId((short) 1001);
 				}
 			}
 			
@@ -83,10 +83,10 @@ public abstract class PostgreSQL {
 			while (rs.next()) {
 				
 				if(rs.getString(1) != null) {
-					Mantenimiento.setContadorId(Integer.parseInt(rs.getString(1)) + 1);
+					Mantenimiento.setContadorId((short) (Short.parseShort(rs.getString(1)) + 1));
 				}
 				else {
-					Mantenimiento.setContadorId(1);
+					Mantenimiento.setContadorId((short) 1);
 				}
 			}
 		}

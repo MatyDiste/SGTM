@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -24,10 +23,10 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 	private ResultSet rs = null;
 	
 	@Override
-	public Integer insertarEntidad(Object o) {
+	public short insertarEntidad(Object o) {
 		
 		Estacion estacion = (Estacion) o;
-		Integer id=0;
+		short id=0;
 		
 		try {
 			Class.forName("org.postgresql.Driver");
@@ -41,7 +40,7 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 			pstm.setTime(3, Time.valueOf(estacion.getHorarioApertura()));
 			pstm.setTime(4, Time.valueOf(estacion.getHorarioCierre()));
 			pstm.setString(5, estacion.getEstado());
-			pstm.setDate(6, Date.valueOf(estacion.getFechaUltimoMantenimiento()));
+			pstm.setDate(6, Date.valueOf(estacion.getFechaCreacion()));
 			pstm.setDouble(7, estacion.getPagerank());
 			pstm.setDouble(8, estacion.getPesoTotal());
 			pstm.setDouble(9, estacion.posx);
@@ -132,7 +131,7 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 				rsAux = pstm.executeQuery();
 				
 				while(rsAux.next()) {
-					Conexion cn = (Conexion) gestorConexion.recuperarEntidad(rsAux.getInt(2));
+					Conexion cn = (Conexion) gestorConexion.recuperarEntidad(rsAux.getShort(2));
 					listaDeConexionesAux.add(cn);
 				}
 				
@@ -140,11 +139,11 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 						+ "WHERE id_estacion = " + rs.getInt(1));
 				rsAux = pstm.executeQuery();
 				while(rsAux.next()) {
-					Mantenimiento mn = (Mantenimiento) gestorMantenimiento.recuperarEntidad(rsAux.getInt(2));
+					Mantenimiento mn = (Mantenimiento) gestorMantenimiento.recuperarEntidad(rsAux.getShort(2));
 					listaDeMantenimientosAux.add(mn);
 				}
 				
-				Estacion estacionDB = new Estacion(rs.getInt(1), 
+				Estacion estacionDB = new Estacion(rs.getShort(1), 
 													rs.getString(2),
 													rs.getTime(3).toLocalTime(),
 													rs.getTime(4).toLocalTime(),
@@ -201,7 +200,7 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 	}
 
 	@Override
-	public Object recuperarEntidad(Integer id) {
+	public Object recuperarEntidad(short id) {
 		
 		Estacion estacionDB = null;
 		GestorMantenimientoPostgreSQLDAO gestorMantenimiento = new GestorMantenimientoPostgreSQLDAO();
@@ -227,7 +226,7 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 												+ "WHERE id_estacion = " + rs.getInt(1));
 				rsAux = pstm.executeQuery();
 				while(rsAux.next()) {
-					Conexion cn = (Conexion) gestorConexion.recuperarEntidad(rsAux.getInt(2));
+					Conexion cn = (Conexion) gestorConexion.recuperarEntidad(rsAux.getShort(2));
 					listaDeConexionesAux.add(cn);
 				}
 				
@@ -235,11 +234,11 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 												+ "WHERE id_estacion = " + rs.getInt(1));
 				rsAux = pstm.executeQuery();
 				while(rsAux.next()) {
-					Mantenimiento mn = (Mantenimiento) gestorMantenimiento.recuperarEntidad(rsAux.getInt(2));
+					Mantenimiento mn = (Mantenimiento) gestorMantenimiento.recuperarEntidad(rsAux.getShort(2));
 					listaDeMantenimientosAux.add(mn);
 				}
 				
-				estacionDB = new Estacion(rs.getInt(1), 
+				estacionDB = new Estacion(rs.getShort(1), 
 										rs.getString(2),
 										rs.getTime(3).toLocalTime(),
 										rs.getTime(4).toLocalTime(),
