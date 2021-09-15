@@ -199,7 +199,7 @@ public class Flecha {
 	}
 	
 	public void dibujar(Graphics2D g) {
-		//System.out.println("Mostrando flecha");
+		
 		g2d=g;
 		rst=g2d.getTransform();
 		updateCoord();
@@ -212,6 +212,7 @@ public class Flecha {
 		//debugPuntos();
 		//debugLineas();
 		g2d.setTransform(rst);
+		System.out.println("Mostrando flecha");
 		
 	}
 	public Boolean getEstado() {

@@ -72,8 +72,6 @@ public class Conexion{
 		e1.addConexion(this);
 		e2.addConexion(this);
 		linea.addConexion(this);
-		linea.addEstacion(e1);
-		linea.addEstacion(e2);
 		//System.out.println("Creada conexion entre "+a.getNombre()+" --> "+b.getNombre());
 	}
 	
@@ -104,6 +102,13 @@ public class Conexion{
 		if(!repetido) {
 			listConexiones.add(this);
 		}
+		this.e1.getListConexiones().add(this);
+		this.e2.getListConexiones().add(this);
+		this.linea.getListConexiones().add(this);
+		this.linea.getListEstaciones().add(e1);
+		this.linea.getListEstaciones().add(e2);
+		System.out.println("Añadida conexion a estacion " + e1.getNombre());
+		System.out.println("Añadida conexion a estacion " + e2.getNombre());
 	}
 	
 	private static void incrementarContador() {

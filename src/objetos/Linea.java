@@ -116,6 +116,8 @@ public class Linea implements Comparable<Linea>{
 	public void addConexion(Conexion c) {
 		listConexiones.add(c);
 		gestorLinea.actualizarEntidad(this);
+		addEstacion(c.getE1());
+		addEstacion(c.getE2());
 	}
 	
 	public void addEstacion(Estacion e) {

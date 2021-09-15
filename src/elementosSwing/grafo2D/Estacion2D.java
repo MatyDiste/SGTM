@@ -79,10 +79,10 @@ public class Estacion2D {
 	
 	public void addLlegada(Flecha f) {
 		listFlechasLlegada.add(f);
-		//System.out.println("Añadida flecha a estacion (llegada)");
+		System.out.println("Añadida flecha a estacion (llegada)");
 	}
 	public void addSalida(Flecha f) {
-		//System.out.println("Añadida flecha a estacion (salida)");
+		System.out.println("Añadida flecha a estacion (salida)");
 		listFlechasSalida.add(f);
 	}
 	
