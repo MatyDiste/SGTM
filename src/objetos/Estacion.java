@@ -2,6 +2,7 @@ package objetos;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -28,10 +29,18 @@ public class Estacion implements Comparable<Estacion>{
 	public static HashSet<Estacion> listEstaciones=new HashSet<Estacion>(); 
 	public static short contadorId;
 	public static final Double D_PAGERANK=0.5d;
+	
 	private static Boolean borrarEstacion(Estacion e) { 
 		PanelGrafo.quitarEstacion(e.getE2d());
+		gestorEstacion.eliminarEntidad(e.id);
 		return listEstaciones.remove(e);
-		//TODO Comunicar DAO la eliminacion de e
+	}
+	
+	public static void cargarDB() {
+		gestorEstacion.recuperarEntidades();
+	}
+	public static void actualizarDB(Estacion e) {
+		gestorEstacion.actualizarEntidad(e);
 	}
 
 	/*
@@ -86,13 +95,15 @@ public class Estacion implements Comparable<Estacion>{
 	private LocalTime horarioCierre;
 	private EstadoEstacion estado;
 	private LocalDate fechaCreacion=LocalDate.now();
-	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
+	private ArrayList<Conexion> listConexiones=new ArrayList<Conexion>();
 	private Double pagerank = 1.0;
 	private Double pesoTotal = 0.0;
-	private LinkedList<Mantenimiento> listaMantenimientos=new LinkedList<Mantenimiento>();
+	private ArrayList<Mantenimiento> listaMantenimientos=new ArrayList<Mantenimiento>();
 	private Estacion2D e2d;
 	public Double posx=Math.random()*600+50;
 	public Double posy=Math.random()*450+50;
+	private Integer cantidadDeMantenimientosEnDB = 0;
+	private Integer cantidadDeConexionesEnDB = 0;
 
 	public Estacion(String nombre, LocalTime horarioApertura, LocalTime horarioCierre, Boolean estado) throws NombreOcupadoException {
 		
@@ -110,7 +121,6 @@ public class Estacion implements Comparable<Estacion>{
 			gestorEstacion.insertarEntidad(this);
 		}
 		else throw new NombreOcupadoException(nombre);
-		
 	}
 	
 	public Estacion(short id, String nombre, LocalTime horarioApertura, LocalTime horarioCierre, 
@@ -133,6 +143,31 @@ public class Estacion implements Comparable<Estacion>{
 		this.e2d = new Estacion2D(this);
 		this.posx = posicionX;
 		this.posy = posicionY;
+	}
+	
+	public Estacion(short id, String nombre, LocalTime horarioApertura, LocalTime horarioCierre, 
+			String estado, LocalDate fechaCreacion, Double pagerank, Double pesoTotal, 
+			Double posicionX, Double posicionY, ArrayList<Conexion> listConexiones,
+			ArrayList<Mantenimiento> listaMantenimientos) {
+		
+		this.id = id;
+		this.nombre = nombre;
+		this.horarioApertura = horarioApertura;
+		this.horarioCierre = horarioCierre;
+		if (estado.equals("OPERATIVA")) {
+			this.estado = EstadoEstacion.OPERATIVA;
+		}
+		else {
+			this.estado = EstadoEstacion.EN_MANTENIMIENTO;
+		}
+		this.fechaCreacion = fechaCreacion;
+		this.pagerank = pagerank;
+		this.pesoTotal = pesoTotal;
+		this.e2d = new Estacion2D(this);
+		this.posx = posicionX;
+		this.posy = posicionY;
+		this.listConexiones = listConexiones;
+		this.listaMantenimientos = listaMantenimientos;
 		boolean repetido = false;
 		for(Estacion e: Estacion.listEstaciones) {
 			if(this.equals(e)) {
@@ -190,6 +225,23 @@ public class Estacion implements Comparable<Estacion>{
 	public void setHorarioCierre(LocalTime horarioCierre) {
 		this.horarioCierre = horarioCierre;
 	}
+	
+	public Integer getCantidadDeMantenimientosEnDB() {
+		return cantidadDeMantenimientosEnDB;
+	}
+
+	public void setCantidadDeMantenimientosEnDB(Integer cantidadDeMantenimientosEnDB) {
+		this.cantidadDeMantenimientosEnDB = cantidadDeMantenimientosEnDB;
+	}
+
+	public Integer getCantidadDeConexionesEnDB() {
+		return cantidadDeConexionesEnDB;
+	}
+
+	public void setCantidadDeConexionesEnDB(Integer cantidadDeConexionesEnDB) {
+		this.cantidadDeConexionesEnDB = cantidadDeConexionesEnDB;
+	}
+	
 	public String getEstado() {
 		return estado.name();
 	}
@@ -227,13 +279,13 @@ public class Estacion implements Comparable<Estacion>{
 		}
 	}
 	public void setOperativa(String descripcion) {
-		Mantenimiento ultimoMantenimiento = listaMantenimientos.getLast();
+		Mantenimiento ultimoMantenimiento = listaMantenimientos.get(listaMantenimientos.size()-1);
 		ultimoMantenimiento.finMantenimiento(descripcion);
 		this.estado = EstadoEstacion.OPERATIVA;
 	}
 	public void setOperativa() {
 		if(this.estado==EstadoEstacion.EN_MANTENIMIENTO) {
-			Mantenimiento ultimoMantenimiento = listaMantenimientos.getLast();
+			Mantenimiento ultimoMantenimiento = listaMantenimientos.get(listaMantenimientos.size()-1);
 			String comentarioMant="";
 			JFrame dialog=new JFrame();
 			JPanel rootp=new JPanel();
@@ -264,20 +316,20 @@ public class Estacion implements Comparable<Estacion>{
 		if(listaMantenimientos.isEmpty())
 			return fechaCreacion;
 		else
-			return listaMantenimientos.getLast().getFechaInicio();
+			return listaMantenimientos.get(listaMantenimientos.size()-1).getFechaInicio();
 	}
-	public HashSet<Conexion> getListConexiones() {
+	public ArrayList<Conexion> getListConexiones() {
 		return listConexiones;
 	}
-	public void setListConexiones (HashSet<Conexion> listaConexiones) {
+	public void setListConexiones (ArrayList<Conexion> listaConexiones) {
 		this.listConexiones = listaConexiones;
 	}
 
-	public LinkedList<Mantenimiento> getListaMantenimientos() {
+	public ArrayList<Mantenimiento> getListaMantenimientos() {
 		return listaMantenimientos;
 	}
 
-	public void setListaMantenimientos(LinkedList<Mantenimiento> listaMantenimientos) {
+	public void setListaMantenimientos(ArrayList<Mantenimiento> listaMantenimientos) {
 		this.listaMantenimientos = listaMantenimientos;
 	}
 	public Double getPagerank() {
@@ -310,9 +362,11 @@ public class Estacion implements Comparable<Estacion>{
 
 	public void addConexion(Conexion c) {
 		listConexiones.add(c);
+		gestorEstacion.actualizarEntidad(this);
 	}
 	public void quitarConexion(Conexion c) {
 		listConexiones.remove(c);
+		gestorEstacion.actualizarEntidad(this);
 	}
 	/*--------------------------------------------------*/
 	public Integer cantSalientes() {
@@ -381,6 +435,8 @@ public class Estacion implements Comparable<Estacion>{
 					  });
 		listConexiones.clear();
 		listConexiones=null;
+		listaMantenimientos.forEach(m -> Mantenimiento.borrarMantenimiento(m));
+		listaMantenimientos.clear();
 		Estacion.borrarEstacion(this);
 	}
 	@Override

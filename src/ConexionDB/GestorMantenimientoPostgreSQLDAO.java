@@ -10,8 +10,8 @@ import objetos.Mantenimiento;
 
 public class GestorMantenimientoPostgreSQLDAO extends PostgreSQL{
 	
-	private String url = "jdbc:postgresql://localhost:5432/sgtm";
-	private String clave = "benja12345";
+	//private String url = "jdbc:postgresql://localhost:5432/sgtm";
+	//private String clave = "benja12345";
 	private Connection conex = null;
 	private PreparedStatement pstm = null;
 	private ResultSet rs = null;
@@ -126,7 +126,7 @@ public class GestorMantenimientoPostgreSQLDAO extends PostgreSQL{
 	public boolean actualizarEntidad(Object o) {
 		
 		Mantenimiento mantenimiento = (Mantenimiento) o;
-		Integer tuplaIncertada=0;
+		Integer tuplaActualizada=0;
 		
 		try {
 			Class.forName("org.postgresql.Driver");
@@ -142,7 +142,7 @@ public class GestorMantenimientoPostgreSQLDAO extends PostgreSQL{
 			pstm.setDate(2, Date.valueOf(mantenimiento.getFechaFin()));
 			pstm.setString(3, mantenimiento.getDescripcion());
 
-			tuplaIncertada = pstm.executeUpdate();
+			tuplaActualizada = pstm.executeUpdate();
 		} 
 		
 		catch (ClassNotFoundException e) {
@@ -166,7 +166,7 @@ public class GestorMantenimientoPostgreSQLDAO extends PostgreSQL{
 			catch (SQLException e) { e.printStackTrace(); }
 		}
 		
-		if(tuplaIncertada==1) {
+		if(tuplaActualizada==1) {
 			return true;
 		}
 		else {
@@ -176,9 +176,57 @@ public class GestorMantenimientoPostgreSQLDAO extends PostgreSQL{
 	}
 
 	@Override
-	public boolean eliminarEntidad(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean eliminarEntidad(short id) {
+		
+		Integer tuplaEliminada = 0;
+		
+		try {
+			Class.forName("org.postgresql.Driver");
+			
+			conex = DriverManager.getConnection(url, "postgres", clave);
+			
+			//eliminar de la lista de mantenimientos
+			
+			pstm = conex.prepareStatement("DELETE FROM lista_mantenimientos"
+					+ " WHERE id_mantenimiento = " + id);
+			
+			pstm.executeUpdate();
+			
+			//eliminar mantenimiento
+			
+			pstm = conex.prepareStatement("DELETE FROM mantenimiento"
+					+ " WHERE id_mantenimiento = " + id);
+
+			tuplaEliminada = pstm.executeUpdate();
+		} 
+		
+		catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Error driver");
+		}
+		
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Error SQL");
+		}
+		
+		finally {
+			if(rs!=null) try { rs.close(); } 
+			catch (SQLException e) { e.printStackTrace(); }
+			if(pstm!=null) try { pstm.close(); } 
+			catch (SQLException e) {e.printStackTrace(); }
+			if(conex!=null) try { conex.close(); } 
+			catch (SQLException e) { e.printStackTrace(); }
+		}
+		
+		if(tuplaEliminada==1) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	@Override
