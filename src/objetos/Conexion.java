@@ -25,6 +25,13 @@ public class Conexion{
 	private Double costo;
 	private Linea linea;
 	private Boolean seleccionado=false;
+	
+	public static void cargarDB() {
+		gestorConexion.recuperarEntidades();
+	}
+	public static void actualizarDB(Conexion c) {
+		gestorConexion.actualizarEntidad(c);
+	}
 
 	//Constructor DEBUG!!!!
 	
@@ -49,8 +56,6 @@ public class Conexion{
 	
 	//END Constructor DEBUG!!!!
 	public Conexion(Estacion a, Estacion b, Linea l, Double dist, Double durMinutos, Integer cantPasajeros, Double precio) {
-		a.addConexion(this);
-		b.addConexion(this);
 		setId(contadorId);
 		incrementarContador();
 		e1=a;
@@ -62,9 +67,13 @@ public class Conexion{
 		duracion=durMinutos;
 		cantMaxPasajeros=cantPasajeros;
 		costo=precio;
-		linea.addConexion(this);
 		listConexiones.add(this);
 		gestorConexion.insertarEntidad(this);
+		e1.addConexion(this);
+		e2.addConexion(this);
+		linea.addConexion(this);
+		linea.addEstacion(e1);
+		linea.addEstacion(e2);
 		//System.out.println("Creada conexion entre "+a.getNombre()+" --> "+b.getNombre());
 	}
 	
@@ -102,6 +111,7 @@ public class Conexion{
 	}
 	
 	public void eliminar() {
+		gestorConexion.eliminarEntidad(this.id);
 		e1.quitarConexion(this);
 		e2.quitarConexion(this);
 		flecha.eliminar();
@@ -109,8 +119,8 @@ public class Conexion{
 		e1=null;
 		e2=null;
 		this.deshabilitar();
+		listConexiones.remove(this);
 		Estacion.generarPageRank(200);
-		
 	}
 	
 	public Color getColor() {

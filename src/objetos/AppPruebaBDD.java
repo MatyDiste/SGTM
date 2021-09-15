@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import ConexionDB.GestorConexionPostgreSQLDAO;
 import ConexionDB.GestorEstacionPostgreSQLDAO;
@@ -18,9 +19,9 @@ public class AppPruebaBDD {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		
-		//-------------PRUEBA INSERCION DE DATOS----------------//
 		/*
+		//-------------PRUEBA INSERCION DE DATOS----------------//
+		
 		GestorEstacionPostgreSQLDAO gestorEstacion = new GestorEstacionPostgreSQLDAO();
 		GestorLineaPostgreSQLDAO gestorLinea = new GestorLineaPostgreSQLDAO();
 		GestorConexionPostgreSQLDAO gestorConexion = new GestorConexionPostgreSQLDAO();
@@ -43,8 +44,8 @@ public class AppPruebaBDD {
 		
 		HashSet<Conexion> listConexionesEstaciones1=new HashSet<Conexion>();
 		HashSet<Conexion> listConexionesEstaciones2=new HashSet<Conexion>();
-		ArrayList<Mantenimiento> listaMantenimientos1=new ArrayList<Mantenimiento>();
-		ArrayList<Mantenimiento> listaMantenimientos2=new ArrayList<Mantenimiento>();
+		LinkedList<Mantenimiento> listaMantenimientos1=new LinkedList<Mantenimiento>();
+		LinkedList<Mantenimiento> listaMantenimientos2=new LinkedList<Mantenimiento>();
 		List<Estacion> listEstaciones=new ArrayList<Estacion>();
 		HashSet<Conexion> listConexionesLineas=new HashSet<Conexion>();
 		
@@ -84,8 +85,8 @@ public class AppPruebaBDD {
 		Linea l1 = null;
 		Linea l2 = null;
 		try {
-			l1 = new Linea("Linea verde", Color.GREEN, true);
-			l2 = new Linea("Linea azul", Color.BLUE, true);
+			l1 = new Linea("Linea verde", Color.GREEN, true, (short) 2);
+			l2 = new Linea("Linea azul", Color.BLUE, true, (short) 0);
 		} catch (NombreOcupadoException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -130,7 +131,7 @@ public class AppPruebaBDD {
 		gestorEstacion.insertarEntidad(e4);
 		
 		gestorLinea.insertarEntidad(l2); 
-		 */
+		*/
 		//------------FIN PRUEBA INSERCION DE DATOS---------------//
 		
 		
@@ -324,10 +325,8 @@ public class AppPruebaBDD {
 		/*
 		GestorMantenimientoPostgreSQLDAO gestorMantenimiento = new GestorMantenimientoPostgreSQLDAO();
 		Mantenimiento.setContadorId(5);                
-		
 		Mantenimiento m1 = new Mantenimiento("Mantenimiento actualizado");
 		m1.setFechaFin(LocalDate.now().plusDays(3));
-		
 		gestorMantenimiento.actualizarEntidad(m1);
 		
 		GestorConexionPostgreSQLDAO gestorConexion = new GestorConexionPostgreSQLDAO();
@@ -336,15 +335,45 @@ public class AppPruebaBDD {
 		Estacion e2 = (Estacion) gestorEstacion.recuperarEntidad(1003);
 		GestorLineaPostgreSQLDAO gestorLinea = new GestorLineaPostgreSQLDAO();
 		Linea l1 = (Linea) gestorLinea.recuperarEntidad(1002);
-		
 		Conexion c1 = new Conexion(3, 100.35, 46.7, 
 			46, "INACTIVA", 350.6, e1, e2, l1);
-		
 		gestorConexion.actualizarEntidad(c1);
+		
+		GestorLineaPostgreSQLDAO gestorLinea = new GestorLineaPostgreSQLDAO();
+		Linea l1 = (Linea) gestorLinea.recuperarEntidad((short) 1008);
+		l1.setNombre("Benja");
+		l1.setColor(Color.BLUE);
+		l1.setTipo((short) 2);
+		gestorLinea.actualizarEntidad(l1);
+		
+		GestorEstacionPostgreSQLDAO gestorEstacion = new GestorEstacionPostgreSQLDAO();
+		Estacion e1 = (Estacion) gestorEstacion.recuperarEntidad((short) 1017);
+		e1.setNombre("Benja");
+		e1.setHorarioApertura(LocalTime.now());
+		e1.setHorarioCierre(LocalTime.now().plusHours(8));
+		e1.setPagerank(1.87);
+		e1.setPesoTotal(15.6);
+		e1.setPosx(250.65);
+		e1.setPosy(364.98);
+		gestorEstacion.actualizarEntidad(e1);
 		*/
-		
-		
-		
 		//-------------FIN PRUEBA DE ACTUALIZACION DE DATOS ----------------//
+		
+		//-------------PRUEBA DE ELIMINACION DE DATOS ----------------//
+		/* 
+		GestorEstacionPostgreSQLDAO gestorEstacion = new GestorEstacionPostgreSQLDAO();
+		Estacion e1 = (Estacion) gestorEstacion.recuperarEntidad((short) 1070);
+		gestorEstacion.eliminarEntidad(e1);
+		
+		GestorConexionPostgreSQLDAO gestorConexion = new GestorConexionPostgreSQLDAO();
+		gestorConexion.eliminarEntidad((short) 6);
+		
+		GestorMantenimientoPostgreSQLDAO gestorMantenimiento = new GestorMantenimientoPostgreSQLDAO();
+		gestorMantenimiento.eliminarEntidad((short) 10);
+		
+		GestorLineaPostgreSQLDAO gestorLinea = new GestorLineaPostgreSQLDAO();
+		gestorLinea.eliminarEntidad((short) 1002);
+		*/
+		//-------------FIN DE ELIMINACION DE DATOS ----------------//
 	}
 }

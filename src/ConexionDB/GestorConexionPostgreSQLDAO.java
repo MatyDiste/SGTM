@@ -11,8 +11,8 @@ import objetos.Linea;
 
 public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 	
-	private String url = "jdbc:postgresql://localhost:5432/sgtm";
-	private String clave = "benja12345";
+	//private String url = "jdbc:postgresql://localhost:5432/sgtm";
+	//private String clave = "benja12345";
 	private Connection conex = null;
 	private PreparedStatement pstm = null;
 	private ResultSet rs = null;
@@ -90,9 +90,9 @@ public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 			
 			while(rs.next()) {
 				
-				Estacion estacion1 = (Estacion) gestorEstacion.recuperarEntidad(rs.getShort(7));
-				Estacion estacion2 = (Estacion) gestorEstacion.recuperarEntidad(rs.getShort(8));
-				Linea linea = (Linea) gestorLinea.recuperarEntidad(rs.getShort(9));
+				Estacion estacion1 = (Estacion) gestorEstacion.traerEntidad(rs.getShort(7));
+				Estacion estacion2 = (Estacion) gestorEstacion.traerEntidad(rs.getShort(8));
+				Linea linea = (Linea) gestorLinea.traerEntidad(rs.getShort(9));
 				
 				new Conexion(rs.getShort(1), 
 						rs.getDouble(2),
@@ -136,7 +136,7 @@ public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 	public boolean actualizarEntidad(Object o) {
 		
 		Conexion conexion = (Conexion) o;
-		Integer tuplaIncertada = 0;
+		Integer tuplaActualizada = 0;
 		
 		try {
 			Class.forName("org.postgresql.Driver");
@@ -162,7 +162,7 @@ public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 			pstm.setInt(7, conexion.getE2().getId());
 			pstm.setInt(8, conexion.getLinea().getId());
 			
-			tuplaIncertada = pstm.executeUpdate();
+			tuplaActualizada = pstm.executeUpdate();
 		}
 		
 		catch (ClassNotFoundException e) {
@@ -186,7 +186,7 @@ public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 			catch (SQLException e) { e.printStackTrace(); }
 		}
 		
-		if(tuplaIncertada==1) {
+		if(tuplaActualizada==1) {
 			return true;
 		}
 		else {
@@ -195,9 +195,80 @@ public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 	}
 
 	@Override
-	public boolean eliminarEntidad(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean eliminarEntidad(short id) {
+		
+		Integer tuplaEliminada = 0;
+		
+		try {
+			Class.forName("org.postgresql.Driver");
+			
+			conex = DriverManager.getConnection(url, "postgres", clave);
+			
+			//eliminar de la lista de estaciones
+			
+			pstm = conex.prepareStatement("DELETE FROM lista_conexiones_estaciones"
+					+ " WHERE id_conexion = " + id);
+			
+			pstm.executeUpdate();
+			
+			//la linea afectada queda en mantenimiento
+			
+			pstm = conex.prepareStatement("SELECT id_linea FROM conexion"
+					+ " WHERE id_conexion = " + id);
+			
+			rs = pstm.executeQuery();
+			
+			while(rs.next()) {
+				
+				pstm = conex.prepareStatement("UPDATE linea SET estado = 'INACTIVA'"
+				+ " WHERE id_linea = " + rs.getShort(1));
+				
+				pstm.executeUpdate();
+				
+			}
+			
+			//eliminar de la lista de lineas
+			
+			pstm = conex.prepareStatement("DELETE FROM lista_conexiones_lineas"
+					+ " WHERE id_conexion = " + id);
+			
+			pstm.executeUpdate();
+			
+			//eliminar conexion
+			
+			pstm = conex.prepareStatement("DELETE FROM conexion"
+					+ " WHERE id_conexion = " + id);
+			
+			tuplaEliminada = pstm.executeUpdate();
+		}
+		
+		catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Error driver");
+		}
+		
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Error SQL");
+		}
+		
+		finally {
+			if(rs!=null) try { rs.close(); } 
+			catch (SQLException e) { e.printStackTrace(); }
+			if(pstm!=null) try { pstm.close(); } 
+			catch (SQLException e) {e.printStackTrace(); }
+			if(conex!=null) try { conex.close(); } 
+			catch (SQLException e) { e.printStackTrace(); }
+		}
+		
+		if(tuplaEliminada==1) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	@Override
@@ -219,9 +290,9 @@ public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 			
 			while(rs.next()) {
 				
-				Estacion estacion1 = (Estacion) gestorEstacion.recuperarEntidad(rs.getShort(7));
-				Estacion estacion2 = (Estacion) gestorEstacion.recuperarEntidad(rs.getShort(8));
-				Linea linea = (Linea) gestorLinea.recuperarEntidad(rs.getShort(9));
+				Estacion estacion1 = (Estacion) gestorEstacion.traerEntidad(rs.getShort(7));
+				Estacion estacion2 = (Estacion) gestorEstacion.traerEntidad(rs.getShort(8));
+				Linea linea = (Linea) gestorLinea.traerEntidad(rs.getShort(9));
 				
 				conexionDB = new Conexion(rs.getShort(1), 
 						rs.getDouble(2),

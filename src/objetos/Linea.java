@@ -20,9 +20,17 @@ public class Linea implements Comparable<Linea>{
 	public static final Short SUBTERRANEO=2;
 	public static HashSet<Linea> listLineas=new HashSet<Linea>();
 	private static short contadorId;
+	
+	public static void cargarDB() {
+		gestorLinea.recuperarEntidades();
+	}
+	public static void actualizarDB(Linea l) {
+		gestorLinea.actualizarEntidad(l);
+	}
+	
 	public static Boolean borrarLinea(Linea e) {
+		gestorLinea.eliminarEntidad(e.id);
 		return listLineas.remove(e);
-		//TODO Comunicar DAO la eliminacion de e
 	}
 	private static void incrementarContador() {
 		contadorId++;
@@ -37,13 +45,15 @@ public class Linea implements Comparable<Linea>{
 		return !listLineas.stream().anyMatch(l -> l.getNombre().equals(s));
 	}
 	
-	private List<Estacion> listEstaciones=new ArrayList<Estacion>();
-	private HashSet<Conexion> listConexiones=new HashSet<Conexion>();
+	private ArrayList<Estacion> listEstaciones=new ArrayList<Estacion>();
+	private ArrayList<Conexion> listConexiones=new ArrayList<Conexion>();
 	private short id;
 	private String nombre;
 	private Color color;
 	private EstadoLinea estado;
 	private Short tipo=0;
+	private Integer cantidadDeEstacionesEnDB = 0;
+	private Integer cantidadDeConexionesEnDB = 0;
 	
 	public Linea(String nombre, Color color, Boolean estado, Short tipo) 
 			throws NombreOcupadoException {
@@ -75,6 +85,23 @@ public class Linea implements Comparable<Linea>{
 			this.estado = EstadoLinea.INACTIVA;
 		}
 		this.tipo=tipo;
+	}
+	
+	public Linea(short id, String nombre, Color color, String estado, short tipo, 
+			ArrayList<Estacion> listEstaciones, ArrayList<Conexion> listConexiones) {
+		
+		this.id = id;
+		this.nombre = nombre;
+		this.color = color;
+		if(estado.equals("ACTIVA")) {
+			this.estado = EstadoLinea.ACTIVA;
+		}
+		else {
+			this.estado = EstadoLinea.INACTIVA;
+		}
+		this.tipo=tipo;
+		this.listEstaciones = listEstaciones;
+		this.listConexiones = listConexiones;
 		boolean repetido = false;
 		for(Linea l: Linea.listLineas) {
 			if(this.equals(l)) {
@@ -87,11 +114,21 @@ public class Linea implements Comparable<Linea>{
 	}
 	
 	public void addConexion(Conexion c) {
-		if(listEstaciones.isEmpty()) {
-			listEstaciones.add(c.getE1());
-		}
-		listEstaciones.add(c.getE2());
 		listConexiones.add(c);
+		gestorLinea.actualizarEntidad(this);
+	}
+	
+	public void addEstacion(Estacion e) {
+		boolean repetido = false;
+		for(Estacion est: listEstaciones) {
+			if(e.equals(est)) {
+				repetido=true;
+			}
+		}
+		if(!repetido) {
+			listEstaciones.add(e);
+			gestorLinea.actualizarEntidad(this);
+		}
 	}
 	
 	//METODOS GETTERS AND SETTERS
@@ -114,13 +151,13 @@ public class Linea implements Comparable<Linea>{
 	public List<Estacion> getListEstaciones() {
 		return listEstaciones;
 	}
-	public void setListEstaciones(List<Estacion> listEstaciones) {
+	public void setListEstaciones(ArrayList<Estacion> listEstaciones) {
 		this.listEstaciones = listEstaciones;
 	}
-	public HashSet<Conexion> getListConexiones() {
+	public ArrayList<Conexion> getListConexiones() {
 		return listConexiones;
 	}
-	public void setListConexiones(HashSet<Conexion> listConexiones) {
+	public void setListConexiones(ArrayList<Conexion> listConexiones) {
 		this.listConexiones = listConexiones;
 	}
 	public String getNombre() {
@@ -145,16 +182,30 @@ public class Linea implements Comparable<Linea>{
 	public void setTipo(Short tipo) {
 		this.tipo = tipo;
 	}
+	public Integer getCantidadDeEstacionesEnDB() {
+		return cantidadDeEstacionesEnDB;
+	}
+	public void setCantidadDeEstacionesEnDB(Integer cantidadDeEstacionesEnDB) {
+		this.cantidadDeEstacionesEnDB = cantidadDeEstacionesEnDB;
+	}
+	public Integer getCantidadDeConexionesEnDB() {
+		return cantidadDeConexionesEnDB;
+	}
+	public void setCantidadDeConexionesEnDB(Integer cantidadDeConexionesEnDB) {
+		this.cantidadDeConexionesEnDB = cantidadDeConexionesEnDB;
+	}
 	
 	//Otros métodos
 	
 	public void activar() {
 		this.estado=EstadoLinea.ACTIVA;
+		gestorLinea.actualizarEntidad(this);
 		PanelGrafo.repintarGrafo();
 		//TODO Fijarse que las conexiones actualicen bien sus colores
 	}
 	public void inactivar() {
 		this.estado=EstadoLinea.INACTIVA;
+		gestorLinea.actualizarEntidad(this);
 		PanelGrafo.repintarGrafo();
 		//TODO lo mismo que activar()
 	}
@@ -165,16 +216,18 @@ public class Linea implements Comparable<Linea>{
 		listConexiones.clear();
 		aux.clear();
 		aux=null;
-		
 		listEstaciones.clear();
+		gestorLinea.actualizarEntidad(this);
 	}
 	public void quitarConexion(Conexion c) {
 		listConexiones.remove(c);
 		this.inactivar();
+		gestorLinea.actualizarEntidad(this);
 	}
 	public void quitarEstacion(Estacion e) {
 		listEstaciones.remove(e);
 		this.inactivar();
+		gestorLinea.actualizarEntidad(this);
 	}
 	
 	public void select() {

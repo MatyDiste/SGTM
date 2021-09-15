@@ -26,6 +26,8 @@ public class Main {
 		FlatInspector.install( "ctrl shift alt T" ); //Con CTRL+SHIFT+ALT+T se activa el modo inspector, ESC para salir
 		
 		PostgreSQL.setearContadoresId();
+		Estacion.cargarDB();
+		Linea.cargarDB();
 		
 		@SuppressWarnings("unused")
 		JFrame vnt=new Home("Sistema de gestion de Transporte Multimodal");
@@ -40,6 +42,9 @@ public class Main {
 	
 	public static void openMainWindow() {
 		//TODO
+		
+		/*
+		
 		//Aca se deberia cargar desde la DB en vez de estos generadores debug
 		for(int i=0; i<9; i++) {
 			debugGenEstacion();
@@ -52,6 +57,10 @@ public class Main {
 			//System.out.println("Creada conexion");
 			debugGenConexiones(l);
 		});
+		
+		
+		*/
+		
 		Estacion.generarPageRank(200);
 		
 		@SuppressWarnings("unused")

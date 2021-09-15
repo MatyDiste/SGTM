@@ -15,6 +15,17 @@ public class Mantenimiento {
 	private LocalDate fechaFin;
 	private String descripcion;
 	
+	public static void borrarMantenimiento(Mantenimiento m) {
+		listMantenimientos.remove(m);
+	}
+	
+	public static void cargarDB() {
+		gestorMantenimiento.recuperarEntidades();
+	}
+	public static void actualizarDB(Mantenimiento m) {
+		gestorMantenimiento.actualizarEntidad(m);
+	}
+	
 	public Mantenimiento(String descripcion) {
 		this.id=contadorId;
 		this.fechaInicio=LocalDate.now();
@@ -97,6 +108,7 @@ public class Mantenimiento {
 
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
+		gestorMantenimiento.actualizarEntidad(this);
 	}
 	@Override
 	public boolean equals(Object o) {

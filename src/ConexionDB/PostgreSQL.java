@@ -13,8 +13,8 @@ import objetos.Mantenimiento;
 
 public abstract class PostgreSQL {
 	
-	private static String url = "jdbc:postgresql://localhost:5432/sgtm";
-	private static String clave = "benja12345";
+	public static final String url = "jdbc:postgresql://localhost:5432/sgtm";
+	public static final String clave = "benja12345";
 	private static Connection conex = null;
 	private static PreparedStatement pstm = null;
 	private static ResultSet rs = null;
@@ -22,7 +22,7 @@ public abstract class PostgreSQL {
 	public abstract short insertarEntidad(Object o); //Numero ID de la entidad insertada
 	public abstract Integer recuperarEntidades(); //Cantidad de tuplas recuperadas de la DB
 	public abstract boolean actualizarEntidad(Object o); //TRUE: Éxito -- FALSE:Fracaso
-	public abstract boolean eliminarEntidad(Object o); //TRUE: Éxito -- FALSE:Fracaso
+	public abstract boolean eliminarEntidad(short id); //TRUE: Éxito -- FALSE:Fracaso
 	public abstract Object recuperarEntidad(short id); //Objeto casteable a Conexion, 
 											//Estacion, Linea o Mantenimiento según el caso.
 	
