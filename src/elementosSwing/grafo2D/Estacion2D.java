@@ -6,6 +6,9 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 
 import objetos.Estacion;
@@ -27,6 +30,16 @@ public class Estacion2D {
 	public String nombre;
 	public Ellipse2D.Double circulo;
 	public Graphics2D g2d;
+	private Thread actualizarUbicacion=new Thread(()->{
+		try {
+			Thread.sleep(10000);
+			Estacion.actualizarDB(e);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	});
+	private Instant ultimoMov;
 	
 	public void quitarFlechaLlegada(Flecha f) {
 		listFlechasLlegada.remove(f);
@@ -44,7 +57,7 @@ public class Estacion2D {
 		this.posx=e.posx;
 		this.posy=e.posy;
 		nombre=e.getNombre();
-		//System.out.println("Añadida Estacion2D");
+		System.out.println("Añadida Estacion2D para "+nombre);
 		
 	}
 	
@@ -79,11 +92,12 @@ public class Estacion2D {
 	
 	public void addLlegada(Flecha f) {
 		listFlechasLlegada.add(f);
-		//System.out.println("Añadida flecha a estacion (llegada)");
+		System.out.println("Añadida flecha a estacion (llegada)");
 	}
 	public void addSalida(Flecha f) {
-		//System.out.println("Añadida flecha a estacion (salida)");
-		listFlechasSalida.add(f);
+		System.out.println("Añadida flecha a estacion (salida)");
+		if(listFlechasSalida.add(f)) System.out.println("Exitoso");
+		if(listFlechasSalida.isEmpty()) System.out.println("NO TIENE NADAAAAA!!!!");
 	}
 	
 	private void dibujarFlechas() {
@@ -92,6 +106,7 @@ public class Estacion2D {
 				          .forEach(f -> f.dibujar(g2d));
 		listFlechasSalida.stream()
 						 .forEach(f -> f.dibujar(g2d));
+		if(listFlechasLlegada.isEmpty()) System.out.println("NO HAY FLECHAS! en " +this.nombre);
 	}
 	
 	public void select() {
@@ -105,6 +120,24 @@ public class Estacion2D {
 		//this.dibujar(g2d);
 	}
 	public void mover(Double x, Double y) {
+		if(ultimoMov==null) {
+			ultimoMov=Instant.now();
+			actualizarUbicacion.start();
+		} else if(Instant.now().isBefore(ultimoMov.plus(Duration.of(5, ChronoUnit.SECONDS)))) {
+			actualizarUbicacion.interrupt();
+			actualizarUbicacion=new Thread(()->{
+				try {
+					Thread.sleep(5000);
+					Estacion.actualizarDB(e);
+				} catch (InterruptedException e) {
+					
+				}
+			});
+			actualizarUbicacion.start();
+		} else {
+			actualizarUbicacion.start();
+		}
+		
 		centrox=x;
 		centroy=y;
 		posx=x-RADIO;

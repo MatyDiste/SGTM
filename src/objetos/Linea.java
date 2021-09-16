@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import ConexionDB.GestorLineaPostgreSQLDAO;
+import conexionDB.GestorLineaPostgreSQLDAO;
 import elementosSwing.grafo2D.PanelGrafo;
 
 enum EstadoLinea {
@@ -113,6 +113,9 @@ public class Linea implements Comparable<Linea>{
 		}
 	}
 	
+	public void addConexionNODB(Conexion c) {
+		listConexiones.add(c);
+	}
 	public void addConexion(Conexion c) {
 		listConexiones.add(c);
 		gestorLinea.actualizarEntidad(this);
@@ -128,6 +131,17 @@ public class Linea implements Comparable<Linea>{
 		if(!repetido) {
 			listEstaciones.add(e);
 			gestorLinea.actualizarEntidad(this);
+		}
+	}
+	public void addEstacionNODB(Estacion e) {
+		boolean repetido = false;
+		for(Estacion est: listEstaciones) {
+			if(e.equals(est)) {
+				repetido=true;
+			}
+		}
+		if(!repetido) {
+			listEstaciones.add(e);
 		}
 	}
 	

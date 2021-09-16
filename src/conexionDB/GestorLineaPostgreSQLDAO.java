@@ -1,4 +1,4 @@
-package ConexionDB;
+package conexionDB;
 
 import java.awt.Color;
 import java.sql.Connection;
@@ -97,7 +97,6 @@ public class GestorLineaPostgreSQLDAO extends PostgreSQL{
 	public Integer recuperarEntidades() {
 		
 		Integer cantidadLineasRecuperadas = 0;
-		GestorConexionPostgreSQLDAO gestorConexion = new GestorConexionPostgreSQLDAO();
 		GestorEstacionPostgreSQLDAO gestorEstacion = new GestorEstacionPostgreSQLDAO();
 		
 		try {
@@ -115,7 +114,7 @@ public class GestorLineaPostgreSQLDAO extends PostgreSQL{
 				ResultSet rsAux = null;
 				ArrayList<Estacion> listEstacionesAux=new ArrayList<Estacion>();
 				ArrayList<Conexion> listConexionesAux=new ArrayList<Conexion>();
-				
+				/*
 				pstm = conex.prepareStatement("SELECT * FROM lista_conexiones_lineas "
 						+ "WHERE id_linea = " + rs.getInt(1));
 				
@@ -125,7 +124,7 @@ public class GestorLineaPostgreSQLDAO extends PostgreSQL{
 					Conexion cn = (Conexion) gestorConexion.recuperarEntidad(rsAux.getShort(2));
 					listConexionesAux.add(cn);
 				}
-				
+				*/
 				pstm = conex.prepareStatement("SELECT * FROM lista_estaciones "
 										+ "WHERE id_linea = " + rs.getInt(1));
 				

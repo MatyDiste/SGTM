@@ -1,4 +1,4 @@
-package ConexionDB;
+package conexionDB;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,8 +13,8 @@ import objetos.Mantenimiento;
 
 public abstract class PostgreSQL {
 	
-	public static final String url = "jdbc:postgresql://localhost:5432/sgtm";
-	public static final String clave = "benja12345";
+	public static final String url = "jdbc:postgresql://localhost:5432/postgres";
+	public static final String clave = "789456123";
 	private static Connection conex = null;
 	private static PreparedStatement pstm = null;
 	private static ResultSet rs = null;
