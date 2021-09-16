@@ -3,6 +3,7 @@ package elementosSwing.grafo2D;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -67,7 +68,7 @@ public class PanelGrafo extends JPanel {
 					try {
 						setearEstacion(getClickeado((double)event.getX(), (double)event.getY()).get());
 					} catch(NoSuchElementException exc) {
-						System.out.println("No clickeaste una estacion");
+						//System.out.println("No clickeaste una estacion");
 					}
 					
 				}
@@ -115,7 +116,7 @@ public class PanelGrafo extends JPanel {
 	protected void paintComponent(Graphics g) {
 		g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		g2d.setColor(Color.LIGHT_GRAY);
+		g2d.setPaint(new GradientPaint(0, 0, Color.WHITE, 700, 760, Color.DARK_GRAY));
 		g2d.fill(new Rectangle(700, 760));
 	    dibujarEstaciones();
 		//dibujarFlechas();

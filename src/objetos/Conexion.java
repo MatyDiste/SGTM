@@ -3,7 +3,7 @@ package objetos;
 import java.awt.Color;
 import java.util.HashSet;
 
-import ConexionDB.GestorConexionPostgreSQLDAO;
+import conexionDB.GestorConexionPostgreSQLDAO;
 import elementosSwing.grafo2D.Flecha;
 
 enum EstadoConexion {
@@ -33,9 +33,9 @@ public class Conexion{
 		gestorConexion.actualizarEntidad(c);
 	}
 
-	//Constructor DEBUG!!!!
 	
 	public Conexion(Estacion a, Estacion b, Linea l) {
+		//Constructor DEBUG!!!!
 		a.addConexion(this);
 		b.addConexion(this);
 		setId(contadorId);
@@ -52,17 +52,17 @@ public class Conexion{
 		listConexiones.add(this);
 		gestorConexion.insertarEntidad(this);
 		//System.out.println("Creada conexion entre "+a.getNombre()+" --> "+b.getNombre());
+		//END Constructor DEBUG!!!!
 	}
 	
-	//END Constructor DEBUG!!!!
 	public Conexion(Estacion a, Estacion b, Linea l, Double dist, Double durMinutos, Integer cantPasajeros, Double precio) {
+		//Constructor del programa
 		setId(contadorId);
 		incrementarContador();
 		e1=a;
 		e2=b;
 		linea=l;
 		estado=l.estado().equals("ACTIVA")? EstadoConexion.ACTIVA : EstadoConexion.INACTIVA;
-		flecha =new Flecha(a, b, this);
 		distancia=dist;
 		duracion=durMinutos;
 		cantMaxPasajeros=cantPasajeros;
@@ -74,12 +74,14 @@ public class Conexion{
 		linea.addConexion(this);
 		linea.addEstacion(e1);
 		linea.addEstacion(e2);
+		flecha =new Flecha(a, b, this);
 		//System.out.println("Creada conexion entre "+a.getNombre()+" --> "+b.getNombre());
 	}
 	
 	public Conexion(short idConexion, Double distancia, Double duracion, 
 			Integer capacidadMaxPasajeros, String estado, Double costo, 
 			Estacion estacion1, Estacion estacion2, Linea linea) {
+		//Constructor DB
 		this.id=idConexion;
 		this.distancia=distancia;
 		this.duracion=duracion;
@@ -94,16 +96,22 @@ public class Conexion{
 		this.e1 = estacion1;
 		this.e2 = estacion2;
 		this.linea = linea;
-		this.flecha = new Flecha(estacion1, estacion2, this);
 		boolean repetido = false;
 		for(Conexion c: Conexion.listConexiones) {
-			if(this.equals(c)) {
+			if(this.equals(c) && !repetido) {
 				repetido=true;
 			}
 		}
 		if(!repetido) {
 			listConexiones.add(this);
 		}
+		e1.addConexionNODB(this);
+		e2.addConexionNODB(this);
+		linea.addConexionNODB(this);
+		linea.addEstacionNODB(e1);
+		linea.addEstacionNODB(e2);
+		this.flecha = new Flecha(estacion1, estacion2, this);
+		System.out.println("Creada conexion entre "+e1.getNombre()+" --> "+e2.getNombre());
 	}
 	
 	private static void incrementarContador() {

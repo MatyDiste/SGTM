@@ -3,7 +3,7 @@ package objetos;
 import java.time.LocalDate;
 import java.util.HashSet;
 
-import ConexionDB.GestorMantenimientoPostgreSQLDAO;
+import conexionDB.GestorMantenimientoPostgreSQLDAO;
 
 public class Mantenimiento {
 	

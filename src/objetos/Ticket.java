@@ -2,6 +2,7 @@ package objetos;
 
 import java.time.LocalDate;
 
+@SuppressWarnings("unused")
 public class Ticket {
 	private Double costo=0d;
 	private Double distancia=0d;

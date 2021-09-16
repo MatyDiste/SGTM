@@ -7,14 +7,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import ConexionDB.GestorConexionPostgreSQLDAO;
-import ConexionDB.GestorEstacionPostgreSQLDAO;
-import ConexionDB.GestorLineaPostgreSQLDAO;
-import ConexionDB.GestorMantenimientoPostgreSQLDAO;
-import ConexionDB.PostgreSQL;
+
+import conexionDB.GestorConexionPostgreSQLDAO;
+import conexionDB.GestorEstacionPostgreSQLDAO;
+import conexionDB.GestorLineaPostgreSQLDAO;
+import conexionDB.GestorMantenimientoPostgreSQLDAO;
+import conexionDB.PostgreSQL;
 import elementosSwing.grafo2D.Estacion2D;
 import elementosSwing.grafo2D.Flecha;
 
+@SuppressWarnings("unused")
 public class AppPruebaBDD {
 
 	public static void main(String[] args) {

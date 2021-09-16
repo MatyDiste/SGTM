@@ -1,4 +1,4 @@
-package ConexionDB;
+package conexionDB;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -75,7 +75,6 @@ public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 	public Integer recuperarEntidades() {
 		
 		Integer cantidadConexionesRecuperadas = 0;
-		GestorEstacionPostgreSQLDAO gestorEstacion = new GestorEstacionPostgreSQLDAO();
 		GestorLineaPostgreSQLDAO gestorLinea = new GestorLineaPostgreSQLDAO();
 		
 		try {
@@ -90,8 +89,8 @@ public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 			
 			while(rs.next()) {
 				
-				Estacion estacion1 = (Estacion) gestorEstacion.traerEntidad(rs.getShort(7));
-				Estacion estacion2 = (Estacion) gestorEstacion.traerEntidad(rs.getShort(8));
+				Estacion estacion1 = Estacion.buscarID(rs.getShort(7));
+				Estacion estacion2 = Estacion.buscarID(rs.getShort(8));
 				Linea linea = (Linea) gestorLinea.traerEntidad(rs.getShort(9));
 				
 				new Conexion(rs.getShort(1), 
@@ -275,7 +274,6 @@ public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 	public Object recuperarEntidad(short id) {
 		
 		Conexion conexionDB = null;
-		GestorEstacionPostgreSQLDAO gestorEstacion = new GestorEstacionPostgreSQLDAO();
 		GestorLineaPostgreSQLDAO gestorLinea = new GestorLineaPostgreSQLDAO();
 		
 		try {
@@ -290,8 +288,8 @@ public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 			
 			while(rs.next()) {
 				
-				Estacion estacion1 = (Estacion) gestorEstacion.traerEntidad(rs.getShort(7));
-				Estacion estacion2 = (Estacion) gestorEstacion.traerEntidad(rs.getShort(8));
+				Estacion estacion1 = Estacion.buscarID(rs.getShort(7));
+				Estacion estacion2 = Estacion.buscarID(rs.getShort(8));
 				Linea linea = (Linea) gestorLinea.traerEntidad(rs.getShort(9));
 				
 				conexionDB = new Conexion(rs.getShort(1), 

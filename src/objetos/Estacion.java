@@ -8,7 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import ConexionDB.GestorEstacionPostgreSQLDAO;
+
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,6 +16,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
+
+import conexionDB.GestorEstacionPostgreSQLDAO;
 import elementosSwing.grafo2D.Estacion2D;
 import elementosSwing.grafo2D.PanelGrafo;
 
@@ -63,6 +65,7 @@ public class Estacion implements Comparable<Estacion>{
 	}
 	
 	public static Estacion buscarID(short id) throws NoSuchElementException{
+		System.out.println("Buscando id "+id);
 		return listEstaciones.stream().filter(e -> e.id==id).findAny().get();
 	}
 	public static Estacion buscarNombre(String name) throws NoSuchElementException{
@@ -121,12 +124,12 @@ public class Estacion implements Comparable<Estacion>{
 			gestorEstacion.insertarEntidad(this);
 		}
 		else throw new NombreOcupadoException(nombre);
+		System.out.println("Se creó estación "+id+" (constructor programa)");
 	}
 	
 	public Estacion(short id, String nombre, LocalTime horarioApertura, LocalTime horarioCierre, 
 			String estado, LocalDate fechaCreacion, Double pagerank, Double pesoTotal, 
 			Double posicionX, Double posicionY) {
-		
 		this.id = id;
 		this.nombre = nombre;
 		this.horarioApertura = horarioApertura;
@@ -140,9 +143,9 @@ public class Estacion implements Comparable<Estacion>{
 		this.fechaCreacion = fechaCreacion;
 		this.pagerank = pagerank;
 		this.pesoTotal = pesoTotal;
-		this.e2d = new Estacion2D(this);
 		this.posx = posicionX;
 		this.posy = posicionY;
+		this.e2d = new Estacion2D(this);
 	}
 	
 	public Estacion(short id, String nombre, LocalTime horarioApertura, LocalTime horarioCierre, 
@@ -163,9 +166,9 @@ public class Estacion implements Comparable<Estacion>{
 		this.fechaCreacion = fechaCreacion;
 		this.pagerank = pagerank;
 		this.pesoTotal = pesoTotal;
-		this.e2d = new Estacion2D(this);
 		this.posx = posicionX;
 		this.posy = posicionY;
+		this.e2d = new Estacion2D(this);
 		this.listConexiones = listConexiones;
 		this.listaMantenimientos = listaMantenimientos;
 		boolean repetido = false;
@@ -177,6 +180,7 @@ public class Estacion implements Comparable<Estacion>{
 		if(!repetido) {
 			listEstaciones.add(this);
 		}
+		System.out.println("Se creó estación "+id);
 	}
 	
 	/*--------------------------------------------------*/
@@ -235,6 +239,7 @@ public class Estacion implements Comparable<Estacion>{
 	}
 
 	public Integer getCantidadDeConexionesEnDB() {
+		
 		return cantidadDeConexionesEnDB;
 	}
 
@@ -359,6 +364,10 @@ public class Estacion implements Comparable<Estacion>{
 	public void setPosy(Double posy) {
 		this.posy = posy;
 	}
+	
+	public void addConexionNODB(Conexion c) {
+		listConexiones.add(c);
+	}
 
 	public void addConexion(Conexion c) {
 		listConexiones.add(c);
@@ -427,7 +436,7 @@ public class Estacion implements Comparable<Estacion>{
 	}
 	public void eliminar() { 
 		@SuppressWarnings("unchecked")
-		HashSet<Conexion> aux= (HashSet<Conexion>)listConexiones.clone();
+		ArrayList<Conexion> aux= (ArrayList<Conexion>)listConexiones.clone();
 		aux.stream()
 					  .forEach(c ->{
 						  c.getLinea().quitarConexion(c);

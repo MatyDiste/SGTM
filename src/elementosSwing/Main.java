@@ -5,7 +5,7 @@ import java.time.LocalTime;
 
 import javax.swing.JFrame;
 
-import ConexionDB.PostgreSQL;
+import conexionDB.PostgreSQL;
 
 import com.formdev.flatlaf.extras.FlatInspector;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatNightOwlContrastIJTheme;
@@ -28,6 +28,7 @@ public class Main {
 		PostgreSQL.setearContadoresId();
 		Estacion.cargarDB();
 		Linea.cargarDB();
+		Conexion.cargarDB();
 		
 		@SuppressWarnings("unused")
 		JFrame vnt=new Home("Sistema de gestion de Transporte Multimodal");

@@ -1,4 +1,4 @@
-package ConexionDB;
+package conexionDB;
 
 import java.sql.Connection;
 import java.sql.Date;
@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.util.ArrayList;
+
+import org.postgresql.util.PSQLException;
 
 import objetos.Conexion;
 import objetos.Estacion;
@@ -106,8 +108,6 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 
 		Integer cantidadEstacionesRecuperadas = 0;
 		GestorMantenimientoPostgreSQLDAO gestorMantenimiento = new GestorMantenimientoPostgreSQLDAO();
-		GestorConexionPostgreSQLDAO gestorConexion = new GestorConexionPostgreSQLDAO();
-		
 		try {
 			
 			Class.forName("org.postgresql.Driver");
@@ -123,7 +123,7 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 				ResultSet rsAux = null;
 				ArrayList<Conexion> listaDeConexionesAux = new ArrayList<Conexion>();
 				ArrayList<Mantenimiento> listaDeMantenimientosAux = new ArrayList<Mantenimiento>();
-				
+				/*
 				pstm = conex.prepareStatement("SELECT * FROM lista_conexiones_estaciones "
 						+ "WHERE id_estacion = " + rs.getInt(1));
 				
@@ -132,7 +132,7 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 				while(rsAux.next()) {
 					Conexion cn = (Conexion) gestorConexion.recuperarEntidad(rsAux.getShort(2));
 					listaDeConexionesAux.add(cn);
-				}
+				}*/
 				
 				pstm = conex.prepareStatement("SELECT * FROM lista_mantenimientos "
 						+ "WHERE id_estacion = " + rs.getInt(1));
@@ -199,7 +199,9 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 					pstm = conex.prepareStatement("INSERT INTO lista_conexiones_estaciones VALUES (?,?)");
 					pstm.setShort(1, estacion.getId());
 					pstm.setShort(2, estacion.getListConexiones().get(i).getId());
-					pstm.executeUpdate();
+					try {
+						pstm.executeUpdate();
+					} catch(PSQLException e) {System.out.println("Probablemente ya esté cargado este dato. Error PSQL");}
 				}
 				estacion.setCantidadDeConexionesEnDB(estacion.getListConexiones().size());
 			}
@@ -209,7 +211,9 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 					pstm = conex.prepareStatement("INSERT INTO lista_mantenimientos VALUES (?,?)");
 					pstm.setShort(1, estacion.getId());
 					pstm.setShort(2, estacion.getListaMantenimientos().get(i).getId());
-					pstm.executeUpdate();
+					try {
+						pstm.executeUpdate();
+					} catch(PSQLException e) {System.out.println("Probablemente ya esté cargado este dato. Error PSQL");}
 				}
 				estacion.setCantidadDeMantenimientosEnDB(estacion.getListaMantenimientos().size());
 			}
@@ -354,8 +358,6 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 		
 		Estacion estacionDB = null;
 		GestorMantenimientoPostgreSQLDAO gestorMantenimiento = new GestorMantenimientoPostgreSQLDAO();
-		GestorConexionPostgreSQLDAO gestorConexion = new GestorConexionPostgreSQLDAO();
-		
 		try {
 			
 			Class.forName("org.postgresql.Driver");
@@ -371,7 +373,7 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 				ResultSet rsAux = null;
 				ArrayList<Conexion> listaDeConexionesAux = new ArrayList<Conexion>();
 				ArrayList<Mantenimiento> listaDeMantenimientosAux = new ArrayList<Mantenimiento>();
-				
+				/*
 				pstm = conex.prepareStatement("SELECT * FROM lista_conexiones_estaciones "
 												+ "WHERE id_estacion = " + rs.getInt(1));
 				rsAux = pstm.executeQuery();
@@ -379,7 +381,7 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 					Conexion cn = (Conexion) gestorConexion.recuperarEntidad(rsAux.getShort(2));
 					listaDeConexionesAux.add(cn);
 				}
-				
+				*/
 				pstm = conex.prepareStatement("SELECT * FROM lista_mantenimientos "
 												+ "WHERE id_estacion = " + rs.getInt(1));
 				rsAux = pstm.executeQuery();
