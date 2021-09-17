@@ -86,7 +86,7 @@ public class Flecha {
 		punta=new Path2D.Double();
 		Double mult= getEstado()? 2d : 1d ;
 		
-		if(selected) System.out.println("Punta gruesa"); else System.out.println();
+		//if(selected) System.out.println("Punta gruesa"); else System.out.println();
 		punta.moveTo(0, 0);
 		punta.lineTo(-14*mult, -7*mult);
 		punta.lineTo(-14*mult, 7*mult);

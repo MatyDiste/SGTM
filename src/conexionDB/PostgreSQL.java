@@ -23,7 +23,6 @@ public abstract class PostgreSQL {
 	public abstract Integer recuperarEntidades(); //Cantidad de tuplas recuperadas de la DB
 	public abstract boolean actualizarEntidad(Object o); //TRUE: Éxito -- FALSE:Fracaso
 	public abstract boolean eliminarEntidad(short id); //TRUE: Éxito -- FALSE:Fracaso
-	public abstract Object recuperarEntidad(short id); //Objeto casteable a Conexion, 
 											//Estacion, Linea o Mantenimiento según el caso.
 	
 	public static void setearContadoresId() {
@@ -112,6 +111,14 @@ public abstract class PostgreSQL {
 			catch (SQLException e) { e.printStackTrace(); }
 		}
 		
+	}
+	
+	public static void cargarTodo() {
+		setearContadoresId();
+		new GestorMantenimientoPostgreSQLDAO().recuperarEntidades();
+		new GestorEstacionPostgreSQLDAO().recuperarEntidades();
+		new GestorLineaPostgreSQLDAO().recuperarEntidades();
+		new GestorConexionPostgreSQLDAO().recuperarEntidades();
 	}
 	
 }

@@ -1,9 +1,9 @@
 package objetos;
 
 import java.awt.Color;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.NoSuchElementException;
 
 import conexionDB.GestorLineaPostgreSQLDAO;
 import elementosSwing.grafo2D.PanelGrafo;
@@ -20,6 +20,11 @@ public class Linea implements Comparable<Linea>{
 	public static final Short SUBTERRANEO=2;
 	public static HashSet<Linea> listLineas=new HashSet<Linea>();
 	private static short contadorId;
+	
+	public static Linea buscarID(short id) throws NoSuchElementException{
+		System.out.println("Buscando id "+id);
+		return listLineas.stream().filter(l -> l.id==id).findAny().get();
+	}
 	
 	public static void cargarDB() {
 		gestorLinea.recuperarEntidades();
@@ -45,8 +50,8 @@ public class Linea implements Comparable<Linea>{
 		return !listLineas.stream().anyMatch(l -> l.getNombre().equals(s));
 	}
 	
-	private ArrayList<Estacion> listEstaciones=new ArrayList<Estacion>();
-	private ArrayList<Conexion> listConexiones=new ArrayList<Conexion>();
+	
+	private LinkedList<Conexion> listConexiones=new LinkedList<Conexion>();
 	private short id;
 	private String nombre;
 	private Color color;
@@ -57,6 +62,7 @@ public class Linea implements Comparable<Linea>{
 	
 	public Linea(String nombre, Color color, Boolean estado, Short tipo) 
 			throws NombreOcupadoException {
+		//Programa
 		if (nombreDisponible(nombre)) {
 			if (tipo>-1 && tipo<3) {
 				this.id = contadorId;
@@ -74,7 +80,7 @@ public class Linea implements Comparable<Linea>{
 	}
 	
 	public Linea(short id, String nombre, Color color, String estado, short tipo) {
-		
+		//DB
 		this.id = id;
 		this.nombre = nombre;
 		this.color = color;
@@ -85,23 +91,6 @@ public class Linea implements Comparable<Linea>{
 			this.estado = EstadoLinea.INACTIVA;
 		}
 		this.tipo=tipo;
-	}
-	
-	public Linea(short id, String nombre, Color color, String estado, short tipo, 
-			ArrayList<Estacion> listEstaciones, ArrayList<Conexion> listConexiones) {
-		
-		this.id = id;
-		this.nombre = nombre;
-		this.color = color;
-		if(estado.equals("ACTIVA")) {
-			this.estado = EstadoLinea.ACTIVA;
-		}
-		else {
-			this.estado = EstadoLinea.INACTIVA;
-		}
-		this.tipo=tipo;
-		this.listEstaciones = listEstaciones;
-		this.listConexiones = listConexiones;
 		boolean repetido = false;
 		for(Linea l: Linea.listLineas) {
 			if(this.equals(l)) {
@@ -121,30 +110,6 @@ public class Linea implements Comparable<Linea>{
 		gestorLinea.actualizarEntidad(this);
 	}
 	
-	public void addEstacion(Estacion e) {
-		boolean repetido = false;
-		for(Estacion est: listEstaciones) {
-			if(e.equals(est)) {
-				repetido=true;
-			}
-		}
-		if(!repetido) {
-			listEstaciones.add(e);
-			gestorLinea.actualizarEntidad(this);
-		}
-	}
-	public void addEstacionNODB(Estacion e) {
-		boolean repetido = false;
-		for(Estacion est: listEstaciones) {
-			if(e.equals(est)) {
-				repetido=true;
-			}
-		}
-		if(!repetido) {
-			listEstaciones.add(e);
-		}
-	}
-	
 	//METODOS GETTERS AND SETTERS
 
 	public static Linea getLineaPorNombre(String n) {
@@ -162,16 +127,10 @@ public class Linea implements Comparable<Linea>{
 	public static void setListaLineas(HashSet<Linea> listaLineas) {
 		Linea.listLineas = listaLineas;
 	}
-	public List<Estacion> getListEstaciones() {
-		return listEstaciones;
-	}
-	public void setListEstaciones(ArrayList<Estacion> listEstaciones) {
-		this.listEstaciones = listEstaciones;
-	}
-	public ArrayList<Conexion> getListConexiones() {
+	public LinkedList<Conexion> getListConexiones() {
 		return listConexiones;
 	}
-	public void setListConexiones(ArrayList<Conexion> listConexiones) {
+	public void setListConexiones(LinkedList<Conexion> listConexiones) {
 		this.listConexiones = listConexiones;
 	}
 	public String getNombre() {
@@ -225,21 +184,15 @@ public class Linea implements Comparable<Linea>{
 	}
 	public void quitarRecorrido() {
 		@SuppressWarnings("unchecked")
-		HashSet<Conexion> aux= (HashSet<Conexion>)listConexiones.clone();
+		LinkedList<Conexion> aux= (LinkedList<Conexion>)listConexiones.clone();
 		aux.forEach(c -> c.eliminar());
 		listConexiones.clear();
 		aux.clear();
 		aux=null;
-		listEstaciones.clear();
 		gestorLinea.actualizarEntidad(this);
 	}
 	public void quitarConexion(Conexion c) {
 		listConexiones.remove(c);
-		this.inactivar();
-		gestorLinea.actualizarEntidad(this);
-	}
-	public void quitarEstacion(Estacion e) {
-		listEstaciones.remove(e);
 		this.inactivar();
 		gestorLinea.actualizarEntidad(this);
 	}
@@ -259,7 +212,6 @@ public class Linea implements Comparable<Linea>{
 	public void eliminar() {
 		listConexiones.forEach(c -> c.eliminar());
 		listConexiones.clear();
-		listEstaciones.clear();
 		estado=EstadoLinea.INACTIVA;
 		Linea.borrarLinea(this);
 	}

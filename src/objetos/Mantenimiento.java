@@ -2,6 +2,7 @@ package objetos;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 
 import conexionDB.GestorMantenimientoPostgreSQLDAO;
 
@@ -18,6 +19,10 @@ public class Mantenimiento {
 	public static void borrarMantenimiento(Mantenimiento m) {
 		listMantenimientos.remove(m);
 	}
+	public static Mantenimiento buscarID(short id) throws NoSuchElementException{
+		System.out.println("Buscando id "+id);
+		return listMantenimientos.stream().filter(e -> e.id==id).findAny().get();
+	}
 	
 	public static void cargarDB() {
 		gestorMantenimiento.recuperarEntidades();
@@ -26,21 +31,23 @@ public class Mantenimiento {
 		gestorMantenimiento.actualizarEntidad(m);
 	}
 	
-	public Mantenimiento(String descripcion) {
+	public Mantenimiento(String descripcion, Estacion e) {
 		this.id=contadorId;
 		this.fechaInicio=LocalDate.now();
 		this.descripcion= "Inicio mantenimiento: " + descripcion;
 		incrementarContador();
 		listMantenimientos.add(this);
 		gestorMantenimiento.insertarEntidad(this);
+		gestorMantenimiento.insertarEstacionMantenimiento(this, e);
 	}
 
-	public Mantenimiento() {
+	public Mantenimiento(Estacion e) {
 		this.id=contadorId;
 		this.fechaInicio=LocalDate.now();
 		incrementarContador();
 		listMantenimientos.add(this);
 		gestorMantenimiento.insertarEntidad(this);
+		gestorMantenimiento.insertarEstacionMantenimiento(this, e);
 	}
 	
 	public Mantenimiento(short id, LocalDate fechaInicio, LocalDate fechaFin, String descripcion) {
@@ -48,24 +55,18 @@ public class Mantenimiento {
 		this.fechaInicio=fechaInicio;
 		this.fechaFin=fechaFin;
 		this.descripcion=descripcion;
-		boolean repetido = false;
-		for(Mantenimiento m: Mantenimiento.listMantenimientos) {
-			if(this.equals(m)) {
-				repetido=true;
-			}
-		}
-		if(!repetido) {
-			listMantenimientos.add(this);
-		}
+		listMantenimientos.add(this);
 	}
 	
 	public void finMantenimiento (String descripcion) {
 		this.fechaFin=LocalDate.now();
 		this.descripcion = this.descripcion + " Fin mantenimiento: " + descripcion;
+		gestorMantenimiento.actualizarEntidad(this);
 	}
 
 	public void finMantenimiento() {
 		this.fechaFin=LocalDate.now();
+		gestorMantenimiento.actualizarEntidad(this);
 	}
 	
 	private void incrementarContador() {
@@ -110,14 +111,8 @@ public class Mantenimiento {
 		this.descripcion = descripcion;
 		gestorMantenimiento.actualizarEntidad(this);
 	}
-	@Override
-	public boolean equals(Object o) {
-		Mantenimiento m = (Mantenimiento) o;
-		if(id == m.id) {
-			return true;
-		}
-		else {
-			return false;
-		}
+	
+	public boolean equals(Mantenimiento m) {
+		return id == m.id;	
 	}
 }

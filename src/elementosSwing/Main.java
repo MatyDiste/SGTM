@@ -25,10 +25,7 @@ public class Main {
 		FlatNightOwlContrastIJTheme.install();
 		FlatInspector.install( "ctrl shift alt T" ); //Con CTRL+SHIFT+ALT+T se activa el modo inspector, ESC para salir
 		
-		PostgreSQL.setearContadoresId();
-		Estacion.cargarDB();
-		Linea.cargarDB();
-		Conexion.cargarDB();
+		PostgreSQL.cargarTodo();
 		
 		@SuppressWarnings("unused")
 		JFrame vnt=new Home("Sistema de gestion de Transporte Multimodal");
@@ -83,11 +80,9 @@ public class Main {
 	public static void debugGenConexiones(Linea l) {
 		Integer cantidad=(int)(5);
 		Estacion est=Estacion.listEstaciones.stream().toList().get((int)(Math.random()*Estacion.listEstaciones.size()));
-		l.getListEstaciones().add(est);
 		for(int i=0; i<cantidad; i++) {
 			Estacion est2=Estacion.listEstaciones.stream().toList().get((int)(Math.random()*Estacion.listEstaciones.size()));
 			l.getListConexiones().add(new Conexion(est, est2, l));
-			l.getListEstaciones().add(est2);
 			est=est2;
 
 		}
