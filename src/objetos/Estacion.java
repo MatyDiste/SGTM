@@ -2,7 +2,6 @@ package objetos;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -98,10 +97,10 @@ public class Estacion implements Comparable<Estacion>{
 	private LocalTime horarioCierre;
 	private EstadoEstacion estado;
 	private LocalDate fechaCreacion=LocalDate.now();
-	private ArrayList<Conexion> listConexiones=new ArrayList<Conexion>();
+	private LinkedList<Conexion> listConexiones=new LinkedList<Conexion>();
 	private Double pagerank = 1.0;
 	private Double pesoTotal = 0.0;
-	private ArrayList<Mantenimiento> listaMantenimientos=new ArrayList<Mantenimiento>();
+	private LinkedList<Mantenimiento> listaMantenimientos=new LinkedList<Mantenimiento>();
 	private Estacion2D e2d;
 	public Double posx=Math.random()*600+50;
 	public Double posy=Math.random()*450+50;
@@ -150,8 +149,7 @@ public class Estacion implements Comparable<Estacion>{
 	
 	public Estacion(short id, String nombre, LocalTime horarioApertura, LocalTime horarioCierre, 
 			String estado, LocalDate fechaCreacion, Double pagerank, Double pesoTotal, 
-			Double posicionX, Double posicionY, ArrayList<Conexion> listConexiones,
-			ArrayList<Mantenimiento> listaMantenimientos) {
+			Double posicionX, Double posicionY,	LinkedList<Mantenimiento> listaMantenimientos) {
 		
 		this.id = id;
 		this.nombre = nombre;
@@ -169,7 +167,6 @@ public class Estacion implements Comparable<Estacion>{
 		this.posx = posicionX;
 		this.posy = posicionY;
 		this.e2d = new Estacion2D(this);
-		this.listConexiones = listConexiones;
 		this.listaMantenimientos = listaMantenimientos;
 		boolean repetido = false;
 		for(Estacion e: Estacion.listEstaciones) {
@@ -250,14 +247,9 @@ public class Estacion implements Comparable<Estacion>{
 	public String getEstado() {
 		return estado.name();
 	}
-	public void setMantenimiento(String descripcion) {
-		this.estado = EstadoEstacion.EN_MANTENIMIENTO;
-		listaMantenimientos.add(new Mantenimiento(descripcion));
-	}
 	public void setMantenimiento() {
 		if (this.estado==EstadoEstacion.OPERATIVA) {
 			
-			String comentarioMant="";
 			JFrame dialog=new JFrame();
 			JPanel rootp=new JPanel();
 			dialog.setLocationRelativeTo(null);
@@ -271,32 +263,31 @@ public class Estacion implements Comparable<Estacion>{
 			rootp.add(jt);
 			JButton btnAceptar=new JButton("Aceptar");
 			btnAceptar.addActionListener(e -> {
+				String comentarioMant=((JTextArea)(rootp.getComponent(1))).getText();
+				listaMantenimientos.add(new Mantenimiento(comentarioMant, this));
 				dialog.dispose();
 			});
-			comentarioMant=((JTextArea)(rootp.getComponent(1))).getText();
 			rootp.add(btnAceptar);
 			dialog.setContentPane(rootp);
 			dialog.pack();
 			dialog.setVisible(true);
-			listaMantenimientos.add(new Mantenimiento(comentarioMant));
 			this.estado = EstadoEstacion.EN_MANTENIMIENTO;
 			PanelGrafo.repintarGrafo();
 		}
 	}
 	public void setOperativa(String descripcion) {
-		Mantenimiento ultimoMantenimiento = listaMantenimientos.get(listaMantenimientos.size()-1);
+		Mantenimiento ultimoMantenimiento = listaMantenimientos.getLast();
 		ultimoMantenimiento.finMantenimiento(descripcion);
 		this.estado = EstadoEstacion.OPERATIVA;
 	}
 	public void setOperativa() {
 		if(this.estado==EstadoEstacion.EN_MANTENIMIENTO) {
-			Mantenimiento ultimoMantenimiento = listaMantenimientos.get(listaMantenimientos.size()-1);
-			String comentarioMant="";
+			Mantenimiento ultimoMantenimiento = listaMantenimientos.getLast();
 			JFrame dialog=new JFrame();
 			JPanel rootp=new JPanel();
 			dialog.setLocationRelativeTo(null);
 			dialog.setAlwaysOnTop(true);
-			dialog.setTitle("Comentario inicio mantenimiento");
+			dialog.setTitle("Comentario fin mantenimiento");
 			dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			rootp.setLayout(new BoxLayout(rootp, BoxLayout.Y_AXIS));
 			rootp.add(new JLabel("Ingrese comentario de finalización de mantenimiento"));
@@ -305,14 +296,15 @@ public class Estacion implements Comparable<Estacion>{
 			rootp.add(jt);
 			JButton btnAceptar=new JButton("Aceptar");
 			btnAceptar.addActionListener(e -> {
+				String comentarioMant="";
+				comentarioMant=((JTextArea)(rootp.getComponent(1))).getText();
+				ultimoMantenimiento.finMantenimiento(comentarioMant);
 				dialog.dispose();
 			});
-			comentarioMant=((JTextArea)(rootp.getComponent(1))).getText();
 			rootp.add(btnAceptar);
 			dialog.setContentPane(rootp);
 			dialog.pack();
 			dialog.setVisible(true);
-			ultimoMantenimiento.finMantenimiento(comentarioMant);
 			this.estado = EstadoEstacion.OPERATIVA;
 			PanelGrafo.repintarGrafo();
 		}
@@ -323,18 +315,18 @@ public class Estacion implements Comparable<Estacion>{
 		else
 			return listaMantenimientos.get(listaMantenimientos.size()-1).getFechaInicio();
 	}
-	public ArrayList<Conexion> getListConexiones() {
+	public LinkedList<Conexion> getListConexiones() {
 		return listConexiones;
 	}
-	public void setListConexiones (ArrayList<Conexion> listaConexiones) {
+	public void setListConexiones (LinkedList<Conexion> listaConexiones) {
 		this.listConexiones = listaConexiones;
 	}
 
-	public ArrayList<Mantenimiento> getListaMantenimientos() {
+	public LinkedList<Mantenimiento> getListaMantenimientos() {
 		return listaMantenimientos;
 	}
 
-	public void setListaMantenimientos(ArrayList<Mantenimiento> listaMantenimientos) {
+	public void setListaMantenimientos(LinkedList<Mantenimiento> listaMantenimientos) {
 		this.listaMantenimientos = listaMantenimientos;
 	}
 	public Double getPagerank() {
@@ -436,7 +428,7 @@ public class Estacion implements Comparable<Estacion>{
 	}
 	public void eliminar() { 
 		@SuppressWarnings("unchecked")
-		ArrayList<Conexion> aux= (ArrayList<Conexion>)listConexiones.clone();
+		LinkedList<Conexion> aux= (LinkedList<Conexion>)listConexiones.clone();
 		aux.stream()
 					  .forEach(c ->{
 						  c.getLinea().quitarConexion(c);

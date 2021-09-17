@@ -75,7 +75,6 @@ public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 	public Integer recuperarEntidades() {
 		
 		Integer cantidadConexionesRecuperadas = 0;
-		GestorLineaPostgreSQLDAO gestorLinea = new GestorLineaPostgreSQLDAO();
 		
 		try {
 			
@@ -91,7 +90,7 @@ public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 				
 				Estacion estacion1 = Estacion.buscarID(rs.getShort(7));
 				Estacion estacion2 = Estacion.buscarID(rs.getShort(8));
-				Linea linea = (Linea) gestorLinea.traerEntidad(rs.getShort(9));
+				Linea linea = Linea.buscarID(rs.getShort(9));
 				
 				new Conexion(rs.getShort(1), 
 						rs.getDouble(2),
@@ -203,36 +202,6 @@ public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 			
 			conex = DriverManager.getConnection(url, "postgres", clave);
 			
-			//eliminar de la lista de estaciones
-			
-			pstm = conex.prepareStatement("DELETE FROM lista_conexiones_estaciones"
-					+ " WHERE id_conexion = " + id);
-			
-			pstm.executeUpdate();
-			
-			//la linea afectada queda en mantenimiento
-			
-			pstm = conex.prepareStatement("SELECT id_linea FROM conexion"
-					+ " WHERE id_conexion = " + id);
-			
-			rs = pstm.executeQuery();
-			
-			while(rs.next()) {
-				
-				pstm = conex.prepareStatement("UPDATE linea SET estado = 'INACTIVA'"
-				+ " WHERE id_linea = " + rs.getShort(1));
-				
-				pstm.executeUpdate();
-				
-			}
-			
-			//eliminar de la lista de lineas
-			
-			pstm = conex.prepareStatement("DELETE FROM lista_conexiones_lineas"
-					+ " WHERE id_conexion = " + id);
-			
-			pstm.executeUpdate();
-			
 			//eliminar conexion
 			
 			pstm = conex.prepareStatement("DELETE FROM conexion"
@@ -269,65 +238,4 @@ public class GestorConexionPostgreSQLDAO extends PostgreSQL{
 			return false;
 		}
 	}
-
-	@Override
-	public Object recuperarEntidad(short id) {
-		
-		Conexion conexionDB = null;
-		GestorLineaPostgreSQLDAO gestorLinea = new GestorLineaPostgreSQLDAO();
-		
-		try {
-			
-			Class.forName("org.postgresql.Driver");
-			
-			conex = DriverManager.getConnection(url, "postgres", clave);
-			
-			pstm = conex.prepareStatement("SELECT * FROM conexion WHERE id_conexion = " + id);
-			
-			rs = pstm.executeQuery();
-			
-			while(rs.next()) {
-				
-				Estacion estacion1 = Estacion.buscarID(rs.getShort(7));
-				Estacion estacion2 = Estacion.buscarID(rs.getShort(8));
-				Linea linea = (Linea) gestorLinea.traerEntidad(rs.getShort(9));
-				
-				conexionDB = new Conexion(rs.getShort(1), 
-						rs.getDouble(2),
-						rs.getDouble(3),
-						rs.getInt(4),
-						rs.getString(5),
-						rs.getDouble(6),
-						estacion1,
-						estacion2,
-						linea);
-				
-			}
-			
-		}
-		
-		catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("Error driver");
-		}
-		
-		catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("Error SQL");
-		}
-		
-		finally {
-			if(rs!=null) try { rs.close(); } 
-			catch (SQLException e) { e.printStackTrace(); }
-			if(pstm!=null) try { pstm.close(); } 
-			catch (SQLException e) {e.printStackTrace(); }
-			if(conex!=null) try { conex.close(); } 
-			catch (SQLException e) { e.printStackTrace(); }
-		}
-		
-		return conexionDB;
-	}
-
 }

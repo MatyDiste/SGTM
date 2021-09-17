@@ -1,7 +1,6 @@
 package objetos;
 
 import java.awt.Color;
-import java.util.HashSet;
 
 import conexionDB.GestorConexionPostgreSQLDAO;
 import elementosSwing.grafo2D.Flecha;
@@ -13,7 +12,6 @@ enum EstadoConexion {
 public class Conexion{
 	
 	private static GestorConexionPostgreSQLDAO gestorConexion = new GestorConexionPostgreSQLDAO();
-	public static HashSet<Conexion> listConexiones=new HashSet<Conexion>(); 
 	private static short contadorId;
 	private short id;
 	private Estacion e1, e2;
@@ -49,7 +47,6 @@ public class Conexion{
 		duracion=Math.random()*50;
 		cantMaxPasajeros=(int)(Math.random()*200);
 		costo=Math.random()*100;
-		listConexiones.add(this);
 		gestorConexion.insertarEntidad(this);
 		//System.out.println("Creada conexion entre "+a.getNombre()+" --> "+b.getNombre());
 		//END Constructor DEBUG!!!!
@@ -67,13 +64,10 @@ public class Conexion{
 		duracion=durMinutos;
 		cantMaxPasajeros=cantPasajeros;
 		costo=precio;
-		listConexiones.add(this);
 		gestorConexion.insertarEntidad(this);
 		e1.addConexion(this);
 		e2.addConexion(this);
 		linea.addConexion(this);
-		linea.addEstacion(e1);
-		linea.addEstacion(e2);
 		flecha =new Flecha(a, b, this);
 		//System.out.println("Creada conexion entre "+a.getNombre()+" --> "+b.getNombre());
 	}
@@ -96,20 +90,9 @@ public class Conexion{
 		this.e1 = estacion1;
 		this.e2 = estacion2;
 		this.linea = linea;
-		boolean repetido = false;
-		for(Conexion c: Conexion.listConexiones) {
-			if(this.equals(c) && !repetido) {
-				repetido=true;
-			}
-		}
-		if(!repetido) {
-			listConexiones.add(this);
-		}
 		e1.addConexionNODB(this);
 		e2.addConexionNODB(this);
 		linea.addConexionNODB(this);
-		linea.addEstacionNODB(e1);
-		linea.addEstacionNODB(e2);
 		this.flecha = new Flecha(estacion1, estacion2, this);
 		System.out.println("Creada conexion entre "+e1.getNombre()+" --> "+e2.getNombre());
 	}
@@ -127,7 +110,6 @@ public class Conexion{
 		e1=null;
 		e2=null;
 		this.deshabilitar();
-		listConexiones.remove(this);
 		Estacion.generarPageRank(200);
 	}
 	

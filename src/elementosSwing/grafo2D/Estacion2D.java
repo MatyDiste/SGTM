@@ -6,9 +6,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
-import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 
 import objetos.Estacion;
@@ -35,8 +33,6 @@ public class Estacion2D {
 			Thread.sleep(10000);
 			Estacion.actualizarDB(e);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	});
 	private Instant ultimoMov;
@@ -97,7 +93,6 @@ public class Estacion2D {
 	public void addSalida(Flecha f) {
 		System.out.println("Añadida flecha a estacion (salida)");
 		if(listFlechasSalida.add(f)) System.out.println("Exitoso");
-		if(listFlechasSalida.isEmpty()) System.out.println("NO TIENE NADAAAAA!!!!");
 	}
 	
 	private void dibujarFlechas() {
@@ -106,7 +101,6 @@ public class Estacion2D {
 				          .forEach(f -> f.dibujar(g2d));
 		listFlechasSalida.stream()
 						 .forEach(f -> f.dibujar(g2d));
-		if(listFlechasLlegada.isEmpty()) System.out.println("NO HAY FLECHAS! en " +this.nombre);
 	}
 	
 	public void select() {
@@ -123,7 +117,7 @@ public class Estacion2D {
 		if(ultimoMov==null) {
 			ultimoMov=Instant.now();
 			actualizarUbicacion.start();
-		} else if(Instant.now().isBefore(ultimoMov.plus(Duration.of(5, ChronoUnit.SECONDS)))) {
+		} else {
 			actualizarUbicacion.interrupt();
 			actualizarUbicacion=new Thread(()->{
 				try {
@@ -133,8 +127,6 @@ public class Estacion2D {
 					
 				}
 			});
-			actualizarUbicacion.start();
-		} else {
 			actualizarUbicacion.start();
 		}
 		

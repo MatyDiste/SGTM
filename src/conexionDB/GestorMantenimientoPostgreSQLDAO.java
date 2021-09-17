@@ -6,6 +6,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import objetos.Estacion;
 import objetos.Mantenimiento;
 
 public class GestorMantenimientoPostgreSQLDAO extends PostgreSQL{
@@ -15,6 +17,42 @@ public class GestorMantenimientoPostgreSQLDAO extends PostgreSQL{
 	private Connection conex = null;
 	private PreparedStatement pstm = null;
 	private ResultSet rs = null;
+	
+	public void insertarEstacionMantenimiento(Mantenimiento m, Estacion est) {
+		try {
+			Class.forName("org.postgresql.Driver");
+			
+			conex = DriverManager.getConnection(url, "postgres", clave);
+			
+			pstm = conex.prepareStatement("INSERT INTO lista_mantenimientos VALUES (?,?)");
+			
+			pstm.setShort(2, m.getId());
+			pstm.setShort(1, est.getId());
+			pstm.executeUpdate();
+		}
+		
+		catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Error driver");
+		}
+		
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Error SQL");
+		}
+		
+		finally {
+			if(rs!=null) try { rs.close(); } 
+			catch (SQLException e) { e.printStackTrace(); }
+			if(pstm!=null) try { pstm.close(); } 
+			catch (SQLException e) {e.printStackTrace(); }
+			if(conex!=null) try { conex.close(); } 
+			catch (SQLException e) { e.printStackTrace(); }
+		}
+		
+	}
 	
 	public short insertarEntidad(Object o) {
 		
@@ -227,62 +265,6 @@ public class GestorMantenimientoPostgreSQLDAO extends PostgreSQL{
 		else {
 			return false;
 		}
-	}
-
-	@Override
-	public Object recuperarEntidad(short id) {
-		
-		Mantenimiento mantenimientoDB = null;
-		
-		try {
-			
-			Class.forName("org.postgresql.Driver");
-			
-			conex = DriverManager.getConnection(url, "postgres", clave);
-			
-			pstm = conex.prepareStatement("SELECT * FROM mantenimiento WHERE id_mantenimiento = " + id);
-			
-			rs = pstm.executeQuery();
-			
-			while(rs.next()) {
-				
-				if(rs.getDate(3) == null) {
-					mantenimientoDB = new Mantenimiento(rs.getShort(1),
-							rs.getDate(2).toLocalDate(),
-							null,
-							rs.getString(4));
-				}
-				else {
-					mantenimientoDB = new Mantenimiento(rs.getShort(1),
-							rs.getDate(2).toLocalDate(),
-							rs.getDate(3).toLocalDate(),
-							rs.getString(4));
-				}
-			}
-		}
-		
-		catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("Error driver");
-		}
-		
-		catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("Error SQL");
-		}
-		
-		finally {
-			if(rs!=null) try { rs.close(); } 
-			catch (SQLException e) { e.printStackTrace(); }
-			if(pstm!=null) try { pstm.close(); } 
-			catch (SQLException e) {e.printStackTrace(); }
-			if(conex!=null) try { conex.close(); } 
-			catch (SQLException e) { e.printStackTrace(); }
-		}
-		
-		return mantenimientoDB;
 	}
 
 }

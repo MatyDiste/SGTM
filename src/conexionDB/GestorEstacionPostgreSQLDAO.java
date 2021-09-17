@@ -7,9 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
-import java.util.ArrayList;
-
-import org.postgresql.util.PSQLException;
+import java.util.LinkedList;
 
 import objetos.Conexion;
 import objetos.Estacion;
@@ -107,7 +105,6 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 	public Integer recuperarEntidades() {
 
 		Integer cantidadEstacionesRecuperadas = 0;
-		GestorMantenimientoPostgreSQLDAO gestorMantenimiento = new GestorMantenimientoPostgreSQLDAO();
 		try {
 			
 			Class.forName("org.postgresql.Driver");
@@ -121,24 +118,13 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 			while(rs.next()) {
 				
 				ResultSet rsAux = null;
-				ArrayList<Conexion> listaDeConexionesAux = new ArrayList<Conexion>();
-				ArrayList<Mantenimiento> listaDeMantenimientosAux = new ArrayList<Mantenimiento>();
-				/*
-				pstm = conex.prepareStatement("SELECT * FROM lista_conexiones_estaciones "
-						+ "WHERE id_estacion = " + rs.getInt(1));
-				
-				rsAux = pstm.executeQuery();
-				
-				while(rsAux.next()) {
-					Conexion cn = (Conexion) gestorConexion.recuperarEntidad(rsAux.getShort(2));
-					listaDeConexionesAux.add(cn);
-				}*/
+				LinkedList<Mantenimiento> listaDeMantenimientosAux = new LinkedList<Mantenimiento>();
 				
 				pstm = conex.prepareStatement("SELECT * FROM lista_mantenimientos "
 						+ "WHERE id_estacion = " + rs.getInt(1));
 				rsAux = pstm.executeQuery();
 				while(rsAux.next()) {
-					Mantenimiento mn = (Mantenimiento) gestorMantenimiento.recuperarEntidad(rsAux.getShort(2));
+					Mantenimiento mn = Mantenimiento.buscarID(rsAux.getShort(2));
 					listaDeMantenimientosAux.add(mn);
 				}
 				
@@ -152,7 +138,6 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 							rs.getDouble(8),
 							rs.getDouble(9),
 							rs.getDouble(10),
-							listaDeConexionesAux,
 							listaDeMantenimientosAux);
 				cantidadEstacionesRecuperadas++;
 			
@@ -193,30 +178,6 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 			Class.forName("org.postgresql.Driver");
 			
 			conex = DriverManager.getConnection(url, "postgres", clave);
-			
-			if (estacion.getListConexiones().size() > estacion.getCantidadDeConexionesEnDB()) {
-				for(int i=estacion.getCantidadDeConexionesEnDB(); i<estacion.getListConexiones().size(); i++) {
-					pstm = conex.prepareStatement("INSERT INTO lista_conexiones_estaciones VALUES (?,?)");
-					pstm.setShort(1, estacion.getId());
-					pstm.setShort(2, estacion.getListConexiones().get(i).getId());
-					try {
-						pstm.executeUpdate();
-					} catch(PSQLException e) {System.out.println("Probablemente ya esté cargado este dato. Error PSQL");}
-				}
-				estacion.setCantidadDeConexionesEnDB(estacion.getListConexiones().size());
-			}
-			
-			if (estacion.getListaMantenimientos().size() > estacion.getCantidadDeMantenimientosEnDB()) {
-				for(int i=estacion.getCantidadDeMantenimientosEnDB(); i<estacion.getListaMantenimientos().size(); i++) {
-					pstm = conex.prepareStatement("INSERT INTO lista_mantenimientos VALUES (?,?)");
-					pstm.setShort(1, estacion.getId());
-					pstm.setShort(2, estacion.getListaMantenimientos().get(i).getId());
-					try {
-						pstm.executeUpdate();
-					} catch(PSQLException e) {System.out.println("Probablemente ya esté cargado este dato. Error PSQL");}
-				}
-				estacion.setCantidadDeMantenimientosEnDB(estacion.getListaMantenimientos().size());
-			}
 			
 			pstm = conex.prepareStatement("UPDATE estacion SET nombre = ?,"
 					+ "horario_apertura = ?,"
@@ -273,8 +234,6 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 	public boolean eliminarEntidad(short id) {
 		
 		Integer tuplaEliminada = 0;
-		GestorMantenimientoPostgreSQLDAO gestorMantenimiento = new GestorMantenimientoPostgreSQLDAO();
-		GestorConexionPostgreSQLDAO gestorConexion = new GestorConexionPostgreSQLDAO();
 		
 		try {
 			
@@ -282,28 +241,8 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 			
 			conex = DriverManager.getConnection(url, "postgres", clave);
 			
-			// eliminar estacion de la tabla de estaciones
-			
-			pstm = conex.prepareStatement("DELETE FROM lista_estaciones"
-					+ " WHERE id_estacion = " + id);
-			
-			pstm.executeUpdate();
-			
-			//eliminar conexiones
-			
-			pstm = conex.prepareStatement("SELECT id_conexion FROM lista_conexiones_estaciones"
-					+ " WHERE id_estacion = " + id);
-			
-			rs = pstm.executeQuery();
-			
-			while(rs.next()) {
-				
-				gestorConexion.eliminarEntidad(rs.getShort(1));
-				
-			}
-			
 			//eliminar mantenimientos
-			
+			/*
 			pstm = conex.prepareStatement("SELECT id_mantenimiento FROM lista_mantenimientos"
 					+ " WHERE id_estacion = " + id);
 			
@@ -314,11 +253,11 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 				gestorMantenimiento.eliminarEntidad(rs.getShort(1));
 				
 			}
-			
+			*/
 			//eliminar estacion
 			
 			pstm = conex.prepareStatement("DELETE FROM estacion"
-					+ " WHERE id_estacion = " + id);
+					+ " WHERE id_estacion = " + id );
 			
 			tuplaEliminada = pstm.executeUpdate();
 			
@@ -353,133 +292,4 @@ public class GestorEstacionPostgreSQLDAO extends PostgreSQL{
 		}
 	}
 
-	@Override
-	public Object recuperarEntidad(short id) {
-		
-		Estacion estacionDB = null;
-		GestorMantenimientoPostgreSQLDAO gestorMantenimiento = new GestorMantenimientoPostgreSQLDAO();
-		try {
-			
-			Class.forName("org.postgresql.Driver");
-			
-			conex = DriverManager.getConnection(url, "postgres", clave);
-			
-			pstm = conex.prepareStatement("SELECT * FROM estacion WHERE id_estacion = " + id);
-			
-			rs = pstm.executeQuery();
-			
-			while(rs.next()) {
-				
-				ResultSet rsAux = null;
-				ArrayList<Conexion> listaDeConexionesAux = new ArrayList<Conexion>();
-				ArrayList<Mantenimiento> listaDeMantenimientosAux = new ArrayList<Mantenimiento>();
-				/*
-				pstm = conex.prepareStatement("SELECT * FROM lista_conexiones_estaciones "
-												+ "WHERE id_estacion = " + rs.getInt(1));
-				rsAux = pstm.executeQuery();
-				while(rsAux.next()) {
-					Conexion cn = (Conexion) gestorConexion.recuperarEntidad(rsAux.getShort(2));
-					listaDeConexionesAux.add(cn);
-				}
-				*/
-				pstm = conex.prepareStatement("SELECT * FROM lista_mantenimientos "
-												+ "WHERE id_estacion = " + rs.getInt(1));
-				rsAux = pstm.executeQuery();
-				while(rsAux.next()) {
-					Mantenimiento mn = (Mantenimiento) gestorMantenimiento.recuperarEntidad(rsAux.getShort(2));
-					listaDeMantenimientosAux.add(mn);
-				}
-				
-				estacionDB = new Estacion(rs.getShort(1), 
-										rs.getString(2),
-										rs.getTime(3).toLocalTime(),
-										rs.getTime(4).toLocalTime(),
-										rs.getString(5),
-										rs.getDate(6).toLocalDate(),
-										rs.getDouble(7),
-										rs.getDouble(8),
-										rs.getDouble(9),
-										rs.getDouble(10),
-										listaDeConexionesAux,
-										listaDeMantenimientosAux);
-				
-			}
-		}
-		
-		catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("Error driver");
-		}
-		
-		catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("Error SQL");
-		}
-		
-		finally {
-			if(rs!=null) try { rs.close(); } 
-			catch (SQLException e) { e.printStackTrace(); }
-			if(pstm!=null) try { pstm.close(); } 
-			catch (SQLException e) {e.printStackTrace(); }
-			if(conex!=null) try { conex.close(); } 
-			catch (SQLException e) { e.printStackTrace(); }
-		}
-		
-		return estacionDB;
-	}
-	
-	public Object traerEntidad(short id) {
-		
-		Estacion estacionDB = null;
-		
-		try {
-			
-			Class.forName("org.postgresql.Driver");
-			
-			conex = DriverManager.getConnection(url, "postgres", clave);
-			
-			pstm = conex.prepareStatement("SELECT * FROM estacion WHERE id_estacion = " + id);
-			
-			rs = pstm.executeQuery();
-			
-			while(rs.next()) {
-				
-				estacionDB = new Estacion(rs.getShort(1), 
-										rs.getString(2),
-										rs.getTime(3).toLocalTime(),
-										rs.getTime(4).toLocalTime(),
-										rs.getString(5),
-										rs.getDate(6).toLocalDate(),
-										rs.getDouble(7),
-										rs.getDouble(8),
-										rs.getDouble(9),
-										rs.getDouble(10));
-			}
-		}
-		
-		catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("Error driver");
-		}
-		
-		catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("Error SQL");
-		}
-		
-		finally {
-			if(rs!=null) try { rs.close(); } 
-			catch (SQLException e) { e.printStackTrace(); }
-			if(pstm!=null) try { pstm.close(); } 
-			catch (SQLException e) {e.printStackTrace(); }
-			if(conex!=null) try { conex.close(); } 
-			catch (SQLException e) { e.printStackTrace(); }
-		}
-		
-		return estacionDB;
-	}
 }
